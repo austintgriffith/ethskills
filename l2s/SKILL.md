@@ -50,15 +50,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 ## The Superchain (OP Stack)
 
-Optimism's vision: many L2s sharing security, bridging, and governance.
-
-**OP Stack L2s:** Optimism, Base, Zora, Mode, PGN, Mint, opBNB, and 50+ more.
-
-**What it enables:**
-- Fast native bridging between Superchain members (~1-2 min vs 7 days)
-- Shared governance and sequencer (future)
-- Deploy on one OP Stack chain, easy to expand to others
-- Superchain Interop (coming 2026) for cross-chain calls
+You probably know OP Stack basics. Key update: **Superchain Interop (coming 2026)** enables cross-chain calls between OP Stack L2s (Optimism, Base, Zora, Mode, 50+ more). Fast native bridging is ~1-2 min between members.
 
 ## Deployment Differences (Gotchas)
 
