@@ -108,4 +108,13 @@ cast blob-basefee --rpc-url https://eth.llamarpc.com
 - https://ultrasound.money
 - L2 costs: Arbiscan, Basescan, etc.
 
-**Data freshness note:** Specific numbers are from Feb 2026. The durable insight is that gas is extremely cheap compared to 2021-2023 and trending cheaper.
+## Data Freshness
+
+> **Last verified:** 2026-02-13 | Base fee: ~0.05 gwei | ETH: ~$1,960
+
+If this date is more than 30 days old, verify current gas with:
+```bash
+cast base-fee --rpc-url https://eth.llamarpc.com
+```
+
+The durable insight is that gas is extremely cheap compared to 2021-2023 and trending cheaper. Specific numbers may drift but the order of magnitude is stable.

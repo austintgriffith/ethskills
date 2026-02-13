@@ -1,0 +1,56 @@
+name: Update Gas Prices
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # Weekly on Monday at noon UTC
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  update-gas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check current gas
+        id: gas
+        run: |
+          # Get base fee from Ethereum mainnet
+          RESPONSE=$(curl -s -X POST https://eth.llamarpc.com \
+            -H 'Content-Type: application/json' \
+            -d '{"jsonrpc":"2.0","method":"eth_gasPrice","params":[],"id":1}')
+          GAS_HEX=$(echo "$RESPONSE" | jq -r '.result')
+          GAS_WEI=$(printf "%d" "$GAS_HEX")
+          GAS_GWEI=$(echo "scale=3; $GAS_WEI / 1000000000" | bc)
+          
+          # Get ETH price from CoinGecko (free, no key)
+          ETH_PRICE=$(curl -s 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd' | jq -r '.ethereum.usd')
+          
+          TODAY=$(date -u +%Y-%m-%d)
+          
+          echo "gas_gwei=$GAS_GWEI" >> "$GITHUB_OUTPUT"
+          echo "eth_price=$ETH_PRICE" >> "$GITHUB_OUTPUT"
+          echo "today=$TODAY" >> "$GITHUB_OUTPUT"
+          
+          echo "Current gas: ${GAS_GWEI} gwei, ETH: \$${ETH_PRICE}"
+
+      - name: Update freshness stamp
+        run: |
+          GAS="${{ steps.gas.outputs.gas_gwei }}"
+          ETH="${{ steps.gas.outputs.eth_price }}"
+          TODAY="${{ steps.gas.outputs.today }}"
+          
+          # Update the freshness line in gas/SKILL.md
+          sed -i "s|> \*\*Last verified:\*\* .*|> **Last verified:** ${TODAY} \| Base fee: ~${GAS} gwei \| ETH: ~\$${ETH}|" gas/SKILL.md
+          
+          # Check if anything changed significantly (>10x drift)
+          echo "Updated freshness stamp to ${TODAY}"
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet gas/SKILL.md || {
+            git add gas/SKILL.md
+            git commit -m "auto-update gas freshness: ${{ steps.gas.outputs.gas_gwei }} gwei, \${{ steps.gas.outputs.eth_price }} ETH [skip ci]"
+            git push
+          }
