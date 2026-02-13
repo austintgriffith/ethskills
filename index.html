@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ETHSKILLS — Ethereum Knowledge for AI Agents</title>
+<meta name="description" content="Curated Ethereum knowledge that LLMs don't have. Give your bot a URL, it levels up instantly.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #000;
+  --fg: #b0b0b0;
+  --accent: #627eea;
+  --dim: #555;
+  --border: #1a1a1a;
+  --code-bg: #0a0a0a;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'IBM Plex Mono', 'SF Mono', 'Fira Code', monospace;
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.ascii { color: var(--accent); font-size: 11px; line-height: 1.2; white-space: pre; margin-bottom: 0.5rem; }
+.tagline { color: var(--dim); margin-bottom: 2rem; font-size: 16px; }
+h2 { color: var(--accent); font-size: 16px; text-transform: uppercase; letter-spacing: 2px; margin: 2.5rem 0 1rem 0; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+.skill { margin-bottom: 1.5rem; }
+.skill-name { font-weight: 500; font-size: 18px; }
+.skill-name a { color: var(--fg); }
+.skill-desc { color: var(--dim); margin-top: 0.25rem; font-size: 15px; }
+.skill-url { color: var(--accent); font-size: 13px; }
+.note { color: var(--dim); font-size: 13px; font-style: italic; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+code { background: var(--code-bg); padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 14px; }
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 15px;
+  padding: 0.5rem 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  margin-top: 0.35rem;
+}
+.copy-btn:hover {
+  background: #1a1a2e;
+  border-color: var(--accent);
+}
+.copy-btn-hero {
+  font-size: 17px;
+  padding: 0.7rem 1.2rem;
+  margin-top: 0.75rem;
+  border-color: var(--accent);
+}
+.copy-btn.copied {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+.copy-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<!--
+  ETHSKILLS — Ethereum Knowledge for AI Agents
+  https://ethskills.com
+
+  This site is designed for bot consumption. Each skill is a SKILL.md file
+  that any AI agent can fetch and immediately use. No install required.
+
+  Structure:
+    /                     - This index (human + bot readable)
+    /<topic>/SKILL.md     - Individual skill documents
+    /<topic>/references/  - Supporting reference material
+
+  To use: fetch any SKILL.md URL and read it into your context.
+  Example: fetch("https://ethskills.com/gas/SKILL.md")
+-->
+
+<div class="ascii">
+ ███████╗████████╗██╗  ██╗███████╗██╗  ██╗██╗██╗     ██╗     ███████╗
+ ██╔════╝╚══██╔══╝██║  ██║██╔════╝██║ ██╔╝██║██║     ██║     ██╔════╝
+ █████╗     ██║   ███████║███████╗█████╔╝ ██║██║     ██║     ███████╗
+ ██╔══╝     ██║   ██╔══██║╚════██║██╔═██╗ ██║██║     ██║     ╚════██║
+ ███████╗   ██║   ██║  ██║███████║██║  ██╗██║███████╗███████╗███████║
+ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝
+</div>
+
+<p class="tagline">The missing knowledge between AI agents and production Ethereum.</p>
+
+<button class="copy-btn copy-btn-hero" data-url="https://ethskills.com/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/SKILL.md</button>
+
+<!-- SKILL INDEX
+  Each entry below is a skill. Fetch the SKILL.md URL to get the full knowledge.
+  Skills are organized by topic. Each contains curated, current, verified information
+  that supplements what LLMs already know about Ethereum.
+-->
+
+<h2>Skills</h2>
+
+<div class="skill">
+  <div class="skill-name"><a href="/why/SKILL.md">Why Ethereum</a></div>
+  <div class="skill-desc">Why build on Ethereum specifically — honest tradeoffs, the AI agent angle, countering stale FUD, matching use cases to strengths. The eth-pill.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/why/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/why/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/gas/SKILL.md">Gas &amp; Costs</a></div>
+  <div class="skill-desc">Current gas prices, what things actually cost on Ethereum today, mainnet vs L2 honest comparison. Counters the #1 misconception that Ethereum is expensive.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/gas/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/gas/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/wallets/SKILL.md">Wallets</a></div>
+  <div class="skill-desc">Creating wallets, connecting to dApps, signing transactions, multisig (Gnosis Safe), account abstraction. How an AI agent gets a wallet and uses it safely.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/wallets/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/wallets/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/l2s/SKILL.md">Layer 2s</a></div>
+  <div class="skill-desc">Current L2 landscape, bridging, deployment differences, when to use which L2. Arbitrum, Optimism, Base, zkSync, and more.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/l2s/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/l2s/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/standards/SKILL.md">Standards</a></div>
+  <div class="skill-desc">ERC-20, ERC-721, ERC-1155, newer ERCs, when to use what. Token standards, identity standards, payment standards.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/standards/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/standards/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/tools/SKILL.md">Tools</a></div>
+  <div class="skill-desc">Current frameworks, libraries, RPCs, block explorers. What actually works today. Tool discovery for agents — MCPs, abi.ninja, Foundry, Scaffold-ETH 2.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/tools/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/tools/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/building-blocks/SKILL.md">Money Legos</a></div>
+  <div class="skill-desc">DeFi legos and protocol composability. Uniswap, Aave, Compound, MakerDAO, Yearn, Curve — what they do, how to build on them, how to combine them.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/building-blocks/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/building-blocks/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/orchestration/SKILL.md">Orchestration</a></div>
+  <div class="skill-desc">The three-phase build system and dApp orchestration patterns. How an AI agent plans, builds, and deploys a complete Ethereum application.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/orchestration/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/orchestration/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/whats-new/SKILL.md">What's New</a></div>
+  <div class="skill-desc">Post-training-cutoff changes. ERC-8004 (agent identity), x402 (HTTP payments), recent protocol upgrades, new standards no LLM knows yet.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/whats-new/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/whats-new/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name"><a href="/addresses/SKILL.md">Contract Addresses</a></div>
+  <div class="skill-desc">Verified contract addresses for major protocols across Ethereum mainnet and L2s. Stop hallucinating addresses — use real ones.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/addresses/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/addresses/SKILL.md</button>
+</div>
+
+<h2>How to Use</h2>
+
+<p>Give your AI agent any skill URL. It fetches the page, reads the content, and instantly knows more about Ethereum. No install, no CLI, no package manager.</p>
+
+
+<h2>Contributing</h2>
+
+<p>Something wrong or missing? Humans and agents alike are welcome to <a href="https://github.com/ethskills/ethskills">open a PR</a>.</p>
+
+<div class="note">
+  MIT License · <a href="https://github.com/ethskills/ethskills">GitHub</a>
+</div>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const url = btn.dataset.url;
+    try {
+      await navigator.clipboard.writeText(url);
+      const orig = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
+    } catch (e) {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      const orig = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
+    }
+  });
+});
+</script>
+</body>
+</html>
