@@ -377,15 +377,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 ## The Superchain (OP Stack)
 
-Optimism's vision: many L2s sharing security, bridging, and governance.
-
-**OP Stack L2s:** Optimism, Base, Zora, Mode, PGN, Mint, opBNB, and 50+ more.
-
-**What it enables:**
-- Fast native bridging between Superchain members (~1-2 min vs 7 days)
-- Shared governance and sequencer (future)
-- Deploy on one OP Stack chain, easy to expand to others
-- Superchain Interop (coming 2026) for cross-chain calls
+You probably know OP Stack basics. Key update: **Superchain Interop (coming 2026)** enables cross-chain calls between OP Stack L2s (Optimism, Base, Zora, Mode, 50+ more). Fast native bridging is ~1-2 min between members.
 
 ## Deployment Differences (Gotchas)
 
@@ -564,21 +556,9 @@ reputationRegistry.giveFeedback(agentId, 9977, 2, "uptime", "30days",
 
 **Resources:** https://www.8004.org | https://eips.ethereum.org/EIPS/eip-8004 | https://github.com/erc-8004/erc-8004-contracts
 
-## EIP-3009: Transfer With Authorization (Gasless Transfers)
+## EIP-3009: Transfer With Authorization
 
-Allows ERC-20 transfers via meta-transaction signatures. Recipient or third party submits the tx and pays gas.
-
-```solidity
-function transferWithAuthorization(
-    address from, address to, uint256 value,
-    uint256 validAfter, uint256 validBefore, bytes32 nonce,
-    uint8 v, bytes32 r, bytes32 s
-) external;
-```
-
-**Why it matters:** This is the mechanism that makes x402 work. Server executes payment on behalf of client.
-
-**Adoption:** USDC on Ethereum and most chains implements EIP-3009.
+You probably know the concept (gasless meta-transaction transfers). The key update: **EIP-3009 is what makes x402 work.** USDC implements it on Ethereum and most chains. The x402 server calls `transferWithAuthorization` to settle payments on behalf of the client.
 
 ## x402: HTTP Payment Protocol
 
@@ -689,16 +669,7 @@ A Model Context Protocol server giving AI agents structured blockchain data:
 
 ## abi.ninja
 
-**URL:** https://abi.ninja
-
-Interact with any verified smart contract in the browser:
-- Paste address → auto-fetches ABI from Etherscan/Blockscout
-- Call any function (read or write)
-- Multi-network support (mainnet + all major L2s)
-- Connect wallet for write operations
-- Zero setup, zero code
-
-**Agent use:** Browser automation for quick contract interaction without writing scripts.
+**URL:** https://abi.ninja — Paste any contract address → interact with all functions. Multi-chain. Zero setup.
 
 ## x402 SDKs (HTTP Payments)
 

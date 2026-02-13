@@ -41,16 +41,7 @@ A Model Context Protocol server giving AI agents structured blockchain data:
 
 ## abi.ninja
 
-**URL:** https://abi.ninja
-
-Interact with any verified smart contract in the browser:
-- Paste address → auto-fetches ABI from Etherscan/Blockscout
-- Call any function (read or write)
-- Multi-network support (mainnet + all major L2s)
-- Connect wallet for write operations
-- Zero setup, zero code
-
-**Agent use:** Browser automation for quick contract interaction without writing scripts.
+**URL:** https://abi.ninja — Paste any contract address → interact with all functions. Multi-chain. Zero setup.
 
 ## x402 SDKs (HTTP Payments)
 

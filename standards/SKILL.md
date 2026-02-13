@@ -103,21 +103,9 @@ reputationRegistry.giveFeedback(agentId, 9977, 2, "uptime", "30days",
 
 **Resources:** https://www.8004.org | https://eips.ethereum.org/EIPS/eip-8004 | https://github.com/erc-8004/erc-8004-contracts
 
-## EIP-3009: Transfer With Authorization (Gasless Transfers)
+## EIP-3009: Transfer With Authorization
 
-Allows ERC-20 transfers via meta-transaction signatures. Recipient or third party submits the tx and pays gas.
-
-```solidity
-function transferWithAuthorization(
-    address from, address to, uint256 value,
-    uint256 validAfter, uint256 validBefore, bytes32 nonce,
-    uint8 v, bytes32 r, bytes32 s
-) external;
-```
-
-**Why it matters:** This is the mechanism that makes x402 work. Server executes payment on behalf of client.
-
-**Adoption:** USDC on Ethereum and most chains implements EIP-3009.
+You probably know the concept (gasless meta-transaction transfers). The key update: **EIP-3009 is what makes x402 work.** USDC implements it on Ethereum and most chains. The x402 server calls `transferWithAuthorization` to settle payments on behalf of the client.
 
 ## x402: HTTP Payment Protocol
 
