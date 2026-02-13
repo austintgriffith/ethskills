@@ -160,6 +160,87 @@ packages/
     └── scaffold.config.ts      # Main config
 ```
 
+## AI Agent Commerce: End-to-End Flow (ERC-8004 + x402)
+
+This is the killer use case for Ethereum in 2026: **autonomous agents discovering, trusting, paying, and rating each other** — no humans in the loop.
+
+### The Full Cycle
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  1. DISCOVER  Agent queries ERC-8004 IdentityRegistry       │
+│               → finds agents with "weather" service tag      │
+│                                                              │
+│  2. TRUST     Agent checks ReputationRegistry                │
+│               → filters by uptime >99%, quality >85          │
+│               → picks best-rated weather agent               │
+│                                                              │
+│  3. CALL      Agent sends HTTP GET to weather endpoint       │
+│               → receives 402 Payment Required                │
+│               → PAYMENT-REQUIRED header: $0.10 USDC on Base  │
+│                                                              │
+│  4. PAY       Agent signs EIP-3009 transferWithAuthorization │
+│               → retries request with PAYMENT-SIGNATURE       │
+│               → server verifies via facilitator              │
+│               → payment settled on Base (~$0.001 gas)        │
+│                                                              │
+│  5. RECEIVE   Server returns 200 OK + weather data           │
+│               → PAYMENT-RESPONSE header with tx hash         │
+│                                                              │
+│  6. RATE      Agent posts feedback to ReputationRegistry     │
+│               → value=95, tag="quality", endpoint="..."      │
+│               → builds on-chain reputation for next caller   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Concrete Implementation (TypeScript Agent)
+
+```typescript
+import { x402Fetch } from '@x402/fetch';
+import { createWallet } from '@x402/evm';
+import { ethers } from 'ethers';
+
+const wallet = createWallet(process.env.AGENT_PRIVATE_KEY);
+const provider = new ethers.JsonRpcProvider('https://base-mainnet.g.alchemy.com/v2/YOUR_KEY');
+
+const IDENTITY_REGISTRY = '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432';
+const REPUTATION_REGISTRY = '0x8004BAa17C55a88189AE136b182e5fdA19dE9b63';
+
+// 1. Discover: find agents offering weather service
+const registry = new ethers.Contract(IDENTITY_REGISTRY, registryAbi, provider);
+// Query events or use The Graph subgraph for indexed agent discovery
+
+// 2. Trust: check reputation
+const reputation = new ethers.Contract(REPUTATION_REGISTRY, reputationAbi, provider);
+const [count, value, decimals] = await reputation.getSummary(
+  agentId, trustedClients, "quality", "30days"
+);
+// Only proceed if value/10^decimals > 85
+
+// 3-5. Pay + Receive: x402Fetch handles the entire 402 flow
+const response = await x402Fetch(agentEndpoint, {
+  wallet,
+  preferredNetwork: 'eip155:8453'
+});
+const weatherData = await response.json();
+
+// 6. Rate: post feedback on-chain
+const reputationWriter = new ethers.Contract(REPUTATION_REGISTRY, reputationAbi, signer);
+await reputationWriter.giveFeedback(
+  agentId, 95, 0, "quality", "weather", agentEndpoint, "", ethers.ZeroHash
+);
+```
+
+**This is the agentic economy.** No API keys, no subscriptions, no invoicing, no trust assumptions. Just cryptographic identity, on-chain reputation, and HTTP-native payments.
+
+### Key Projects Building This Stack
+- **ERC-8004** — agent identity + reputation (EF, MetaMask, Google, Coinbase)
+- **x402** — HTTP payment protocol (Coinbase)
+- **A2A** — agent-to-agent communication (Google)
+- **MCP** — model context protocol (Anthropic)
+- **The Graph** — indexing agent registrations for fast discovery
+- **EigenLayer** — crypto-economic validation of agent work
+
 ## Resources
 
 - **SE2 Docs:** https://docs.scaffoldeth.io/

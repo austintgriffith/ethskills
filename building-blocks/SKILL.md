@@ -29,15 +29,58 @@ See `addresses/SKILL.md` for complete multi-chain address list.
 
 ## Uniswap V4 Hooks (New)
 
-Hooks let you add custom logic that runs before/after swaps, liquidity changes, and donations:
+Hooks let you add custom logic that runs before/after swaps, liquidity changes, and donations. This is the biggest composability upgrade since flash loans.
 
-- **Dynamic fees** that adjust based on volatility
-- **TWAMM** (time-weighted average market maker)
-- **Limit orders** built into the pool
-- **Custom oracle** integration
-- **MEV protection** hooks
+### Hook Interface (Solidity)
 
-This is the biggest composability upgrade since flash loans.
+```solidity
+import {BaseHook} from "v4-periphery/src/utils/BaseHook.sol";
+import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
+import {PoolKey} from "v4-core/types/PoolKey.sol";
+import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "v4-core/types/BeforeSwapDelta.sol";
+
+contract DynamicFeeHook is BaseHook {
+    constructor(IPoolManager _manager) BaseHook(_manager) {}
+
+    function getHookPermissions() public pure override returns (Hooks.Permissions memory) {
+        return Hooks.Permissions({
+            beforeInitialize: false,
+            afterInitialize: false,
+            beforeAddLiquidity: false,
+            afterAddLiquidity: false,
+            beforeRemoveLiquidity: false,
+            afterRemoveLiquidity: false,
+            beforeSwap: true,           // ← We hook here
+            afterSwap: false,
+            beforeDonate: false,
+            afterDonate: false,
+            beforeSwapReturnDelta: false,
+            afterSwapReturnDelta: false,
+            afterAddLiquidityReturnDelta: false,
+            afterRemoveLiquidityReturnDelta: false
+        });
+    }
+
+    // Dynamic fee: higher fee during high-volume periods
+    function beforeSwap(
+        address,
+        PoolKey calldata key,
+        IPoolManager.SwapParams calldata params,
+        bytes calldata
+    ) external override returns (bytes4, BeforeSwapDelta, uint24) {
+        // Return dynamic fee override (e.g., 0.05% normally, 0.30% during volatility)
+        uint24 fee = _isHighVolatility() ? 3000 : 500;
+        return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, fee | 0x800000);
+    }
+}
+```
+
+**Hook use cases with real code patterns:**
+- **Dynamic fees** — adjust based on volatility, time-of-day, or oracle data
+- **TWAMM** — split large orders over time to reduce price impact
+- **Limit orders** — execute when price crosses a threshold
+- **MEV protection** — auction swap ordering rights to searchers
+- **Custom oracles** — TWAP updated on every swap
 
 ## Composability Patterns (Updated for 2026 Gas)
 
@@ -53,7 +96,71 @@ Deposit ETH on Aave → borrow stablecoin → swap for more ETH → deposit agai
 Route swaps across multiple DEXs for best execution. 1inch and Paraswap check Uniswap, Curve, Sushi simultaneously.
 
 ### ERC-4626 Yield Vaults
-Standard vault interface for yield strategies. Deposit tokens → vault farms across protocols → auto-compounds. Yearn V3, most modern vaults use ERC-4626.
+
+Standard vault interface — the "ERC-20 of yield." Every vault exposes the same functions regardless of strategy.
+
+```solidity
+import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
+import {ERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract SimpleYieldVault is ERC4626 {
+    constructor(IERC20 asset_) 
+        ERC4626(asset_) 
+        ERC20("Vault Shares", "vSHARE") 
+    {}
+
+    // totalAssets() drives the share price
+    // As yield accrues, totalAssets grows → shares worth more
+    function totalAssets() public view override returns (uint256) {
+        return IERC20(asset()).balanceOf(address(this)) + _getAccruedYield();
+    }
+}
+
+// Usage: deposit/withdraw are standardized
+// vault.deposit(1000e6, msg.sender);  // deposit 1000 USDC, get shares
+// vault.redeem(shares, msg.sender, msg.sender);  // burn shares, get USDC back
+// vault.convertToAssets(shares);  // how much USDC are my shares worth?
+```
+
+**Why ERC-4626 matters:** Composability. Any protocol can integrate any vault without custom adapters. Yearn V3, Aave's wrapped tokens, Morpho vaults, Pendle yield tokens — all ERC-4626.
+
+### Flash Loan (Aave V3 — Complete Pattern)
+
+```solidity
+import {FlashLoanSimpleReceiverBase} from 
+    "@aave/v3-core/contracts/flashloan-v3/base/FlashLoanSimpleReceiverBase.sol";
+import {IPoolAddressesProvider} from 
+    "@aave/v3-core/contracts/interfaces/IPoolAddressesProvider.sol";
+
+contract FlashLoanArb is FlashLoanSimpleReceiverBase {
+    constructor(IPoolAddressesProvider provider) 
+        FlashLoanSimpleReceiverBase(provider) {}
+
+    function executeArb(address token, uint256 amount) external {
+        // Borrow `amount` of `token` — must repay + 0.05% fee in same tx
+        POOL.flashLoanSimple(address(this), token, amount, "", 0);
+    }
+
+    function executeOperation(
+        address asset,
+        uint256 amount,
+        uint256 premium,  // 0.05% fee
+        address,
+        bytes calldata
+    ) external override returns (bool) {
+        // --- Your arbitrage logic here ---
+        // Buy cheap on DEX A, sell expensive on DEX B
+        // Must end with at least `amount + premium` of `asset`
+        
+        uint256 owed = amount + premium;
+        IERC20(asset).approve(address(POOL), owed);
+        return true;  // If unprofitable, revert here — lose only gas (~$0.05-0.50)
+    }
+}
+```
+
+**Aave V3 Pool (mainnet):** `0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2`
+**Flash loan fee:** 0.05% (5 basis points). Free if you repay to an Aave debt position.
 
 ## Building on Arbitrum (Highest DeFi Liquidity L2)
 

@@ -550,6 +550,67 @@ reputationRegistry.giveFeedback(agentId, 9977, 2, "uptime", "30days",
     reputationRegistry.getSummary(agentId, trustedClients, "uptime", "30days");
 ```
 
+### Step-by-Step: Register an Agent On-Chain
+
+**1. Prepare the registration JSON** — host it on IPFS or a web server:
+```json
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "WeatherBot",
+  "description": "Provides real-time weather data via x402 micropayments",
+  "image": "https://example.com/weatherbot.png",
+  "services": [
+    { "name": "A2A", "endpoint": "https://weather.example.com/.well-known/agent-card.json", "version": "0.3.0" }
+  ],
+  "x402Support": true,
+  "active": true,
+  "supportedTrust": ["reputation"]
+}
+```
+
+**2. Upload to IPFS** (or use any URI):
+```bash
+# Using IPFS
+ipfs add registration.json
+# → QmYourRegistrationHash
+
+# Or host at a URL — the agentURI just needs to resolve to the JSON
+```
+
+**3. Call the Identity Registry:**
+```solidity
+// On any supported chain — same address everywhere
+IIdentityRegistry registry = IIdentityRegistry(0x8004A169FB4a3325136EB29fA0ceB6D2e539a432);
+
+// metadata bytes are optional (can be empty)
+uint256 agentId = registry.register("ipfs://QmYourRegistrationHash", "");
+// agentId is your ERC-721 tokenId — globally unique on this chain
+```
+
+**4. Verify your endpoint domain** — place a file at `.well-known/agent-registration.json`:
+```json
+// https://weather.example.com/.well-known/agent-registration.json
+{
+  "agentId": 42,
+  "agentRegistry": "eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+  "owner": "0xYourWalletAddress"
+}
+```
+This proves the domain owner controls the agent identity. Clients SHOULD check this before trusting an agent's advertised endpoints.
+
+**5. Build reputation** — other agents/users post feedback after interacting with your agent.
+
+### Cross-Chain Agent Identity
+
+Same contract addresses on 20+ chains means an agent registered on Base can be discovered by an agent on Arbitrum. The `agentRegistry` identifier includes the chain:
+
+```
+eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432  // Base
+eip155:42161:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 // Arbitrum
+```
+
+**Cross-chain pattern:** Register on one chain (cheapest — Base recommended), reference that identity from other chains. Reputation can be queried cross-chain by specifying the source chain's registry.
+
 **Authors:** Davide Crapis (EF), Marco De Rossi (MetaMask), Jordan Ellis (Google), Erik Reppel (Coinbase), Leonard Tan (MetaMask)
 
 **Ecosystem:** ENS, EigenLayer, The Graph, Taiko backing
@@ -599,6 +660,85 @@ Agent discovers service (ERC-8004) → checks reputation → calls endpoint →
 gets 402 → signs payment (EIP-3009) → server settles (x402) → 
 agent receives service → posts feedback (ERC-8004)
 ```
+
+### x402 Server Setup (Express — Complete Example)
+
+```typescript
+import express from 'express';
+import { paymentMiddleware } from '@x402/express';
+
+const app = express();
+
+// Define payment requirements per route
+const paymentConfig = {
+  "GET /api/weather": {
+    accepts: [
+      { network: "eip155:8453", token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", amount: "100000" }
+      // 100000 = $0.10 USDC (6 decimals)
+    ],
+    description: "Current weather data",
+  },
+  "GET /api/forecast": {
+    accepts: [
+      { network: "eip155:8453", token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", amount: "500000" }
+      // $0.50 USDC for 7-day forecast
+    ],
+    description: "7-day weather forecast",
+  }
+};
+
+// One line — middleware handles 402 responses, verification, and settlement
+app.use(paymentMiddleware(paymentConfig));
+
+app.get('/api/weather', (req, res) => {
+  // Only reached after payment verified
+  res.json({ temp: 72, condition: "sunny" });
+});
+
+app.listen(3000);
+```
+
+### x402 Client (Agent Paying for Data)
+
+```typescript
+import { x402Fetch } from '@x402/fetch';
+import { createWallet } from '@x402/evm';
+
+const wallet = createWallet(process.env.PRIVATE_KEY);
+
+// x402Fetch handles the 402 → sign → retry flow automatically
+const response = await x402Fetch('https://weather.example.com/api/weather', {
+  wallet,
+  preferredNetwork: 'eip155:8453' // Pay on Base (cheapest)
+});
+
+const weather = await response.json();
+// Agent paid $0.10 USDC, got weather data. No API key needed.
+```
+
+### Payment Schemes
+
+**`exact`** (live) — Pay a fixed price. Server knows the cost upfront.
+
+**`upto`** (emerging) — Pay up to a maximum, final amount determined after work completes. Critical for metered services:
+- LLM inference: pay per token generated (unknown count upfront)
+- GPU compute: pay per second of runtime
+- Database queries: pay per row returned
+
+With `upto`, the client signs authorization for a max amount. The server settles only what was consumed. Client never overpays.
+
+### Facilitator Architecture
+
+The **facilitator** is an optional server that handles blockchain complexity so resource servers don't have to:
+
+```
+Client → Resource Server → Facilitator → Blockchain
+                              ↓
+                         POST /verify  (check signature, balance, deadline)
+                         POST /settle  (submit tx, manage gas, confirm)
+```
+
+**Why use a facilitator?** Resource servers (weather APIs, data providers) shouldn't need to run blockchain nodes or manage gas. The facilitator abstracts this. Coinbase runs a public facilitator; anyone can run their own.
 
 **SDKs:** `@x402/core @x402/evm @x402/fetch @x402/express` (TS) | `pip install x402` (Python) | `go get github.com/coinbase/x402/go`
 
@@ -816,15 +956,58 @@ See `addresses/SKILL.md` for complete multi-chain address list.
 
 ## Uniswap V4 Hooks (New)
 
-Hooks let you add custom logic that runs before/after swaps, liquidity changes, and donations:
+Hooks let you add custom logic that runs before/after swaps, liquidity changes, and donations. This is the biggest composability upgrade since flash loans.
 
-- **Dynamic fees** that adjust based on volatility
-- **TWAMM** (time-weighted average market maker)
-- **Limit orders** built into the pool
-- **Custom oracle** integration
-- **MEV protection** hooks
+### Hook Interface (Solidity)
 
-This is the biggest composability upgrade since flash loans.
+```solidity
+import {BaseHook} from "v4-periphery/src/utils/BaseHook.sol";
+import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
+import {PoolKey} from "v4-core/types/PoolKey.sol";
+import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "v4-core/types/BeforeSwapDelta.sol";
+
+contract DynamicFeeHook is BaseHook {
+    constructor(IPoolManager _manager) BaseHook(_manager) {}
+
+    function getHookPermissions() public pure override returns (Hooks.Permissions memory) {
+        return Hooks.Permissions({
+            beforeInitialize: false,
+            afterInitialize: false,
+            beforeAddLiquidity: false,
+            afterAddLiquidity: false,
+            beforeRemoveLiquidity: false,
+            afterRemoveLiquidity: false,
+            beforeSwap: true,           // ← We hook here
+            afterSwap: false,
+            beforeDonate: false,
+            afterDonate: false,
+            beforeSwapReturnDelta: false,
+            afterSwapReturnDelta: false,
+            afterAddLiquidityReturnDelta: false,
+            afterRemoveLiquidityReturnDelta: false
+        });
+    }
+
+    // Dynamic fee: higher fee during high-volume periods
+    function beforeSwap(
+        address,
+        PoolKey calldata key,
+        IPoolManager.SwapParams calldata params,
+        bytes calldata
+    ) external override returns (bytes4, BeforeSwapDelta, uint24) {
+        // Return dynamic fee override (e.g., 0.05% normally, 0.30% during volatility)
+        uint24 fee = _isHighVolatility() ? 3000 : 500;
+        return (this.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, fee | 0x800000);
+    }
+}
+```
+
+**Hook use cases with real code patterns:**
+- **Dynamic fees** — adjust based on volatility, time-of-day, or oracle data
+- **TWAMM** — split large orders over time to reduce price impact
+- **Limit orders** — execute when price crosses a threshold
+- **MEV protection** — auction swap ordering rights to searchers
+- **Custom oracles** — TWAP updated on every swap
 
 ## Composability Patterns (Updated for 2026 Gas)
 
@@ -840,7 +1023,71 @@ Deposit ETH on Aave → borrow stablecoin → swap for more ETH → deposit agai
 Route swaps across multiple DEXs for best execution. 1inch and Paraswap check Uniswap, Curve, Sushi simultaneously.
 
 ### ERC-4626 Yield Vaults
-Standard vault interface for yield strategies. Deposit tokens → vault farms across protocols → auto-compounds. Yearn V3, most modern vaults use ERC-4626.
+
+Standard vault interface — the "ERC-20 of yield." Every vault exposes the same functions regardless of strategy.
+
+```solidity
+import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
+import {ERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract SimpleYieldVault is ERC4626 {
+    constructor(IERC20 asset_) 
+        ERC4626(asset_) 
+        ERC20("Vault Shares", "vSHARE") 
+    {}
+
+    // totalAssets() drives the share price
+    // As yield accrues, totalAssets grows → shares worth more
+    function totalAssets() public view override returns (uint256) {
+        return IERC20(asset()).balanceOf(address(this)) + _getAccruedYield();
+    }
+}
+
+// Usage: deposit/withdraw are standardized
+// vault.deposit(1000e6, msg.sender);  // deposit 1000 USDC, get shares
+// vault.redeem(shares, msg.sender, msg.sender);  // burn shares, get USDC back
+// vault.convertToAssets(shares);  // how much USDC are my shares worth?
+```
+
+**Why ERC-4626 matters:** Composability. Any protocol can integrate any vault without custom adapters. Yearn V3, Aave's wrapped tokens, Morpho vaults, Pendle yield tokens — all ERC-4626.
+
+### Flash Loan (Aave V3 — Complete Pattern)
+
+```solidity
+import {FlashLoanSimpleReceiverBase} from 
+    "@aave/v3-core/contracts/flashloan-v3/base/FlashLoanSimpleReceiverBase.sol";
+import {IPoolAddressesProvider} from 
+    "@aave/v3-core/contracts/interfaces/IPoolAddressesProvider.sol";
+
+contract FlashLoanArb is FlashLoanSimpleReceiverBase {
+    constructor(IPoolAddressesProvider provider) 
+        FlashLoanSimpleReceiverBase(provider) {}
+
+    function executeArb(address token, uint256 amount) external {
+        // Borrow `amount` of `token` — must repay + 0.05% fee in same tx
+        POOL.flashLoanSimple(address(this), token, amount, "", 0);
+    }
+
+    function executeOperation(
+        address asset,
+        uint256 amount,
+        uint256 premium,  // 0.05% fee
+        address,
+        bytes calldata
+    ) external override returns (bool) {
+        // --- Your arbitrage logic here ---
+        // Buy cheap on DEX A, sell expensive on DEX B
+        // Must end with at least `amount + premium` of `asset`
+        
+        uint256 owed = amount + premium;
+        IERC20(asset).approve(address(POOL), owed);
+        return true;  // If unprofitable, revert here — lose only gas (~$0.05-0.50)
+    }
+}
+```
+
+**Aave V3 Pool (mainnet):** `0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2`
+**Flash loan fee:** 0.05% (5 basis points). Free if you repay to an Aave debt position.
 
 ## Building on Arbitrum (Highest DeFi Liquidity L2)
 
@@ -1025,6 +1272,87 @@ packages/
     ├── hooks/scaffold-eth/     # USE THESE hooks
     └── scaffold.config.ts      # Main config
 ```
+
+## AI Agent Commerce: End-to-End Flow (ERC-8004 + x402)
+
+This is the killer use case for Ethereum in 2026: **autonomous agents discovering, trusting, paying, and rating each other** — no humans in the loop.
+
+### The Full Cycle
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  1. DISCOVER  Agent queries ERC-8004 IdentityRegistry       │
+│               → finds agents with "weather" service tag      │
+│                                                              │
+│  2. TRUST     Agent checks ReputationRegistry                │
+│               → filters by uptime >99%, quality >85          │
+│               → picks best-rated weather agent               │
+│                                                              │
+│  3. CALL      Agent sends HTTP GET to weather endpoint       │
+│               → receives 402 Payment Required                │
+│               → PAYMENT-REQUIRED header: $0.10 USDC on Base  │
+│                                                              │
+│  4. PAY       Agent signs EIP-3009 transferWithAuthorization │
+│               → retries request with PAYMENT-SIGNATURE       │
+│               → server verifies via facilitator              │
+│               → payment settled on Base (~$0.001 gas)        │
+│                                                              │
+│  5. RECEIVE   Server returns 200 OK + weather data           │
+│               → PAYMENT-RESPONSE header with tx hash         │
+│                                                              │
+│  6. RATE      Agent posts feedback to ReputationRegistry     │
+│               → value=95, tag="quality", endpoint="..."      │
+│               → builds on-chain reputation for next caller   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Concrete Implementation (TypeScript Agent)
+
+```typescript
+import { x402Fetch } from '@x402/fetch';
+import { createWallet } from '@x402/evm';
+import { ethers } from 'ethers';
+
+const wallet = createWallet(process.env.AGENT_PRIVATE_KEY);
+const provider = new ethers.JsonRpcProvider('https://base-mainnet.g.alchemy.com/v2/YOUR_KEY');
+
+const IDENTITY_REGISTRY = '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432';
+const REPUTATION_REGISTRY = '0x8004BAa17C55a88189AE136b182e5fdA19dE9b63';
+
+// 1. Discover: find agents offering weather service
+const registry = new ethers.Contract(IDENTITY_REGISTRY, registryAbi, provider);
+// Query events or use The Graph subgraph for indexed agent discovery
+
+// 2. Trust: check reputation
+const reputation = new ethers.Contract(REPUTATION_REGISTRY, reputationAbi, provider);
+const [count, value, decimals] = await reputation.getSummary(
+  agentId, trustedClients, "quality", "30days"
+);
+// Only proceed if value/10^decimals > 85
+
+// 3-5. Pay + Receive: x402Fetch handles the entire 402 flow
+const response = await x402Fetch(agentEndpoint, {
+  wallet,
+  preferredNetwork: 'eip155:8453'
+});
+const weatherData = await response.json();
+
+// 6. Rate: post feedback on-chain
+const reputationWriter = new ethers.Contract(REPUTATION_REGISTRY, reputationAbi, signer);
+await reputationWriter.giveFeedback(
+  agentId, 95, 0, "quality", "weather", agentEndpoint, "", ethers.ZeroHash
+);
+```
+
+**This is the agentic economy.** No API keys, no subscriptions, no invoicing, no trust assumptions. Just cryptographic identity, on-chain reputation, and HTTP-native payments.
+
+### Key Projects Building This Stack
+- **ERC-8004** — agent identity + reputation (EF, MetaMask, Google, Coinbase)
+- **x402** — HTTP payment protocol (Coinbase)
+- **A2A** — agent-to-agent communication (Google)
+- **MCP** — model context protocol (Anthropic)
+- **The Graph** — indexing agent registrations for fast discovery
+- **EigenLayer** — crypto-economic validation of agent work
 
 ## Resources
 

@@ -97,6 +97,67 @@ reputationRegistry.giveFeedback(agentId, 9977, 2, "uptime", "30days",
     reputationRegistry.getSummary(agentId, trustedClients, "uptime", "30days");
 ```
 
+### Step-by-Step: Register an Agent On-Chain
+
+**1. Prepare the registration JSON** — host it on IPFS or a web server:
+```json
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "WeatherBot",
+  "description": "Provides real-time weather data via x402 micropayments",
+  "image": "https://example.com/weatherbot.png",
+  "services": [
+    { "name": "A2A", "endpoint": "https://weather.example.com/.well-known/agent-card.json", "version": "0.3.0" }
+  ],
+  "x402Support": true,
+  "active": true,
+  "supportedTrust": ["reputation"]
+}
+```
+
+**2. Upload to IPFS** (or use any URI):
+```bash
+# Using IPFS
+ipfs add registration.json
+# → QmYourRegistrationHash
+
+# Or host at a URL — the agentURI just needs to resolve to the JSON
+```
+
+**3. Call the Identity Registry:**
+```solidity
+// On any supported chain — same address everywhere
+IIdentityRegistry registry = IIdentityRegistry(0x8004A169FB4a3325136EB29fA0ceB6D2e539a432);
+
+// metadata bytes are optional (can be empty)
+uint256 agentId = registry.register("ipfs://QmYourRegistrationHash", "");
+// agentId is your ERC-721 tokenId — globally unique on this chain
+```
+
+**4. Verify your endpoint domain** — place a file at `.well-known/agent-registration.json`:
+```json
+// https://weather.example.com/.well-known/agent-registration.json
+{
+  "agentId": 42,
+  "agentRegistry": "eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+  "owner": "0xYourWalletAddress"
+}
+```
+This proves the domain owner controls the agent identity. Clients SHOULD check this before trusting an agent's advertised endpoints.
+
+**5. Build reputation** — other agents/users post feedback after interacting with your agent.
+
+### Cross-Chain Agent Identity
+
+Same contract addresses on 20+ chains means an agent registered on Base can be discovered by an agent on Arbitrum. The `agentRegistry` identifier includes the chain:
+
+```
+eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432  // Base
+eip155:42161:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 // Arbitrum
+```
+
+**Cross-chain pattern:** Register on one chain (cheapest — Base recommended), reference that identity from other chains. Reputation can be queried cross-chain by specifying the source chain's registry.
+
 **Authors:** Davide Crapis (EF), Marco De Rossi (MetaMask), Jordan Ellis (Google), Erik Reppel (Coinbase), Leonard Tan (MetaMask)
 
 **Ecosystem:** ENS, EigenLayer, The Graph, Taiko backing
@@ -146,6 +207,85 @@ Agent discovers service (ERC-8004) → checks reputation → calls endpoint →
 gets 402 → signs payment (EIP-3009) → server settles (x402) → 
 agent receives service → posts feedback (ERC-8004)
 ```
+
+### x402 Server Setup (Express — Complete Example)
+
+```typescript
+import express from 'express';
+import { paymentMiddleware } from '@x402/express';
+
+const app = express();
+
+// Define payment requirements per route
+const paymentConfig = {
+  "GET /api/weather": {
+    accepts: [
+      { network: "eip155:8453", token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", amount: "100000" }
+      // 100000 = $0.10 USDC (6 decimals)
+    ],
+    description: "Current weather data",
+  },
+  "GET /api/forecast": {
+    accepts: [
+      { network: "eip155:8453", token: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", amount: "500000" }
+      // $0.50 USDC for 7-day forecast
+    ],
+    description: "7-day weather forecast",
+  }
+};
+
+// One line — middleware handles 402 responses, verification, and settlement
+app.use(paymentMiddleware(paymentConfig));
+
+app.get('/api/weather', (req, res) => {
+  // Only reached after payment verified
+  res.json({ temp: 72, condition: "sunny" });
+});
+
+app.listen(3000);
+```
+
+### x402 Client (Agent Paying for Data)
+
+```typescript
+import { x402Fetch } from '@x402/fetch';
+import { createWallet } from '@x402/evm';
+
+const wallet = createWallet(process.env.PRIVATE_KEY);
+
+// x402Fetch handles the 402 → sign → retry flow automatically
+const response = await x402Fetch('https://weather.example.com/api/weather', {
+  wallet,
+  preferredNetwork: 'eip155:8453' // Pay on Base (cheapest)
+});
+
+const weather = await response.json();
+// Agent paid $0.10 USDC, got weather data. No API key needed.
+```
+
+### Payment Schemes
+
+**`exact`** (live) — Pay a fixed price. Server knows the cost upfront.
+
+**`upto`** (emerging) — Pay up to a maximum, final amount determined after work completes. Critical for metered services:
+- LLM inference: pay per token generated (unknown count upfront)
+- GPU compute: pay per second of runtime
+- Database queries: pay per row returned
+
+With `upto`, the client signs authorization for a max amount. The server settles only what was consumed. Client never overpays.
+
+### Facilitator Architecture
+
+The **facilitator** is an optional server that handles blockchain complexity so resource servers don't have to:
+
+```
+Client → Resource Server → Facilitator → Blockchain
+                              ↓
+                         POST /verify  (check signature, balance, deadline)
+                         POST /settle  (submit tx, manage gas, confirm)
+```
+
+**Why use a facilitator?** Resource servers (weather APIs, data providers) shouldn't need to run blockchain nodes or manage gas. The facilitator abstracts this. Coinbase runs a public facilitator; anyone can run their own.
 
 **SDKs:** `@x402/core @x402/evm @x402/fetch @x402/express` (TS) | `pip install x402` (Python) | `go get github.com/coinbase/x402/go`
 
