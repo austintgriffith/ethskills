@@ -94,6 +94,32 @@ Never show Approve and Execute simultaneously.
 
 **Validate:** Full user journey works with real wallet on localhost. All edge cases handled.
 
+## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+
+**Before touching Phase 2, read this.** AI agents deploying contracts are the #1 source of leaked private keys on GitHub. Bots scrape repos in real-time and drain wallets within seconds.
+
+**Before every `git add` or `git commit`:**
+```bash
+# Check for leaked keys
+git diff --cached --name-only | grep -iE '\.env|key|secret|private'
+grep -rn "0x[a-fA-F0-9]\{64\}" packages/ --include="*.ts" --include="*.js" --include="*.sol"
+# If ANYTHING matches, STOP. Move the key to .env and add .env to .gitignore.
+```
+
+**Your `.gitignore` MUST include:**
+```
+.env
+.env.*
+*.key
+broadcast/
+cache/
+node_modules/
+```
+
+**SE2 handles this by default** — `yarn generate` creates a `.env` with the deployer key, and `.gitignore` excludes it. **Don't override this pattern.** Don't copy keys into scripts, config files, or deploy logs.
+
+See `wallets/SKILL.md` for full key safety guide, what to do if you've already leaked a key, and safe patterns for deployment.
+
 ## Phase 2: Live Contracts + Local UI
 
 1. Update `scaffold.config.ts`: `targetNetworks: [mainnet]` (or your L2)

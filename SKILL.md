@@ -268,6 +268,53 @@ Same addresses on Mainnet, Arbitrum, Base, and all major chains.
 
 Benefits: If agent key is compromised, human removes it. Human can always recover funds. Agent can batch transactions.
 
+## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+
+**This is the #1 way AI agents lose funds.** Bots scrape GitHub in real-time and drain wallets within seconds of a key being pushed — even to a private repo, even if deleted immediately. A key committed to Git is compromised forever.
+
+**This happens constantly with AI coding agents.** The agent generates a deploy script, hardcodes a key, runs `git add .`, and the wallet is drained before the next prompt.
+
+### Prevention
+
+```bash
+# .gitignore (MUST exist in every project)
+.env
+.env.*
+*.key
+*.pem
+broadcast/
+cache/
+```
+
+```bash
+# Verify before every commit
+git diff --cached --name-only | grep -iE '\.env|key|secret|private'
+
+# Scan source for hardcoded keys
+grep -rn "0x[a-fA-F0-9]\{64\}" . --include="*.ts" --include="*.js" --include="*.sol"
+# If ANYTHING matches, STOP.
+```
+
+### If You Already Committed a Key
+
+1. **Assume it's compromised.** Don't hope nobody saw it.
+2. **Transfer all funds immediately** to a new wallet.
+3. **Rotate the key.** Generate a new one. The old one is burned forever.
+4. **Clean Git history** with `git filter-repo` or BFG Repo Cleaner — but the key is already compromised.
+5. **Revoke any token approvals** from the compromised address.
+
+### Safe Patterns
+
+```bash
+# Load from environment (NEVER hardcode)
+cast send ... --private-key $DEPLOYER_PRIVATE_KEY
+
+# Or use encrypted keystore
+cast send ... --keystore ~/.foundry/keystores/deployer --password-file .password
+```
+
+**Rule of thumb:** If `grep -r "0x[a-fA-F0-9]{64}" .` matches anything in your source code, you have a problem.
+
 ## CRITICAL Guardrails for AI Agents
 
 ### Key Safety Rules
@@ -1206,6 +1253,19 @@ Never show Approve and Execute simultaneously.
 - **Helpful errors:** Parse "insufficient funds," "user rejected," "execution reverted" into plain language
 
 **Validate:** Full user journey works with real wallet on localhost. All edge cases handled.
+
+## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+
+**Before touching Phase 2, read this.** AI agents deploying contracts are the #1 source of leaked private keys on GitHub. Bots scrape repos in real-time and drain wallets within seconds.
+
+**Before every `git add` or `git commit`:**
+```bash
+git diff --cached --name-only | grep -iE '\.env|key|secret|private'
+grep -rn "0x[a-fA-F0-9]\{64\}" packages/ --include="*.ts" --include="*.js" --include="*.sol"
+# If ANYTHING matches, STOP. Move the key to .env and add .env to .gitignore.
+```
+
+**SE2 handles this by default** — `yarn generate` creates a `.env` with the deployer key, and `.gitignore` excludes it. **Don't override this pattern.**
 
 ## Phase 2: Live Contracts + Local UI
 

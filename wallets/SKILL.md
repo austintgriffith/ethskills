@@ -53,6 +53,56 @@ Same addresses on Mainnet, Arbitrum, Base, and all major chains.
 
 Benefits: If agent key is compromised, human removes it. Human can always recover funds. Agent can batch transactions.
 
+## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+
+**This is the #1 way AI agents lose funds.** Bots scrape GitHub in real-time and drain wallets within seconds of a key being pushed — even to a private repo, even if deleted immediately. A key committed to Git is compromised forever.
+
+**This happens constantly with AI coding agents.** The agent generates a deploy script, hardcodes a key, runs `git add .`, and the wallet is drained before the next prompt.
+
+### Prevention
+
+```bash
+# .gitignore (MUST exist in every project)
+.env
+.env.*
+*.key
+*.pem
+broadcast/
+cache/
+```
+
+```bash
+# Verify before every commit
+git diff --cached --name-only | grep -iE '\.env|key|secret|private'
+# If this matches ANYTHING, stop and fix it
+
+# Nuclear option: scan entire repo history
+git log --all -p | grep -iE 'private.?key|0x[a-fA-F0-9]{64}'
+```
+
+### If You Already Committed a Key
+
+1. **Assume it's compromised.** Don't hope nobody saw it.
+2. **Transfer all funds immediately** to a new wallet.
+3. **Rotate the key.** Generate a new one. The old one is burned forever.
+4. **Clean Git history** with `git filter-repo` or BFG Repo Cleaner — but this is damage control, not prevention. The key is already compromised.
+5. **Revoke any token approvals** from the compromised address.
+
+### Safe Patterns for AI Agents
+
+```bash
+# Load key from environment (NEVER hardcode)
+cast send ... --private-key $DEPLOYER_PRIVATE_KEY
+
+# Or use encrypted keystore
+cast send ... --keystore ~/.foundry/keystores/deployer --password-file .password
+
+# Or use hardware wallet
+cast send ... --ledger
+```
+
+**Rule of thumb:** If `grep -r "0x[a-fA-F0-9]{64}" .` matches anything in your source code, you have a problem.
+
 ## CRITICAL Guardrails for AI Agents
 
 ### Key Safety Rules
