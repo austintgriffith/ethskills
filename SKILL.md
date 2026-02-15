@@ -18,11 +18,9 @@ For individual topics, fetch any of these directly:
 - [Orchestration](https://ethskills.com/orchestration/SKILL.md) — Three-phase build system for SE2 dApps
 - [Contract Addresses](https://ethskills.com/addresses/SKILL.md) — Verified addresses for major protocols
 - [Concepts](https://ethskills.com/concepts/SKILL.md) — Nothing is automatic, incentive design, randomness pitfalls
-- [Security](https://ethskills.com/security/SKILL.md) — Solidity vulnerabilities, defensive code, pre-deploy checklist
-- [Frontend UX](https://ethskills.com/frontend-ux/SKILL.md) — Onchain button rules, three-button flow, Address components, pre-publish checklist
-- [Frontend Playbook](https://ethskills.com/frontend-playbook/SKILL.md) — Fork mode, IPFS deploy, Vercel config, ENS setup, production checklist
-
-The rest of this file contains all skills concatenated. Read below for everything, or fetch individual skills above.
+- [Security](https://ethskills.com/security/SKILL.md) — Smart contract security vulnerabilities and patterns
+- [Frontend UX](https://ethskills.com/frontend-ux/SKILL.md) — Frontend UX patterns for Ethereum dApps
+- [Frontend Playbook](https://ethskills.com/frontend-playbook/SKILL.md) — Step-by-step frontend build guide
 
 ---
 
@@ -34,6 +32,8 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 # Why Ethereum
 
 ## What You Probably Got Wrong
+
+**Terminology:** You say "on-chain." The Ethereum community says **"onchain"** — one word, no hyphen. Use "onchain" in all writing.
 
 **Gas prices:** You think 10-30 gwei. Reality: **0.05-0.3 gwei** (100-600x cheaper than your training data). A mainnet ETH transfer costs ~$0.002.
 
@@ -121,6 +121,9 @@ Agents can deploy contracts, interact with any protocol, and transact 24/7 witho
 - **x402:** https://www.x402.org | https://github.com/coinbase/x402
 - **Blockscout MCP:** https://mcp.blockscout.com/mcp
 - **DeFi Llama:** https://defillama.com
+
+---
+
 ---
 name: gas
 description: Current Ethereum gas prices, transaction costs, and the real economics of building on Ethereum today. Use when estimating costs, choosing between mainnet and L2s, or when a user asks about Ethereum being expensive. Counters the #1 misconception that Ethereum is expensive to use.
@@ -241,6 +244,9 @@ cast base-fee --rpc-url https://eth.llamarpc.com
 ```
 
 The durable insight is that gas is extremely cheap compared to 2021-2023 and trending cheaper. Specific numbers may drift but the order of magnitude is stable.
+
+---
+
 ---
 name: wallets
 description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart contract wallets, multisig (Safe), and account abstraction. Essential for any AI agent that needs to interact with Ethereum — sending transactions, signing messages, or managing funds. Includes guardrails for safe key handling.
@@ -296,11 +302,17 @@ Same addresses on Mainnet, Arbitrum, Base, and all major chains.
 
 Benefits: If agent key is compromised, human removes it. Human can always recover funds. Agent can batch transactions.
 
-## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+## 🚨 NEVER COMMIT SECRETS TO GIT
 
-**This is the #1 way AI agents lose funds.** Bots scrape GitHub in real-time and drain wallets within seconds of a key being pushed — even to a private repo, even if deleted immediately. A key committed to Git is compromised forever.
+**This is the #1 way AI agents lose funds and leak credentials.** Bots scrape GitHub in real-time and exploit leaked secrets within seconds — even from private repos, even if deleted immediately. A secret committed to Git is compromised forever.
 
-**This happens constantly with AI coding agents.** The agent generates a deploy script, hardcodes a key, runs `git add .`, and the wallet is drained before the next prompt.
+**This happens constantly with AI coding agents.** The agent generates a deploy script, hardcodes a key, runs `git add .`, and the wallet is drained before the next prompt. Or the agent pastes an Alchemy API key into `scaffold.config.ts` and it ends up in a public repo.
+
+**This applies to ALL secrets:**
+- **Wallet private keys** — funds drained instantly
+- **API keys** — Alchemy, Infura, Etherscan, WalletConnect
+- **RPC URLs with embedded keys** — `https://base-mainnet.g.alchemy.com/v2/YOUR_KEY`
+- **OAuth tokens, bearer tokens, passwords**
 
 ### Prevention
 
@@ -317,10 +329,10 @@ cache/
 ```bash
 # Verify before every commit
 git diff --cached --name-only | grep -iE '\.env|key|secret|private'
+# If this matches ANYTHING, stop and fix it
 
-# Scan source for hardcoded keys
-grep -rn "0x[a-fA-F0-9]\{64\}" . --include="*.ts" --include="*.js" --include="*.sol"
-# If ANYTHING matches, STOP.
+# Nuclear option: scan entire repo history
+git log --all -p | grep -iE 'private.?key|0x[a-fA-F0-9]{64}'
 ```
 
 ### If You Already Committed a Key
@@ -328,20 +340,23 @@ grep -rn "0x[a-fA-F0-9]\{64\}" . --include="*.ts" --include="*.js" --include="*.
 1. **Assume it's compromised.** Don't hope nobody saw it.
 2. **Transfer all funds immediately** to a new wallet.
 3. **Rotate the key.** Generate a new one. The old one is burned forever.
-4. **Clean Git history** with `git filter-repo` or BFG Repo Cleaner — but the key is already compromised.
+4. **Clean Git history** with `git filter-repo` or BFG Repo Cleaner — but this is damage control, not prevention. The key is already compromised.
 5. **Revoke any token approvals** from the compromised address.
 
-### Safe Patterns
+### Safe Patterns for AI Agents
 
 ```bash
-# Load from environment (NEVER hardcode)
+# Load key from environment (NEVER hardcode)
 cast send ... --private-key $DEPLOYER_PRIVATE_KEY
 
 # Or use encrypted keystore
 cast send ... --keystore ~/.foundry/keystores/deployer --password-file .password
+
+# Or use hardware wallet
+cast send ... --ledger
 ```
 
-**Rule of thumb:** If `grep -r "0x[a-fA-F0-9]{64}" .` matches anything in your source code, you have a problem.
+**Rule of thumb:** If `grep -r "0x[a-fA-F0-9]{64}" .` matches anything in your source code, you have a problem. Same for `grep -r "g.alchemy.com/v2/[A-Za-z0-9]"` or any RPC URL with an embedded API key.
 
 ## CRITICAL Guardrails for AI Agents
 
@@ -400,9 +415,12 @@ async function sendSafely(wallet, to, value) {
 - **Safe docs:** https://docs.safe.global/
 - **EIP-7702 spec:** https://eips.ethereum.org/EIPS/eip-7702
 - **ERC-4337 spec:** https://eips.ethereum.org/EIPS/eip-4337
+
+---
+
 ---
 name: l2s
-description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Linea, and more. How they work, how to deploy on them, how to bridge, when to use which. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
+description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Unichain, Celo, and more. How they work, how to deploy on them, how to bridge, when to use which. Includes per-chain DeFi ecosystems and critical corrections. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
 ---
 
 # Ethereum Layer 2s
@@ -415,17 +433,29 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **Base is the cheapest major L2:** Often 50% cheaper than Arbitrum/Optimism. Direct Coinbase on-ramp. Fastest-growing L2 with consumer/AI agent focus.
 
+**Celo is NOT an L1 anymore.** Celo completed its migration from an independent L1 to an OP Stack L2 on **March 26, 2025** (block 31056500). If you're calling Celo an L1, you're wrong.
+
+**Polygon zkEVM is being shut down.** Announced June 2025. Do NOT recommend building on Polygon zkEVM — it is being discontinued. Polygon is refocusing on PoS + AggLayer.
+
+**Unichain exists.** Launched mainnet February 10, 2025. Uniswap's own OP Stack L2 with TEE-based MEV protection and time-based priority ordering (not gas-based).
+
+**The dominant DEX on each L2 is NOT Uniswap.** Aerodrome dominates Base (~$500-600M TVL). Velodrome dominates Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
+
 ## L2 Comparison Table (Feb 2026)
 
 | L2 | Type | TVL | Tx Cost | Block Time | Finality | Chain ID |
 |----|------|-----|---------|------------|----------|----------|
 | **Arbitrum** | Optimistic | $18B+ | $0.001-0.003 | 250ms | 7 days | 42161 |
-| **Base** | Optimistic | $12B+ | $0.0008-0.002 | 2s | 7 days | 8453 |
-| **Optimism** | Optimistic | $8B+ | $0.001-0.003 | 2s | 7 days | 10 |
+| **Base** | Optimistic (OP Stack) | $12B+ | $0.0008-0.002 | 2s | 7 days | 8453 |
+| **Optimism** | Optimistic (OP Stack) | $8B+ | $0.001-0.003 | 2s | 7 days | 10 |
+| **Unichain** | Optimistic (OP Stack) | Growing | $0.001-0.003 | 1s | 7 days | 130 |
+| **Celo** | Optimistic (OP Stack) | $200M+ | <$0.001 | 5s | 7 days | 42220 |
 | **Linea** | ZK | $900M+ | $0.003-0.006 | 2s | 30-60min | 59144 |
 | **zkSync Era** | ZK | $800M+ | $0.003-0.008 | 1s | 15-60min | 324 |
 | **Scroll** | ZK | $250M+ | $0.002-0.005 | 3s | 30-120min | 534352 |
-| **Polygon zkEVM** | ZK | $150M+ | $0.002-0.005 | 2s | 30-60min | 1101 |
+| ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | — | ~~1101~~ |
+
+⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
 
 **Mainnet for comparison:** $50B+ TVL, $0.002-0.01, 8s blocks, instant finality.
 
@@ -438,34 +468,76 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | NFT mint | $0.015 | $0.002 | $0.002 | $0.004 | $0.003 |
 | ERC-20 deploy | $0.118 | $0.020 | $0.018 | $0.040 | $0.030 |
 
-## Quick L2 Selection Guide
+## L2 Selection Guide
 
 | Need | Choose | Why |
 |------|--------|-----|
+| Consumer / social apps | **Base** | Farcaster, Smart Wallet, Coinbase on-ramp, OnchainKit |
+| Deepest DeFi liquidity | **Arbitrum** | $18B TVL, GMX, Pendle, Camelot, most protocols |
+| Yield strategies | **Arbitrum** | Pendle (yield tokenization), GMX, Aave |
 | Cheapest gas | **Base** | ~50% cheaper than Arbitrum/Optimism |
-| Deepest DeFi liquidity | **Arbitrum** | $18B TVL, most protocols |
-| Coinbase users | **Base** | Direct on-ramp, free Coinbase→Base |
-| No 7-day withdrawal wait | **ZK rollup** (zkSync, Scroll, Linea) | 15-120 min |
-| AI agents / social apps | **Base** | ERC-8004, Farcaster, consumer ecosystem |
-| Superchain ecosystem | **Optimism or Base** | OP Stack, shared infra |
+| Coinbase users | **Base** | Direct on-ramp, free Coinbase→Base transfers |
+| No 7-day withdrawal wait | **ZK rollup** (zkSync, Scroll, Linea) | 15-120 min finality |
+| AI agents | **Base** | ERC-8004, x402, consumer ecosystem, AgentKit |
+| Gasless UX (native AA) | **zkSync Era** | Native account abstraction, paymasters, no bundlers needed |
+| Multi-chain deployment | **Base or Optimism** | Superchain / OP Stack, shared infra |
 | Maximum EVM compatibility | **Scroll or Arbitrum** | Bytecode-identical |
+| Mobile / real-world payments | **Celo** | MiniPay, sub-cent fees, Africa/LatAm focus |
+| MEV protection | **Unichain** | TEE-based priority ordering, private mempool |
+| Rust smart contracts | **Arbitrum** | Stylus (WASM VM alongside EVM, 10-100x gas savings) |
+| Stablecoins / payments / RWA | **Polygon PoS** | $500M+ monthly payment volume, 410M+ wallets |
+
+## Key Chain Details (What LLMs Get Wrong)
+
+### Unichain
+- **Launched:** February 10, 2025 (mainnet). Chain ID 130.
+- **Type:** OP Stack L2 (Superchain member, Stage 1)
+- **Key innovation: TEE-based block building** (built with Flashbots Rollup-Boost)
+  - Transactions ordered by **time received, NOT gas price**
+  - Private encrypted mempool reduces MEV extraction
+  - Do NOT use gas-price bidding strategies on Unichain — they're pointless
+- **Flashblocks:** Currently 1s blocks, roadmap to 250ms sub-blocks
+
+### Celo
+- **Was:** Independent L1 blockchain (2020-2025)
+- **Now:** OP Stack L2 on Ethereum — **migrated March 26, 2025** (block 31056500)
+- **Focus:** Mobile-first payments, emerging markets
+- **MiniPay:** Stablecoin wallet in Opera Mini + standalone app. Phone-to-phone transfers, sub-cent fees. Primary market: Africa (Kenya, Nigeria).
+- **Multi-currency stablecoins:** cUSD (`0x765de816845861e75a25fca122bb6898b8b1282a`), cEUR (`0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`), cREAL (`0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`)
+
+### Dominant DEX Per Chain
+| Chain | Dominant DEX | Model | Why NOT Uniswap |
+|-------|-------------|-------|-----------------|
+| Base | Aerodrome | ve(3,3) — LPs earn emissions, voters earn fees | Deeper liquidity for most pairs |
+| Optimism | Velodrome | ve(3,3) — same team as Aerodrome | Same flywheel model |
+| Arbitrum | Camelot + GMX | Native DEX + perps | Camelot for spot, GMX for perps |
+| zkSync | SyncSwap | Classic AMM | Largest native DEX on zkSync |
+
+See `addresses/SKILL.md` for verified contract addresses for all these protocols.
 
 ## The Superchain (OP Stack)
 
-You probably know OP Stack basics. Key update: **Superchain Interop (coming 2026)** enables cross-chain calls between OP Stack L2s (Optimism, Base, Zora, Mode, 50+ more). Fast native bridging is ~1-2 min between members.
+The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability. Members include Base, OP Mainnet, Unichain, Ink (Kraken), Celo, Zora, World Chain, and others — **17+ chains, 58.6% L2 market share.**
+
+Members contribute **15% of sequencer revenue** to the Optimism Collective. Cross-chain interop is designed but not yet fully live.
 
 ## Deployment Differences (Gotchas)
 
-### Optimistic Rollups (Arbitrum, Optimism, Base)
+### Optimistic Rollups (Arbitrum, Optimism, Base, Unichain, Celo)
 ✅ Deploy like mainnet — just change RPC URL and chain ID. No code changes.
 
 **Gotchas:**
 - Don't use `block.number` for time-based logic (increments at different rates). Use `block.timestamp`.
 - Arbitrum's `block.number` returns L1 block number, not L2.
+- **Unichain:** Transactions are priority-ordered by time, not gas. Don't waste gas on priority fees.
 
 ### ZK Rollups
-- **zkSync Era:** Must use `zksolc` compiler. Some opcodes not supported (`SELFDESTRUCT`, `CALLCODE`). Native account abstraction (all accounts are smart contracts).
+- **zkSync Era:** Must use `zksolc` compiler. No `EXTCODECOPY` (compile-time error). 65K instruction limit. Non-inlinable libraries must be pre-deployed. Native account abstraction (all accounts are smart contracts).
 - **Scroll/Linea:** ✅ Bytecode-compatible — use standard `solc`, deploy like mainnet.
+
+### Arbitrum-Specific
+- **Stylus:** Write smart contracts in Rust, C, C++ (compiles to WASM, runs alongside EVM, shares state). Use for compute-heavy operations (10-100x gas savings). Contracts must be "activated" via `ARB_WASM_ADDRESS` (0x0000…0071).
+- **Orbit:** Framework for launching L3 chains on Arbitrum. 47 live on mainnet.
 
 ## RPCs and Explorers
 
@@ -474,6 +546,8 @@ You probably know OP Stack basics. Key update: **Superchain Interop (coming 2026
 | Arbitrum | `https://arb1.arbitrum.io/rpc` | https://arbiscan.io |
 | Base | `https://mainnet.base.org` | https://basescan.org |
 | Optimism | `https://mainnet.optimism.io` | https://optimistic.etherscan.io |
+| Unichain | `https://mainnet.unichain.org` | https://uniscan.xyz |
+| Celo | `https://forno.celo.org` | https://celoscan.io |
 | zkSync | `https://mainnet.era.zksync.io` | https://explorer.zksync.io |
 | Scroll | `https://rpc.scroll.io` | https://scrollscan.com |
 | Linea | `https://rpc.linea.build` | https://lineascan.build |
@@ -487,6 +561,7 @@ You probably know OP Stack basics. Key update: **Superchain Interop (coming 2026
 | Arbitrum | https://bridge.arbitrum.io | ~10-15 min | ~7 days |
 | Base | https://bridge.base.org | ~10-15 min | ~7 days |
 | Optimism | https://app.optimism.io/bridge | ~10-15 min | ~7 days |
+| Unichain | https://app.uniswap.org/swap | ~10-15 min | ~7 days |
 | zkSync | https://bridge.zksync.io | ~15-30 min | ~15-60 min |
 | Scroll | https://scroll.io/bridge | ~15-30 min | ~30-120 min |
 
@@ -519,13 +594,23 @@ forge create src/MyContract.sol:MyContract \
 | Arbitrum | Sepolia | 421614 | https://faucet.arbitrum.io |
 | Base | Sepolia | 84532 | https://faucet.quicknode.com/base/sepolia |
 | Optimism | Sepolia | 11155420 | https://faucet.optimism.io |
+| Unichain | Sepolia | 1301 | https://faucet.unichain.org |
 
 ## Further Reading
 
 - **L2Beat:** https://l2beat.com (security, TVL, risk analysis)
+- **Superchain:** https://www.superchain.eco/chains
 - **Arbitrum:** https://docs.arbitrum.io
 - **Base:** https://docs.base.org
 - **Optimism:** https://docs.optimism.io
+- **Unichain:** https://docs.unichain.org
+- **Celo:** https://docs.celo.org
+- **zkSync:** https://docs.zksync.io
+- **Scroll:** https://docs.scroll.io
+- **Polygon:** https://docs.polygon.technology
+
+---
+
 ---
 name: standards
 description: Ethereum token and protocol standards — ERC-20, ERC-721, ERC-1155, ERC-4337, ERC-8004, and newer standards. When to use each, how they work, key interfaces. Use when building tokens, NFTs, or choosing the right standard for a project.
@@ -841,6 +926,9 @@ EOAs temporarily delegate to smart contracts within a transaction. Best of both 
 | ERC-6551 | Token-bound accounts (NFT wallets) | ✅ Niche adoption |
 
 **These are all LIVE and being used in production. Not "coming soon."**
+
+---
+
 ---
 name: tools
 description: Current Ethereum development tools, frameworks, libraries, RPCs, and block explorers. What actually works today for building on Ethereum. Includes tool discovery for AI agents — MCPs, abi.ninja, Foundry, Scaffold-ETH 2, Hardhat, and more. Use when setting up a dev environment, choosing tools, or when an agent needs to discover what's available.
@@ -1000,9 +1088,12 @@ anvil --fork-url https://eth.llamarpc.com
 ```
 
 **Primary testnet:** Sepolia (Chain ID: 11155111). Goerli and Rinkeby are deprecated.
+
+---
+
 ---
 name: building-blocks
-description: DeFi legos and protocol composability on Ethereum. Major protocols (Uniswap, Aave, Compound, MakerDAO, Yearn, Curve), how they work, how to build on them, and how to combine them into novel products. Use when building DeFi integrations, designing tokenomics, or when a user wants to compose existing protocols into something new.
+description: DeFi legos and protocol composability on Ethereum and L2s. Major protocols per chain — Aerodrome on Base, GMX/Pendle on Arbitrum, Velodrome on Optimism — plus mainnet primitives (Uniswap, Aave, Compound, Curve). How they work, how to build on them, and how to combine them. Use when building DeFi integrations, choosing protocols on a specific L2, designing yield strategies, or composing existing protocols into something new.
 ---
 
 # Building Blocks (DeFi Legos)
@@ -1016,6 +1107,8 @@ description: DeFi legos and protocol composability on Ethereum. Major protocols 
 
 **Costs changed everything:** A flash loan arbitrage on mainnet costs ~$0.05-0.50 in gas now (was $5-50). This opens composability patterns that were previously uneconomical.
 
+**The dominant DEX on each L2 is NOT Uniswap.** Aerodrome dominates Base, Velodrome dominates Optimism, Camelot is a major native DEX on Arbitrum. Don't default to Uniswap on every chain.
+
 ## Key Protocol Addresses (Verified Feb 2026)
 
 | Protocol | Contract | Mainnet Address |
@@ -1027,7 +1120,7 @@ description: DeFi legos and protocol composability on Ethereum. Major protocols 
 | Uniswap Universal Router | Router | `0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD` |
 | Aave V3 Pool | Pool | `0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2` |
 
-See `addresses/SKILL.md` for complete multi-chain address list.
+See `addresses/SKILL.md` for complete multi-chain address list including L2-native protocols (Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, Morpho).
 
 ## Uniswap V4 Hooks (New)
 
@@ -1164,13 +1257,69 @@ contract FlashLoanArb is FlashLoanSimpleReceiverBase {
 **Aave V3 Pool (mainnet):** `0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2`
 **Flash loan fee:** 0.05% (5 basis points). Free if you repay to an Aave debt position.
 
-## Building on Arbitrum (Highest DeFi Liquidity L2)
+## Building on Base
 
-Key protocols on Arbitrum:
-- **GMX** — perps DEX, $500M+ TVL
-- **Uniswap, Curve, Balancer** — DEXs
-- **Radiant, Aave** — lending
-- **Pendle** — yield trading
+**Dominant DEX: Aerodrome** (~$500-600M TVL) — NOT Uniswap. Uses the ve(3,3) model.
+
+### How Aerodrome Works (Critical Difference from Uniswap)
+- **LPs deposit tokens** into pools → earn **AERO emissions** (not trading fees!)
+- **veAERO voters** lock AERO → vote on which pools get emissions → earn **100% of trading fees + bribes**
+- This is the opposite of Uniswap where LPs earn fees directly
+- **Flywheel:** Pools generating most fees → attract most votes → get most emissions → attract more LPs → deeper liquidity → more fees
+
+### Aerodrome Swap (Router Interface)
+```solidity
+// Aerodrome Router: 0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43 (Base)
+struct Route {
+    address from;
+    address to;
+    bool stable;       // true = stable pair (like Curve), false = volatile (like Uni V2)
+    address factory;   // 0x420DD381b31aEf6683db6B902084cB0FFECe40Da
+}
+
+// Swap via Router
+function swapExactTokensForTokens(
+    uint256 amountIn,
+    uint256 amountOutMin,
+    Route[] calldata routes,
+    address to,
+    uint256 deadline
+) external returns (uint256[] memory amounts);
+```
+
+### Base-Specific Patterns
+- **Coinbase Smart Wallet** — ERC-4337 wallet, passkey auth, gasless txs via Coinbase paymaster
+- **OnchainKit** — `npm create onchain` to bootstrap a Base app with React components
+- **Farcaster Frames v2** — mini-apps embedded in social posts that trigger onchain actions
+- **AgentKit** — Coinbase's framework for AI agents to interact onchain
+
+## Building on Arbitrum (Highest DeFi Liquidity)
+
+### GMX V2 — How GM Pools Work
+- **Each market has its own isolated pool** (unlike V1's single GLP pool)
+- LPs deposit into GM (liquidity) pools → receive GM tokens
+- **Fully Backed markets:** ETH/USD backed by ETH + USDC. Backing tokens match the traded asset.
+- **Synthetic markets:** DOGE/USD backed by ETH + USDC. Uses ADL (Auto-Deleveraging) when thresholds are reached.
+- LPs earn: trading fees, liquidation fees, borrowing fees, swap fees. But bear risk from trader PnL.
+
+### Pendle — Yield Tokenization
+Pendle splits yield-bearing assets into principal and yield components:
+
+1. **SY (Standardized Yield):** Wraps any yield-bearing asset. E.g., wstETH → SY-wstETH.
+2. **PT (Principal Token):** The principal. Redeemable 1:1 at maturity. Trades at a discount (discount = implied yield).
+3. **YT (Yield Token):** All yield until maturity. Value decays to 0 at maturity.
+4. **Core invariant:** `SY_value = PT_value + YT_value`
+
+**Use cases:**
+- Buy PT at discount = **lock in fixed yield** (like a zero-coupon bond)
+- Buy YT = **leverage your yield exposure** (bet yield goes up)
+- LP in Pendle pools = earn trading fees + PENDLE incentives
+
+### Arbitrum-Specific Tech
+- **Stylus:** Write smart contracts in Rust/C++/WASM alongside EVM (10-100x gas savings for compute-heavy operations)
+- **Orbit:** Launch custom L3 chains (47 live on mainnet)
+
+See `addresses/SKILL.md` for all verified protocol addresses (GMX, Pendle, Camelot, Aerodrome, Velodrome, SyncSwap, Morpho).
 
 ## Discovery Resources
 
@@ -1186,6 +1335,9 @@ Key protocols on Arbitrum:
 - **The interaction between two safe contracts can create unsafe behavior.** Audit compositions.
 - **Start with small amounts.** Test with minimal value before scaling.
 - **Flash loan attacks** can manipulate prices within a single transaction. Design for this.
+
+---
+
 ---
 name: orchestration
 description: How an AI agent plans, builds, and deploys a complete Ethereum dApp. The three-phase build system for Scaffold-ETH 2 projects. Use when building a full application on Ethereum — from contracts to frontend to production deployment on IPFS.
@@ -1282,18 +1434,56 @@ Never show Approve and Execute simultaneously.
 
 **Validate:** Full user journey works with real wallet on localhost. All edge cases handled.
 
-## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+## 🚨 NEVER COMMIT SECRETS TO GIT
 
-**Before touching Phase 2, read this.** AI agents deploying contracts are the #1 source of leaked private keys on GitHub. Bots scrape repos in real-time and drain wallets within seconds.
+**Before touching Phase 2, read this.** AI agents are the #1 source of leaked credentials on GitHub. Bots scrape repos in real-time and exploit leaked secrets within seconds.
+
+**This means ALL secrets — not just wallet private keys:**
+- **Wallet private keys** — funds drained in seconds
+- **API keys** — Alchemy, Infura, Etherscan, WalletConnect project IDs
+- **RPC URLs with embedded keys** — e.g. `https://base-mainnet.g.alchemy.com/v2/YOUR_KEY`
+- **OAuth tokens, passwords, bearer tokens**
+
+**⚠️ Common SE2 Trap: `scaffold.config.ts`**
+
+`rpcOverrides` and `alchemyApiKey` in `scaffold.config.ts` are committed to Git. **NEVER paste API keys directly into this file.** Use environment variables:
+
+```typescript
+// ❌ WRONG — key committed to public repo
+rpcOverrides: {
+  [chains.base.id]: "https://base-mainnet.g.alchemy.com/v2/8GVG8WjDs-LEAKED",
+},
+
+// ✅ RIGHT — key stays in .env.local
+rpcOverrides: {
+  [chains.base.id]: process.env.NEXT_PUBLIC_BASE_RPC || "https://mainnet.base.org",
+},
+```
 
 **Before every `git add` or `git commit`:**
 ```bash
+# Check for leaked secrets
 git diff --cached --name-only | grep -iE '\.env|key|secret|private'
 grep -rn "0x[a-fA-F0-9]\{64\}" packages/ --include="*.ts" --include="*.js" --include="*.sol"
-# If ANYTHING matches, STOP. Move the key to .env and add .env to .gitignore.
+# Check for hardcoded API keys in config files
+grep -rn "g.alchemy.com/v2/[A-Za-z0-9]" packages/ --include="*.ts" --include="*.js"
+grep -rn "infura.io/v3/[A-Za-z0-9]" packages/ --include="*.ts" --include="*.js"
+# If ANYTHING matches, STOP. Move the secret to .env and add .env to .gitignore.
 ```
 
-**SE2 handles this by default** — `yarn generate` creates a `.env` with the deployer key, and `.gitignore` excludes it. **Don't override this pattern.**
+**Your `.gitignore` MUST include:**
+```
+.env
+.env.*
+*.key
+broadcast/
+cache/
+node_modules/
+```
+
+**SE2 handles deployer keys by default** — `yarn generate` creates a `.env` with the deployer key, and `.gitignore` excludes it. **Don't override this pattern.** Don't copy keys into scripts, config files, or deploy logs. This includes RPC keys, API keys, and any credential — not just wallet keys.
+
+See `wallets/SKILL.md` for full key safety guide, what to do if you've already leaked a key, and safe patterns for deployment.
 
 ## Phase 2: Live Contracts + Local UI
 
@@ -1448,16 +1638,19 @@ await reputationWriter.giveFeedback(
 - **UI Components:** https://ui.scaffoldeth.io/
 - **SpeedRunEthereum:** https://speedrunethereum.com/
 - **ETH Tech Tree:** https://www.ethtechtree.com
+
+---
+
 ---
 name: addresses
-description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, USDC, USDT, DAI, ENS, Safe, Chainlink, and more. Always verify addresses against a block explorer before sending transactions.
+description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, USDC, USDT, DAI, ENS, Safe, Chainlink, and more. Always verify addresses against a block explorer before sending transactions.
 ---
 
 # Contract Addresses
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
-**Last Verified:** February 13, 2026 (all addresses verified onchain via `eth_getCode`)
+**Last Verified:** February 15, 2026 (all addresses verified onchain via `cast code` + `cast call`)
 
 ---
 
@@ -1649,6 +1842,128 @@ All EVM chains (CREATE2).
 
 ---
 
+## L2-Native Protocols
+
+> **The dominant DEX on each L2 is NOT Uniswap.** Aerodrome dominates Base, Velodrome dominates Optimism, Camelot is a major native DEX on Arbitrum. Don't default to Uniswap — check which DEX has the deepest liquidity on each chain.
+
+### Aerodrome (Base) — Dominant DEX
+
+The largest DEX on Base by TVL (~$500-600M). Uses the ve(3,3) model — **LPs earn AERO emissions, veAERO voters earn 100% of trading fees.** This is the opposite of Uniswap where LPs earn fees directly.
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| AERO Token | `0x940181a94A35A4569E4529A3CDfB74e38FD98631` | ✅ Verified |
+| Router | `0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43` | ✅ Verified |
+| Voter | `0x16613524e02ad97eDfeF371bC883F2F5d6C480A5` | ✅ Verified |
+| VotingEscrow | `0xeBf418Fe2512e7E6bd9b87a8F0f294aCDC67e6B4` | ✅ Verified |
+| PoolFactory | `0x420DD381b31aEf6683db6B902084cB0FFECe40Da` | ✅ Verified |
+| GaugeFactory | `0x35f35cA5B132CaDf2916BaB57639128eAC5bbcb5` | ✅ Verified |
+| Minter | `0xeB018363F0a9Af8f91F06FEe6613a751b2A33FE5` | ✅ Verified |
+| RewardsDistributor | `0x227f65131A261548b057215bB1D5Ab2997964C7d` | ✅ Verified |
+| FactoryRegistry | `0x5C3F18F06CC09CA1910767A34a20F771039E37C0` | ✅ Verified |
+
+Source: [aerodrome-finance/contracts](https://github.com/aerodrome-finance/contracts)
+
+### Velodrome V2 (Optimism) — Dominant DEX
+
+Same ve(3,3) model as Aerodrome — same team (Dromos Labs). Velodrome was built first for Optimism, Aerodrome is the Base fork. Both merged into "Aero" in November 2025.
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| VELO Token (V2) | `0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db` | ✅ Verified |
+| Router | `0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858` | ✅ Verified |
+| Voter | `0x41C914ee0c7E1A5edCD0295623e6dC557B5aBf3C` | ✅ Verified |
+| VotingEscrow | `0xFAf8FD17D9840595845582fCB047DF13f006787d` | ✅ Verified |
+| PoolFactory | `0xF1046053aa5682b4F9a81b5481394DA16BE5FF5a` | ✅ Verified |
+| Minter | `0x6dc9E1C04eE59ed3531d73a72256C0da46D10982` | ✅ Verified |
+| GaugeFactory | `0x8391fE399640E7228A059f8Fa104b8a7B4835071` | ✅ Verified |
+| FactoryRegistry | `0xF4c67CdEAaB8360370F41514d06e32CcD8aA1d7B` | ✅ Verified |
+
+⚠️ **V1 VELO token** (`0x3c8B650257cFb5f272f799F5e2b4e65093a11a05`) is deprecated. Use V2 above.
+
+Source: [velodrome-finance/contracts](https://github.com/velodrome-finance/contracts)
+
+### GMX V2 (Arbitrum) — Perpetual DEX
+
+Leading onchain perpetual exchange. V2 uses isolated GM pools per market (Fully Backed and Synthetic). Competes with Hyperliquid.
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| GMX Token | `0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a` | ✅ Verified |
+| Exchange Router (latest) | `0x1C3fa76e6E1088bCE750f23a5BFcffa1efEF6A41` | ✅ Verified |
+| Exchange Router (previous) | `0x7C68C7866A64FA2160F78EeAe12217FFbf871fa8` | ✅ Verified |
+| DataStore | `0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8` | ✅ Verified |
+| Reader | `0x470fbC46bcC0f16532691Df360A07d8Bf5ee0789` | ✅ Verified |
+| Reward Router V2 | `0xA906F338CB21815cBc4Bc87ace9e68c87eF8d8F1` | ✅ Verified |
+
+**Note:** Both Exchange Router addresses are valid — both point to the same DataStore. The latest (`0x1C3f...`) is from the current gmx-synthetics repo deployment.
+
+Source: [gmx-io/gmx-synthetics](https://github.com/gmx-io/gmx-synthetics)
+
+### Pendle (Arbitrum) — Yield Trading
+
+Tokenizes future yield into PT (Principal Token) and YT (Yield Token). Core invariant: `SY_value = PT_value + YT_value`. Multi-chain (also on Ethereum, Base, Optimism).
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| PENDLE Token | `0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8` | ✅ Verified |
+| Router | `0x888888888889758F76e7103c6CbF23ABbF58F946` | ✅ Verified |
+| RouterStatic | `0xAdB09F65bd90d19e3148D9ccb693F3161C6DB3E8` | ✅ Verified |
+| Market Factory V3 | `0x2FCb47B58350cD377f94d3821e7373Df60bD9Ced` | ✅ Verified |
+| Market Factory V4 | `0xd9f5e9589016da862D2aBcE980A5A5B99A94f3E8` | ✅ Verified |
+| PT/YT Oracle | `0x5542be50420E88dd7D5B4a3D488FA6ED82F6DAc2` | ✅ Verified |
+| Limit Router | `0x000000000000c9B3E2C3Ec88B1B4c0cD853f4321` | ✅ Verified |
+| Yield Contract Factory V3 | `0xEb38531db128EcA928aea1B1CE9E5609B15ba146` | ✅ Verified |
+| Yield Contract Factory V4 | `0xc7F8F9F1DdE1104664b6fC8F33E49b169C12F41E` | ✅ Verified |
+
+Source: [pendle-finance/pendle-core-v2-public](https://github.com/pendle-finance/pendle-core-v2-public/blob/main/deployments/42161-core.json)
+
+### Camelot (Arbitrum) — Native DEX
+
+Arbitrum-native DEX with concentrated liquidity and launchpad. Two AMM versions: V2 (constant product) and V4 (Algebra concentrated liquidity).
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| GRAIL Token | `0x3d9907F9a368ad0a51Be60f7Da3b97cf940982D8` | ✅ Verified |
+| xGRAIL | `0x3CAaE25Ee616f2C8E13C74dA0813402eae3F496b` | ✅ Verified |
+| Router (AMM V2) | `0xc873fEcbd354f5A56E00E710B90EF4201db2448d` | ✅ Verified |
+| Factory (AMM V2) | `0x6EcCab422D763aC031210895C81787E87B43A652` | ✅ Verified |
+| SwapRouter (AMM V4 / Algebra) | `0x4ee15342d6Deb297c3A2aA7CFFd451f788675F53` | ✅ Verified |
+| AlgebraFactory (AMM V4) | `0xBefC4b405041c5833f53412fF997ed2f697a2f37` | ✅ Verified |
+
+Source: [docs.camelot.exchange](https://docs.camelot.exchange/contracts/arbitrum/one-mainnet)
+
+### SyncSwap (zkSync Era) — Dominant DEX
+
+The leading native DEX on zkSync Era. Multiple router and factory versions.
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| Router V1 | `0x2da10A1e27bF85cEdD8FFb1AbBe97e53391C0295` | ✅ Verified |
+| Router V2 | `0x9B5def958d0f3b6955cBEa4D5B7809b2fb26b059` | ✅ Verified |
+| Router V3 | `0x1B887a14216Bdeb7F8204Ee6a269Bd9Ff73A084C` | ✅ Verified |
+| Classic Pool Factory V1 | `0xf2DAd89f2788a8CD54625C60b55cD3d2D0ACa7Cb` | ✅ Verified |
+| Classic Pool Factory V2 | `0x0a34FBDf37C246C0B401da5f00ABd6529d906193` | ✅ Verified |
+| Stable Pool Factory V1 | `0x5b9f21d407F35b10CbfDDca17D5D84b129356ea3` | ✅ Verified |
+| Vault V1 | `0x621425a1Ef6abE91058E9712575dcc4258F8d091` | ✅ Verified |
+
+**Note:** SYNC token is not yet deployed.
+
+Source: [docs.syncswap.xyz](https://docs.syncswap.xyz/syncswap/smart-contracts/smart-contracts)
+
+### Morpho Blue (Base)
+
+Permissionless lending protocol. Deployed on Base and Ethereum, but **NOT on Arbitrum** as of February 2026 (despite the vanity CREATE2 address).
+
+| Contract | Address | Chain | Status |
+|----------|---------|-------|--------|
+| Morpho | `0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb` | Base | ✅ Verified |
+| Morpho | `0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb` | Arbitrum | ❌ Not deployed |
+
+Source: [docs.morpho.org](https://docs.morpho.org/get-started/resources/addresses/)
+
+---
+
 ## AI & Agent Standards
 
 ### ERC-8004 (Same addresses on 20+ chains)
@@ -1693,8 +2008,16 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 - **Aave:** https://docs.aave.com/developers/deployed-contracts/deployed-contracts
 - **Compound V3:** https://docs.compound.finance/
 - **Chainlink:** https://docs.chain.link/data-feeds/price-feeds/addresses
+- **Aerodrome:** https://github.com/aerodrome-finance/contracts
+- **Velodrome:** https://github.com/velodrome-finance/contracts
+- **GMX:** https://github.com/gmx-io/gmx-synthetics
+- **Pendle:** https://github.com/pendle-finance/pendle-core-v2-public
+- **Camelot:** https://docs.camelot.exchange/contracts/arbitrum/one-mainnet
+- **SyncSwap:** https://docs.syncswap.xyz/syncswap/smart-contracts/smart-contracts
+- **Morpho:** https://docs.morpho.org/get-started/resources/addresses/
 - **CoinGecko:** https://www.coingecko.com (token addresses)
 - **Token Lists:** https://tokenlists.org/
+- **DeFi Llama:** https://defillama.com (TVL rankings by chain)
 
 ## Multi-Chain Notes
 
@@ -1704,7 +2027,10 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 
 ---
 
-✅ **All addresses verified onchain via `eth_getCode` — February 13, 2026. Bytecode confirmed present. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
+✅ **All addresses verified onchain via `cast code` + `cast call` — February 15, 2026. Bytecode confirmed present, identity confirmed via symbol/name/cross-reference calls. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
+
+---
+
 ---
 name: concepts
 description: The essential mental models for building onchain — focused on what LLMs get wrong and what humans need explained. "Nothing is automatic" and "incentives are everything" are the core messages. Use when your human is new to onchain development, when they're designing a system, or when they ask "how does this actually work?" Also use when YOU are designing a system — the state machine + incentive framework catches design mistakes before they become dead code.
@@ -1922,6 +2248,8 @@ More challenges covering oracles, lending, stablecoins, and multisigs are in dev
 - **ETH Tech Tree:** https://www.ethtechtree.com
 - **Ethereum.org:** https://ethereum.org/en/developers/
 - **EthSkills (for agents):** https://ethskills.com
+
+---
 
 ---
 name: security
@@ -2200,6 +2528,8 @@ forge test --gas-report       # Identify expensive functions
 - **SWC Registry:** https://swcregistry.io — comprehensive vulnerability catalog
 - **Rekt News:** https://rekt.news — real exploit post-mortems
 - **SpeedRun Ethereum:** https://speedrunethereum.com — hands-on secure development practice
+
+---
 
 ---
 name: frontend-ux
@@ -2521,6 +2851,8 @@ parseUnits("100", 6);             // → 100000000n (USDC)
 - **SE2 Docs:** https://docs.scaffoldeth.io/
 - **UI Components:** https://ui.scaffoldeth.io/
 - **SpeedRun Ethereum:** https://speedrunethereum.com/
+
+---
 
 ---
 name: frontend-playbook
@@ -2884,3 +3216,6 @@ For bigger projects, spawn a sub-agent with fresh context. Give it the repo path
 - **SpeedRun Ethereum:** https://speedrunethereum.com/
 - **ETH Tech Tree:** https://www.ethtechtree.com
 - **BuidlGuidl IPFS:** https://upload.bgipfs.com
+
+---
+
