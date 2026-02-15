@@ -53,11 +53,17 @@ Same addresses on Mainnet, Arbitrum, Base, and all major chains.
 
 Benefits: If agent key is compromised, human removes it. Human can always recover funds. Agent can batch transactions.
 
-## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+## 🚨 NEVER COMMIT SECRETS TO GIT
 
-**This is the #1 way AI agents lose funds.** Bots scrape GitHub in real-time and drain wallets within seconds of a key being pushed — even to a private repo, even if deleted immediately. A key committed to Git is compromised forever.
+**This is the #1 way AI agents lose funds and leak credentials.** Bots scrape GitHub in real-time and exploit leaked secrets within seconds — even from private repos, even if deleted immediately. A secret committed to Git is compromised forever.
 
-**This happens constantly with AI coding agents.** The agent generates a deploy script, hardcodes a key, runs `git add .`, and the wallet is drained before the next prompt.
+**This happens constantly with AI coding agents.** The agent generates a deploy script, hardcodes a key, runs `git add .`, and the wallet is drained before the next prompt. Or the agent pastes an Alchemy API key into `scaffold.config.ts` and it ends up in a public repo.
+
+**This applies to ALL secrets:**
+- **Wallet private keys** — funds drained instantly
+- **API keys** — Alchemy, Infura, Etherscan, WalletConnect
+- **RPC URLs with embedded keys** — `https://base-mainnet.g.alchemy.com/v2/YOUR_KEY`
+- **OAuth tokens, bearer tokens, passwords**
 
 ### Prevention
 
@@ -101,7 +107,7 @@ cast send ... --keystore ~/.foundry/keystores/deployer --password-file .password
 cast send ... --ledger
 ```
 
-**Rule of thumb:** If `grep -r "0x[a-fA-F0-9]{64}" .` matches anything in your source code, you have a problem.
+**Rule of thumb:** If `grep -r "0x[a-fA-F0-9]{64}" .` matches anything in your source code, you have a problem. Same for `grep -r "g.alchemy.com/v2/[A-Za-z0-9]"` or any RPC URL with an embedded API key.
 
 ## CRITICAL Guardrails for AI Agents
 

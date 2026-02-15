@@ -94,16 +94,41 @@ Never show Approve and Execute simultaneously.
 
 **Validate:** Full user journey works with real wallet on localhost. All edge cases handled.
 
-## 🚨 NEVER COMMIT PRIVATE KEYS TO GIT
+## 🚨 NEVER COMMIT SECRETS TO GIT
 
-**Before touching Phase 2, read this.** AI agents deploying contracts are the #1 source of leaked private keys on GitHub. Bots scrape repos in real-time and drain wallets within seconds.
+**Before touching Phase 2, read this.** AI agents are the #1 source of leaked credentials on GitHub. Bots scrape repos in real-time and exploit leaked secrets within seconds.
+
+**This means ALL secrets — not just wallet private keys:**
+- **Wallet private keys** — funds drained in seconds
+- **API keys** — Alchemy, Infura, Etherscan, WalletConnect project IDs
+- **RPC URLs with embedded keys** — e.g. `https://base-mainnet.g.alchemy.com/v2/YOUR_KEY`
+- **OAuth tokens, passwords, bearer tokens**
+
+**⚠️ Common SE2 Trap: `scaffold.config.ts`**
+
+`rpcOverrides` and `alchemyApiKey` in `scaffold.config.ts` are committed to Git. **NEVER paste API keys directly into this file.** Use environment variables:
+
+```typescript
+// ❌ WRONG — key committed to public repo
+rpcOverrides: {
+  [chains.base.id]: "https://base-mainnet.g.alchemy.com/v2/8GVG8WjDs-LEAKED",
+},
+
+// ✅ RIGHT — key stays in .env.local
+rpcOverrides: {
+  [chains.base.id]: process.env.NEXT_PUBLIC_BASE_RPC || "https://mainnet.base.org",
+},
+```
 
 **Before every `git add` or `git commit`:**
 ```bash
-# Check for leaked keys
+# Check for leaked secrets
 git diff --cached --name-only | grep -iE '\.env|key|secret|private'
 grep -rn "0x[a-fA-F0-9]\{64\}" packages/ --include="*.ts" --include="*.js" --include="*.sol"
-# If ANYTHING matches, STOP. Move the key to .env and add .env to .gitignore.
+# Check for hardcoded API keys in config files
+grep -rn "g.alchemy.com/v2/[A-Za-z0-9]" packages/ --include="*.ts" --include="*.js"
+grep -rn "infura.io/v3/[A-Za-z0-9]" packages/ --include="*.ts" --include="*.js"
+# If ANYTHING matches, STOP. Move the secret to .env and add .env to .gitignore.
 ```
 
 **Your `.gitignore` MUST include:**
@@ -116,7 +141,7 @@ cache/
 node_modules/
 ```
 
-**SE2 handles this by default** — `yarn generate` creates a `.env` with the deployer key, and `.gitignore` excludes it. **Don't override this pattern.** Don't copy keys into scripts, config files, or deploy logs.
+**SE2 handles deployer keys by default** — `yarn generate` creates a `.env` with the deployer key, and `.gitignore` excludes it. **Don't override this pattern.** Don't copy keys into scripts, config files, or deploy logs. This includes RPC keys, API keys, and any credential — not just wallet keys.
 
 See `wallets/SKILL.md` for full key safety guide, what to do if you've already leaked a key, and safe patterns for deployment.
 
