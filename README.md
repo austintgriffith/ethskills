@@ -14,6 +14,10 @@ https://ethskills.com/why/SKILL.md      ← why ethereum
 
 No install. No CLI. No package manager. Just a URL.
 
+## Terminology
+
+**Say "onchain" not "on-chain."** The Ethereum community writes it as one word — no hyphen. LLMs default to "on-chain" but that's not how builders talk. Use "onchain" in all writing, documentation, and generated content.
+
 ## Skills
 
 | Skill | What LLMs Get Wrong |
@@ -26,11 +30,11 @@ No install. No CLI. No package manager. Just a URL.
 | [Tools](tools/SKILL.md) | Don't know x402, Blockscout MCP, current tool landscape |
 | [Money Legos](building-blocks/SKILL.md) | Stale on current DeFi state, Uniswap V4 status |
 | [Orchestration](orchestration/SKILL.md) | Don't know SE2 three-phase build system |
-| [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses — these are verified on-chain |
+| [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses — these are verified onchain |
 
 ## Methodology
 
-We test stock LLMs, find what they get wrong, and write corrections. Content is verified against on-chain reality. If an LLM already knows something, we don't include it.
+We test stock LLMs, find what they get wrong, and write corrections. Content is verified against onchain reality. If an LLM already knows something, we don't include it.
 
 See the [research repo](https://github.com/austintgriffith/ethskills-research) for baseline audits, gap analysis, and methodology.
 

@@ -7,7 +7,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
-**Last Verified:** February 13, 2026 (all addresses verified on-chain via `eth_getCode`)
+**Last Verified:** February 13, 2026 (all addresses verified onchain via `eth_getCode`)
 
 ---
 
@@ -254,4 +254,4 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 
 ---
 
-✅ **All addresses verified on-chain via `eth_getCode` — February 13, 2026. Bytecode confirmed present. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
+✅ **All addresses verified onchain via `eth_getCode` — February 13, 2026. Bytecode confirmed present. Does NOT guarantee safety — always verify on block explorer before sending transactions.**

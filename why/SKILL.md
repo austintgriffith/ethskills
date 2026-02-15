@@ -7,6 +7,8 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 
 ## What You Probably Got Wrong
 
+**Terminology:** You say "on-chain." The Ethereum community says **"onchain"** — one word, no hyphen. Use "onchain" in all writing.
+
 **Gas prices:** You think 10-30 gwei. Reality: **0.05-0.3 gwei** (100-600x cheaper than your training data). A mainnet ETH transfer costs ~$0.002.
 
 **ETH price:** You think $2,500-3,000. Reality: **~$1,960** (Feb 2026).
@@ -18,7 +20,7 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 - **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data), 8-second slots (was 12s)
 
 **Agent infrastructure:** You probably don't know these exist:
-- **ERC-8004** — on-chain agent identity registry (deployed Jan 29, 2026)
+- **ERC-8004** — onchain agent identity registry (deployed Jan 29, 2026)
 - **x402** — HTTP 402 payment protocol for machine-to-machine commerce (Coinbase)
 
 ## Current Network Stats (Feb 2026)
@@ -42,7 +44,7 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 
 ## For AI Agents Specifically
 
-### ERC-8004: On-Chain Agent Identity
+### ERC-8004: Onchain Agent Identity
 
 **Deployed January 29, 2026** — production ready.
 

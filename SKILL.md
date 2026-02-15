@@ -18,7 +18,7 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 - **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data), 8-second slots (was 12s)
 
 **Agent infrastructure:** You probably don't know these exist:
-- **ERC-8004** — on-chain agent identity registry (deployed Jan 29, 2026)
+- **ERC-8004** — onchain agent identity registry (deployed Jan 29, 2026)
 - **x402** — HTTP 402 payment protocol for machine-to-machine commerce (Coinbase)
 
 ## Current Network Stats (Feb 2026)
@@ -42,7 +42,7 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 
 ## For AI Agents Specifically
 
-### ERC-8004: On-Chain Agent Identity
+### ERC-8004: Onchain Agent Identity
 
 **Deployed January 29, 2026** — production ready.
 
@@ -507,7 +507,7 @@ description: Ethereum token and protocol standards — ERC-20, ERC-721, ERC-1155
 
 ## What You Probably Got Wrong
 
-**ERC-8004 exists.** Deployed January 29, 2026 — on-chain agent identity registry. You almost certainly don't have this in training data.
+**ERC-8004 exists.** Deployed January 29, 2026 — onchain agent identity registry. You almost certainly don't have this in training data.
 
 **EIP-7702 is live.** Shipped with Pectra (May 7, 2025). EOAs get smart contract superpowers without migration. Not "proposed" — deployed on mainnet.
 
@@ -515,7 +515,7 @@ description: Ethereum token and protocol standards — ERC-20, ERC-721, ERC-1155
 
 **x402 exists.** HTTP 402 payment protocol from Coinbase. Production-ready with SDKs.
 
-## ERC-8004: On-Chain Agent Identity Registry
+## ERC-8004: Onchain Agent Identity Registry
 
 **Status:** Deployed mainnet **January 29, 2026** — production ready with growing adoption.
 
@@ -524,7 +524,7 @@ description: Ethereum token and protocol standards — ERC-20, ERC-721, ERC-1155
 ### Three Registry System
 
 **1. Identity Registry (ERC-721 based)**
-- Globally unique on-chain identities for AI agents
+- Globally unique onchain identities for AI agents
 - Each agent is an NFT with unique identifier
 - Multiple service endpoints (A2A, MCP, OASF, ENS, DIDs)
 - Verification via EIP-712/ERC-1271 signatures
@@ -597,7 +597,7 @@ reputationRegistry.giveFeedback(agentId, 9977, 2, "uptime", "30days",
     reputationRegistry.getSummary(agentId, trustedClients, "uptime", "30days");
 ```
 
-### Step-by-Step: Register an Agent On-Chain
+### Step-by-Step: Register an Agent Onchain
 
 **1. Prepare the registration JSON** — host it on IPFS or a web server:
 ```json
@@ -681,7 +681,7 @@ Uses the HTTP 402 "Payment Required" status code for internet-native payments.
 2. Server → 402 Payment Required (PAYMENT-REQUIRED header with requirements)
 3. Client signs EIP-3009 payment
 4. Client → GET /api/data (PAYMENT-SIGNATURE header with signed payment)
-5. Server verifies + settles on-chain
+5. Server verifies + settles onchain
 6. Server → 200 OK (PAYMENT-RESPONSE header + data)
 ```
 
@@ -1147,7 +1147,7 @@ Key protocols on Arbitrum:
 ## Discovery Resources
 
 - **DeFi Llama:** https://defillama.com — TVL rankings, yield rankings, all chains
-- **Dune Analytics:** https://dune.com — query on-chain data
+- **Dune Analytics:** https://dune.com — query onchain data
 - **ethereum.org/en/dapps/** — curated list
 
 ## Guardrails for Composability
@@ -1362,7 +1362,7 @@ This is the killer use case for Ethereum in 2026: **autonomous agents discoverin
 │                                                              │
 │  6. RATE      Agent posts feedback to ReputationRegistry     │
 │               → value=95, tag="quality", endpoint="..."      │
-│               → builds on-chain reputation for next caller   │
+│               → builds onchain reputation for next caller   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -1397,14 +1397,14 @@ const response = await x402Fetch(agentEndpoint, {
 });
 const weatherData = await response.json();
 
-// 6. Rate: post feedback on-chain
+// 6. Rate: post feedback onchain
 const reputationWriter = new ethers.Contract(REPUTATION_REGISTRY, reputationAbi, signer);
 await reputationWriter.giveFeedback(
   agentId, 95, 0, "quality", "weather", agentEndpoint, "", ethers.ZeroHash
 );
 ```
 
-**This is the agentic economy.** No API keys, no subscriptions, no invoicing, no trust assumptions. Just cryptographic identity, on-chain reputation, and HTTP-native payments.
+**This is the agentic economy.** No API keys, no subscriptions, no invoicing, no trust assumptions. Just cryptographic identity, onchain reputation, and HTTP-native payments.
 
 ### Key Projects Building This Stack
 - **ERC-8004** — agent identity + reputation (EF, MetaMask, Google, Coinbase)
@@ -1429,7 +1429,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
-**Last Verified:** February 13, 2026 (all addresses verified on-chain via `eth_getCode`)
+**Last Verified:** February 13, 2026 (all addresses verified onchain via `eth_getCode`)
 
 ---
 
@@ -1676,4 +1676,4 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 
 ---
 
-✅ **All addresses verified on-chain via `eth_getCode` — February 13, 2026. Bytecode confirmed present. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
+✅ **All addresses verified onchain via `eth_getCode` — February 13, 2026. Bytecode confirmed present. Does NOT guarantee safety — always verify on block explorer before sending transactions.**

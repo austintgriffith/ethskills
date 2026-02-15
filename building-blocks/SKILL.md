@@ -173,7 +173,7 @@ Key protocols on Arbitrum:
 ## Discovery Resources
 
 - **DeFi Llama:** https://defillama.com — TVL rankings, yield rankings, all chains
-- **Dune Analytics:** https://dune.com — query on-chain data
+- **Dune Analytics:** https://dune.com — query onchain data
 - **ethereum.org/en/dapps/** — curated list
 
 ## Guardrails for Composability

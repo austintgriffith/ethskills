@@ -7,7 +7,7 @@ description: Ethereum token and protocol standards — ERC-20, ERC-721, ERC-1155
 
 ## What You Probably Got Wrong
 
-**ERC-8004 exists.** Deployed January 29, 2026 — on-chain agent identity registry. You almost certainly don't have this in training data.
+**ERC-8004 exists.** Deployed January 29, 2026 — onchain agent identity registry. You almost certainly don't have this in training data.
 
 **EIP-7702 is live.** Shipped with Pectra (May 7, 2025). EOAs get smart contract superpowers without migration. Not "proposed" — deployed on mainnet.
 
@@ -15,7 +15,7 @@ description: Ethereum token and protocol standards — ERC-20, ERC-721, ERC-1155
 
 **x402 exists.** HTTP 402 payment protocol from Coinbase. Production-ready with SDKs.
 
-## ERC-8004: On-Chain Agent Identity Registry
+## ERC-8004: Onchain Agent Identity Registry
 
 **Status:** Deployed mainnet **January 29, 2026** — production ready with growing adoption.
 
@@ -24,7 +24,7 @@ description: Ethereum token and protocol standards — ERC-20, ERC-721, ERC-1155
 ### Three Registry System
 
 **1. Identity Registry (ERC-721 based)**
-- Globally unique on-chain identities for AI agents
+- Globally unique onchain identities for AI agents
 - Each agent is an NFT with unique identifier
 - Multiple service endpoints (A2A, MCP, OASF, ENS, DIDs)
 - Verification via EIP-712/ERC-1271 signatures
@@ -97,7 +97,7 @@ reputationRegistry.giveFeedback(agentId, 9977, 2, "uptime", "30days",
     reputationRegistry.getSummary(agentId, trustedClients, "uptime", "30days");
 ```
 
-### Step-by-Step: Register an Agent On-Chain
+### Step-by-Step: Register an Agent Onchain
 
 **1. Prepare the registration JSON** — host it on IPFS or a web server:
 ```json
@@ -181,7 +181,7 @@ Uses the HTTP 402 "Payment Required" status code for internet-native payments.
 2. Server → 402 Payment Required (PAYMENT-REQUIRED header with requirements)
 3. Client signs EIP-3009 payment
 4. Client → GET /api/data (PAYMENT-SIGNATURE header with signed payment)
-5. Server verifies + settles on-chain
+5. Server verifies + settles onchain
 6. Server → 200 OK (PAYMENT-RESPONSE header + data)
 ```
 
