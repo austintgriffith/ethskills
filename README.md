@@ -7,7 +7,7 @@ LLMs think gas is 30 gwei. It's 0.05. They've never heard of ERC-8004 or x402. T
 Each skill is a markdown file. Give any URL to your AI agent — it reads it and instantly corrects its Ethereum knowledge.
 
 ```
-https://ethskills.com/SKILL.md          ← everything (51KB)
+https://ethskills.com/SKILL.md          ← everything (67KB)
 https://ethskills.com/gas/SKILL.md      ← just gas & costs
 https://ethskills.com/why/SKILL.md      ← why ethereum
 ```
@@ -31,6 +31,10 @@ No install. No CLI. No package manager. Just a URL.
 | [Money Legos](building-blocks/SKILL.md) | Stale on current DeFi state, Uniswap V4 status |
 | [Orchestration](orchestration/SKILL.md) | Don't know SE2 three-phase build system |
 | [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses — these are verified onchain |
+
+## Security Guardrails
+
+Skills teach restraint, not just capability. Every skill that touches keys, credentials, or funds includes explicit safety rules — because LLMs optimize for speed and will hardcode a private key into `git add .` if you let them. Coverage includes wallet keys, API keys, RPC URLs, and the common SE2 `scaffold.config.ts` trap.
 
 ## Methodology
 
