@@ -7,7 +7,7 @@ LLMs think gas is 30 gwei. It's 0.05. They've never heard of ERC-8004 or x402. T
 Each skill is a markdown file. Give any URL to your AI agent — it reads it and instantly corrects its Ethereum knowledge.
 
 ```
-https://ethskills.com/SKILL.md          ← everything (116KB)
+https://ethskills.com/SKILL.md          ← everything (133KB)
 https://ethskills.com/gas/SKILL.md      ← just gas & costs
 https://ethskills.com/why/SKILL.md      ← why ethereum
 ```
