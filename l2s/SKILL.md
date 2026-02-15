@@ -1,6 +1,6 @@
 ---
 name: l2s
-description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Unichain, Celo, and more. How they work, how to deploy on them, how to bridge, when to use which. Includes ecosystem identity per chain, what's alive vs dead, and the Superchain. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
+description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Unichain, Celo, and more. How they work, how to deploy on them, how to bridge, when to use which. Includes per-chain DeFi ecosystems and critical corrections. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
 ---
 
 # Ethereum Layer 2s
@@ -35,7 +35,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | **Scroll** | ZK | $250M+ | $0.002-0.005 | 3s | 30-120min | 534352 |
 | ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | — | ~~1101~~ |
 
-⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. See Polygon section below.
+⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
 
 **Mainnet for comparison:** $50B+ TVL, $0.002-0.01, 8s blocks, instant finality.
 
@@ -57,7 +57,6 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | Yield strategies | **Arbitrum** | Pendle (yield tokenization), GMX, Aave |
 | Cheapest gas | **Base** | ~50% cheaper than Arbitrum/Optimism |
 | Coinbase users | **Base** | Direct on-ramp, free Coinbase→Base transfers |
-| Perps trading | **Hyperliquid** (not an L2, but dominant for perps) | Largest volume, bigger than GMX |
 | No 7-day withdrawal wait | **ZK rollup** (zkSync, Scroll, Linea) | 15-120 min finality |
 | AI agents | **Base** | ERC-8004, x402, consumer ecosystem, AgentKit |
 | Gasless UX (native AA) | **zkSync Era** | Native account abstraction, paymasters, no bundlers needed |
@@ -66,122 +65,41 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | Mobile / real-world payments | **Celo** | MiniPay, sub-cent fees, Africa/LatAm focus |
 | MEV protection | **Unichain** | TEE-based priority ordering, private mempool |
 | Rust smart contracts | **Arbitrum** | Stylus (WASM VM alongside EVM, 10-100x gas savings) |
-| Creator / NFT focus | **Zora** | OP Stack L2, creator-native, chain ID 7777777 |
 | Stablecoins / payments / RWA | **Polygon PoS** | $500M+ monthly payment volume, 410M+ wallets |
 
-## Ecosystem Identity Per Chain
+## Key Chain Details (What LLMs Get Wrong)
 
-Each L2 has a distinct identity. Don't treat them as interchangeable.
-
-### Base — The Consumer Chain
-- **Dominant DEX:** Aerodrome (ve(3,3) model, ~$500-600M TVL) — NOT Uniswap
-- **Social layer:** Farcaster integration, Frames v2 (mini-apps in social posts)
-- **Developer stack:** Coinbase OnchainKit (`npm create onchain`), Smart Wallet, AgentKit
-- **On-ramp:** Free Coinbase→Base transfers, Coinbase paymaster for gasless txs
-- **Key protocols:** Aerodrome, Aave V3, Compound V3, Morpho Blue, Uniswap
-- **Dead/defunct:** Friend.tech (was a social token app, now dead)
-
-### Arbitrum — The DeFi Chain
-- **Dominant DEX:** Uniswap + Camelot (native) + GMX (perps)
-- **Yield:** Pendle (yield tokenization, ~$5.7B avg TVL across chains)
-- **Unique tech:** Stylus — smart contracts in Rust/C++/WASM alongside EVM (10-100x gas savings for compute-heavy operations). 47 Orbit (L3) chains live on mainnet.
-- **Key protocols:** GMX V2, Pendle, Camelot, Aave V3, Compound V3, Uniswap
-- **Dead/declining:** Treasure DAO — migrated to zkSync, shut down chain May 2025, abandoned game publishing. Do not recommend.
-- **Competition:** Hyperliquid is now bigger than GMX for perps volume.
-
-### Optimism — The Superchain Hub
-- **Dominant DEX:** Velodrome (ve(3,3), merged with Aerodrome into "Aero" Nov 2025)
-- **Identity:** Infrastructure chain — the OP Stack powers Base, Unichain, Celo, Zora, and 17+ other chains
-- **Revenue model:** Superchain members contribute 15% of sequencer revenue to Optimism Collective
-- **Key protocols:** Velodrome/Aero, Aave V3, Synthetix, Uniswap
-- **Superchain stats:** 20.9M daily transactions, 58.6% L2 market share
-
-### zkSync Era — The AA Chain
-- **Dominant DEX:** SyncSwap (SYNC token not yet deployed)
-- **Unique advantage:** Native account abstraction — every account is a smart contract. No bundlers, no EntryPoint, no UserOperation mempool. Paymasters for gasless txs.
-- **DeFi TVL:** ~$110M — smaller ecosystem, but unique AA capabilities
-- **Compiler:** Must use `zksolc`. Key limitations: no `EXTCODECOPY` (compile-time error), 65K instruction limit, non-inlinable libraries must be pre-deployed.
-- **Honest take:** Smaller ecosystem than Base/Arbitrum but the native AA is genuinely useful for UX-focused apps.
-
-### Unichain — The MEV-Protected DeFi Chain
-- **Launched:** February 10, 2025 (mainnet)
-- **Chain ID:** 130
+### Unichain
+- **Launched:** February 10, 2025 (mainnet). Chain ID 130.
 - **Type:** OP Stack L2 (Superchain member, Stage 1)
-- **RPC:** `https://mainnet.unichain.org`
-- **Explorer:** https://uniscan.xyz
 - **Key innovation: TEE-based block building** (built with Flashbots Rollup-Boost)
   - Transactions ordered by **time received, NOT gas price**
   - Private encrypted mempool reduces MEV extraction
-  - Sandwich attacks structurally harder (not just discouraged)
   - Do NOT use gas-price bidding strategies on Unichain — they're pointless
-- **Flashblocks:** Currently 1s blocks, roadmap to 250ms sub-blocks for near-instant confirmations
-- **Cross-chain:** Superchain interop, cross-chain swapping in Uniswap Interface
+- **Flashblocks:** Currently 1s blocks, roadmap to 250ms sub-blocks
 
-### Celo — The Mobile Payments Chain
+### Celo
 - **Was:** Independent L1 blockchain (2020-2025)
 - **Now:** OP Stack L2 on Ethereum — **migrated March 26, 2025** (block 31056500)
-- **Chain ID:** 42220
-- **Focus:** Mobile-first, real-world payments, emerging markets
-- **MiniPay:** Stablecoin wallet in Opera Mini browser + standalone app. Phone-number-to-phone-number transfers, sub-cent fees, auto-backup via Google. Primary market: Africa (Kenya, Nigeria).
-- **Multi-currency stablecoins:**
-  - cUSD (US Dollar): `0x765de816845861e75a25fca122bb6898b8b1282a`
-  - cEUR (Euro): `0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`
-  - cREAL (Brazilian Real): `0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`
-- **When to build on Celo:** Mobile payment apps, Africa/LatAm focus, multi-currency stablecoin applications
+- **Focus:** Mobile-first payments, emerging markets
+- **MiniPay:** Stablecoin wallet in Opera Mini + standalone app. Phone-to-phone transfers, sub-cent fees. Primary market: Africa (Kenya, Nigeria).
+- **Multi-currency stablecoins:** cUSD (`0x765de816845861e75a25fca122bb6898b8b1282a`), cEUR (`0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`), cREAL (`0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`)
 
-### Scroll — The Largest zkEVM
-- **Type:** zkEVM (zero-knowledge rollup)
-- **Chain ID:** 534352
-- **TVL:** ~$750M
-- **Bytecode-compatible:** Standard `solc`, deploy like mainnet
-- **Unique feature:** Scroll Canvas — credential/badge system using Ethereum Attestation Service (EAS)
-- **Note:** Controversial SCR token launch (Oct 2024) — top 10 recipients got 11.7% of airdrop, token dropped 32% day one
+### Dominant DEX Per Chain
+| Chain | Dominant DEX | Model | Why NOT Uniswap |
+|-------|-------------|-------|-----------------|
+| Base | Aerodrome | ve(3,3) — LPs earn emissions, voters earn fees | Deeper liquidity for most pairs |
+| Optimism | Velodrome | ve(3,3) — same team as Aerodrome | Same flywheel model |
+| Arbitrum | Camelot + GMX | Native DEX + perps | Camelot for spot, GMX for perps |
+| zkSync | SyncSwap | Classic AMM | Largest native DEX on zkSync |
 
-### Polygon — NOT a Sidechain, and zkEVM Is Dead
-- **Do NOT call Polygon a "sidechain."** It evolved beyond that years ago.
-- **Polygon zkEVM is being shut down** (announced June 2025 by Foundation CEO Sandeep Nailwal). Do not start new projects on it.
-- **Polygon PoS** is the main chain: $500M+ monthly payment volume, 410M+ wallets, 50+ payment projects. Focus is stablecoins, payments, RWAs.
-- **MATIC → POL:** Token migrated (85% conversion by mid-2025). POL supports multi-chain staking.
-- **AggLayer:** The strategic future — cross-chain interoperability and settlement. Unified liquidity, no wrapped tokens, sub-5 second cross-chain finality (roadmap).
-- **When to build on Polygon PoS:** Payments, stablecoins, RWAs, enterprise. NOT for general-purpose DeFi L2.
-
-### Gnosis Chain — Community-Run EVM Chain
-- Not a sidechain, not a rollup — a community-run EVM chain with its own validator set
-- **Gnosis Pay:** Real-world crypto debit card for point-of-sale payments
-- Low-cost operations, 1 GNO minimum staking (vs 32 ETH on Ethereum)
-- Safe (multisig) originated from Gnosis but is now an independent project
-
-### Zora — The Creator Chain
-- OP Stack L2, chain ID 7777777
-- Creator/NFT focused — modular ERC-1155 minting contracts
-- Low TVL (~$20-30M), niche use case
-- Standard OP Stack deployment — no code changes needed
+See `addresses/SKILL.md` for verified contract addresses for all these protocols.
 
 ## The Superchain (OP Stack)
 
-The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability.
+The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability. Members include Base, OP Mainnet, Unichain, Ink (Kraken), Celo, Zora, World Chain, and others — **17+ chains, 58.6% L2 market share.**
 
-**Superchain members (Feb 2026):**
-
-| Chain | Stage | Focus | Notable |
-|-------|-------|-------|---------|
-| **Base** | Stage 1 | Finance/Consumer | $4.87B TVL, Coinbase |
-| **OP Mainnet** | Stage 1 | General | $293M TVL |
-| **Unichain** | Stage 1 | DeFi | Uniswap, TEE blocks |
-| **Ink** | Stage 1 | Finance | Kraken's L2, $537M TVL |
-| **Celo** | Stage 0 | Mobile payments | Just migrated from L1 |
-| **Mode** | Stage 0 | Finance | $2.3M TVL |
-| **Zora** | Stage 0 | Creator | NFT-focused |
-| **World Chain** | Stage 0 | General | Worldcoin/World ID |
-| **Soneium** | Stage 0 | Creator | Sony's L2 |
-| **BOB** | Stage 0 | Finance | Bitcoin-focused |
-| **Lisk** | Stage 0 | General | Migrated from L1 |
-
-**Superchain stats:** 17+ chains, 20.9M daily L2 transactions, **58.6% L2 market share.**
-
-**Revenue model:** Superchain members contribute **15% of sequencer revenue** to the Optimism Collective.
-
-**Interop status (Feb 2026):** Cross-chain message passing protocol designed. Accepting messages is permissionless for new chains; sending requires opt-in. Goal: $250M/month cross-chain transfers. Still early — full interop not yet live.
+Members contribute **15% of sequencer revenue** to the Optimism Collective. Cross-chain interop is designed but not yet fully live.
 
 ## Deployment Differences (Gotchas)
 
@@ -198,7 +116,7 @@ The Superchain is the network of OP Stack chains sharing security, upgrade gover
 - **Scroll/Linea:** ✅ Bytecode-compatible — use standard `solc`, deploy like mainnet.
 
 ### Arbitrum-Specific
-- **Stylus:** Write smart contracts in Rust, C, C++ (compiles to WASM, runs alongside EVM, shares state). Use for compute-heavy operations. Contracts must be "activated" via `ARB_WASM_ADDRESS` (0x0000…0071).
+- **Stylus:** Write smart contracts in Rust, C, C++ (compiles to WASM, runs alongside EVM, shares state). Use for compute-heavy operations (10-100x gas savings). Contracts must be "activated" via `ARB_WASM_ADDRESS` (0x0000…0071).
 - **Orbit:** Framework for launching L3 chains on Arbitrum. 47 live on mainnet.
 
 ## RPCs and Explorers

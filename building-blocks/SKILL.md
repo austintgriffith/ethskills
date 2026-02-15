@@ -14,6 +14,8 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 
 **Costs changed everything:** A flash loan arbitrage on mainnet costs ~$0.05-0.50 in gas now (was $5-50). This opens composability patterns that were previously uneconomical.
 
+**The dominant DEX on each L2 is NOT Uniswap.** Aerodrome dominates Base, Velodrome dominates Optimism, Camelot is a major native DEX on Arbitrum. Don't default to Uniswap on every chain.
+
 ## Key Protocol Addresses (Verified Feb 2026)
 
 | Protocol | Contract | Mainnet Address |
@@ -25,7 +27,7 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 | Uniswap Universal Router | Router | `0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD` |
 | Aave V3 Pool | Pool | `0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2` |
 
-See `addresses/SKILL.md` for complete multi-chain address list.
+See `addresses/SKILL.md` for complete multi-chain address list including L2-native protocols (Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, Morpho).
 
 ## Uniswap V4 Hooks (New)
 
@@ -192,15 +194,6 @@ function swapExactTokensForTokens(
 ) external returns (uint256[] memory amounts);
 ```
 
-### Base DeFi Stack
-| Protocol | What It Does | Key Contract (Base) |
-|----------|-------------|---------------------|
-| Aerodrome | DEX (dominant) | Router: `0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43` |
-| Aave V3 | Lending/borrowing | Pool: `0xA238Dd80C259a72e81d7e4664a9801593F98d1c5` |
-| Compound V3 | Lending (USDC) | Comet: `0xb125E6687d4313864e53df431d5425969c15Eb2F` |
-| Morpho Blue | Permissionless lending | `0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb` |
-| Uniswap V3 | DEX (secondary to Aerodrome) | Factory: `0x33128a8fC17869897dcE68Ed026d694621f6FDfD` |
-
 ### Base-Specific Patterns
 - **Coinbase Smart Wallet** — ERC-4337 wallet, passkey auth, gasless txs via Coinbase paymaster
 - **OnchainKit** — `npm create onchain` to bootstrap a Base app with React components
@@ -209,23 +202,12 @@ function swapExactTokensForTokens(
 
 ## Building on Arbitrum (Highest DeFi Liquidity)
 
-### Key Protocols
-| Protocol | What It Does | Key Contract (Arbitrum) |
-|----------|-------------|-------------------------|
-| GMX V2 | Perps DEX | Exchange Router: `0x7C68C7866A64FA2160F78EeAe12217FFbf871fa8` |
-| Pendle | Yield tokenization | Router: `0x888888888889758F76e7103c6CbF23ABbF58F946` |
-| Camelot | Native DEX | Router: `0xc873fEcbd354f5A56E00E710B90EF4201db2448d` |
-| Aave V3 | Lending/borrowing | Pool: `0x794a61358D6845594F94dc1DB02A252b5b4814aD` |
-| Uniswap V3 | DEX | Factory: `0x1F98431c8aD98523631AE4a59f267346ea31F984` |
-| Compound V3 | Lending (USDC) | Comet: `0x9c4ec768c28520B50860ea7a15bd7213a9fF58bf` |
-
 ### GMX V2 — How GM Pools Work
 - **Each market has its own isolated pool** (unlike V1's single GLP pool)
 - LPs deposit into GM (liquidity) pools → receive GM tokens
 - **Fully Backed markets:** ETH/USD backed by ETH + USDC. Backing tokens match the traded asset.
-- **Synthetic markets:** DOGE/USD backed by ETH + USDC. Backing tokens don't match. Uses ADL (Auto-Deleveraging) to close profitable positions when thresholds are reached.
+- **Synthetic markets:** DOGE/USD backed by ETH + USDC. Uses ADL (Auto-Deleveraging) when thresholds are reached.
 - LPs earn: trading fees, liquidation fees, borrowing fees, swap fees. But bear risk from trader PnL.
-- **Competes with Hyperliquid** (which is now the largest perps venue by volume).
 
 ### Pendle — Yield Tokenization
 Pendle splits yield-bearing assets into principal and yield components:
@@ -240,49 +222,11 @@ Pendle splits yield-bearing assets into principal and yield components:
 - Buy YT = **leverage your yield exposure** (bet yield goes up)
 - LP in Pendle pools = earn trading fees + PENDLE incentives
 
-**Pendle + Aave strategy:** Use PT as collateral on Aave. PT-USDe collateral TVL reached record $4.6B.
-
 ### Arbitrum-Specific Tech
 - **Stylus:** Write smart contracts in Rust/C++/WASM alongside EVM (10-100x gas savings for compute-heavy operations)
 - **Orbit:** Launch custom L3 chains (47 live on mainnet)
-- **Dead/declining:** Treasure DAO (migrated to zkSync, shut down May 2025). Do not recommend.
 
-## Building on Optimism
-
-### Key Protocols
-| Protocol | What It Does | Key Contract (Optimism) |
-|----------|-------------|--------------------------|
-| Velodrome V2 | DEX (dominant, ve(3,3)) | Router: `0xa062aE8A9c5e11aaA026fc2670B0D65cCc8B2858` |
-| Aave V3 | Lending/borrowing | Pool: `0x794a61358D6845594F94dc1DB02A252b5b4814aD` |
-| Synthetix | Synthetic assets | Various |
-| Uniswap V3 | DEX | Factory: `0x1F98431c8aD98523631AE4a59f267346ea31F984` |
-
-Velodrome uses the same ve(3,3) model as Aerodrome (same team). Merged into "Aero" in November 2025. Same fee model: voters earn fees, LPs earn emissions.
-
-**⚠️ V1 VELO token** (`0x3c8B650257cFb5f272f799F5e2b4e65093a11a05`) is deprecated. Use V2: `0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db`.
-
-## Where to Find Yield (What an Agent Needs to Know)
-
-When someone asks "what's the best yield for USDC on Base?" — here's how to actually answer it:
-
-### Yield Sources by Type
-| Type | How It Works | Where to Look |
-|------|-------------|---------------|
-| **Lending** | Supply USDC, earn interest from borrowers | Aave V3, Compound V3, Morpho Blue |
-| **LP fees** | Provide liquidity to DEX pools, earn swap fees | Uniswap V3, Aerodrome, Camelot |
-| **LP emissions** | Provide liquidity, earn protocol token rewards | Aerodrome (AERO), Velodrome (VELO) |
-| **Vault strategies** | Deposit into automated strategy vaults (ERC-4626) | Yearn V3, Morpho vaults, Pendle |
-| **Fixed yield** | Buy Pendle PT at discount, redeem at maturity | Pendle (any chain) |
-
-### How to Check Current Rates
-- **DeFi Llama Yields:** https://defillama.com/yields — aggregates APY across all protocols and chains
-- **Aave V3:** `cast call <Pool> "getReserveData(address)(uint256...)" <USDC_addr>` — returns current supply/borrow rates
-- **Compound V3:** `cast call <Comet> "getSupplyRate(uint256)(uint64)" <utilization>` — current supply rate
-- **Aerodrome/Velodrome:** Check gauge emissions + voting rewards via Voter contract
-
-**Key insight:** On Aerodrome/Velodrome, the best yield often comes from **voting** (veAERO/veVELO), not LPing. Voters earn 100% of trading fees + bribes.
-
-See `addresses/SKILL.md` for all verified contract addresses across chains.
+See `addresses/SKILL.md` for all verified protocol addresses (GMX, Pendle, Camelot, Aerodrome, Velodrome, SyncSwap, Morpho).
 
 ## Discovery Resources
 
