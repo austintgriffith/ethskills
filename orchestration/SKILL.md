@@ -215,7 +215,7 @@ This is the killer use case for Ethereum in 2026: **autonomous agents discoverin
 │                                                              │
 │  6. RATE      Agent posts feedback to ReputationRegistry     │
 │               → value=95, tag="quality", endpoint="..."      │
-│               → builds on-chain reputation for next caller   │
+│               → builds onchain reputation for next caller   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -250,14 +250,14 @@ const response = await x402Fetch(agentEndpoint, {
 });
 const weatherData = await response.json();
 
-// 6. Rate: post feedback on-chain
+// 6. Rate: post feedback onchain
 const reputationWriter = new ethers.Contract(REPUTATION_REGISTRY, reputationAbi, signer);
 await reputationWriter.giveFeedback(
   agentId, 95, 0, "quality", "weather", agentEndpoint, "", ethers.ZeroHash
 );
 ```
 
-**This is the agentic economy.** No API keys, no subscriptions, no invoicing, no trust assumptions. Just cryptographic identity, on-chain reputation, and HTTP-native payments.
+**This is the agentic economy.** No API keys, no subscriptions, no invoicing, no trust assumptions. Just cryptographic identity, onchain reputation, and HTTP-native payments.
 
 ### Key Projects Building This Stack
 - **ERC-8004** — agent identity + reputation (EF, MetaMask, Google, Coinbase)
