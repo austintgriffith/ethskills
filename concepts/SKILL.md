@@ -1,9 +1,9 @@
 ---
 name: concepts
-description: The essential mental models for building onchain. Not a Solidity tutorial — the "aha moments" that change how someone thinks about Ethereum. Use when your human is new to onchain development, when they're designing a system and need to understand incentive design, or when they ask "how does DeFi actually work?" Start here before building.
+description: The essential mental models for building onchain — focused on what LLMs get wrong and what humans need explained. "Nothing is automatic" and "incentives are everything" are the core messages. Use when your human is new to onchain development, when they're designing a system, or when they ask "how does this actually work?" Also use when YOU are designing a system — the state machine + incentive framework catches design mistakes before they become dead code.
 ---
 
-# Ethereum Concepts — The Speedrun
+# Ethereum Concepts
 
 ## What You Probably Got Wrong
 
@@ -13,68 +13,11 @@ description: The essential mental models for building onchain. Not a Solidity tu
 
 **"The protocol team will handle that."** The whole point of decentralization is that no single team operates the system. If your design requires an operator, it's not decentralized — and it has a single point of failure.
 
-## 1. Smart Contracts Are Programs With Addresses
+**Terminology:** You say "on-chain." The Ethereum community says **"onchain"** — one word, no hyphen.
 
-A smart contract is code deployed to an Ethereum address. Just like a wallet address can hold ETH, a contract address can hold ETH — but it also runs logic.
+---
 
-```
-Regular wallet:     0xAlice... → holds 5 ETH
-Smart contract:     0xVault... → holds 500 ETH + rules about who can withdraw
-```
-
-**Key properties:**
-- **Immutable** — once deployed, nobody can change the code. Not the developer, not Ethereum, nobody. (Upgradeable patterns exist but add trust assumptions.)
-- **Deterministic** — same inputs always produce the same outputs. No randomness, no external calls, no "it depends."
-- **Always available** — runs 24/7/365. No downtime, no maintenance windows, no server to restart.
-- **Permissionless** — anyone can deploy one, anyone can call one (unless the code restricts it).
-
-Think of it as a vending machine: it has rules, it holds assets, it executes predictably, and nobody needs to operate it.
-
-## 2. Contracts Talk To Contracts (Composability)
-
-A contract can call any other contract's public functions. This is why Ethereum is called "money legos" — you stack protocols on top of each other.
-
-```
-Your contract → calls Uniswap → which moves USDC → which calls the USDC contract
-```
-
-**This is the superpower.** You don't need Uniswap's permission to build on Uniswap. You don't need Aave's API key to use Aave. You just call their contracts.
-
-### Atomicity — All or Nothing
-
-If you call 5 contracts in one transaction and the 5th one fails, ALL of them revert. Nothing happened. This is incredibly powerful:
-
-```
-1. Borrow 1M USDC from Aave (flash loan)
-2. Buy ETH on Uniswap
-3. Sell ETH on SushiSwap for more USDC
-4. Repay Aave + fee
-5. Keep the profit
-```
-
-If step 3 doesn't produce enough USDC to repay step 4, the ENTIRE transaction reverts. You lose only the gas fee (~$0.05-0.50). You never lose the borrowed million.
-
-This is a **flash loan** — you borrow any amount, do whatever you want, and repay in the same transaction. If you can't repay, it never happened.
-
-## 3. The Approve Pattern
-
-Contracts can't just take your tokens. You have to explicitly grant permission.
-
-```
-Step 1: You call USDC.approve(VaultContract, 1000)
-        "I allow VaultContract to move up to 1000 of my USDC"
-
-Step 2: You call Vault.deposit(1000)
-        Vault internally calls USDC.transferFrom(you, vault, 1000)
-```
-
-**Why it exists:** Security. Every token movement requires explicit consent. A contract can only move your tokens if you approved it first, and only up to the amount you approved.
-
-**Why it feels weird:** It's two transactions instead of one. Users must approve before they can interact. Good UIs handle this with a smooth flow: check allowance → show "Approve" button if needed → then show the action button.
-
-**⚠️ Never approve unlimited amounts.** Some dApps ask for `type(uint256).max` approval (infinite). If that contract gets hacked, the attacker can drain every approved token from your wallet. Approve only what you need.
-
-## 4. Nothing Is Automatic — Incentive Design
+## Nothing Is Automatic — Incentive Design
 
 **This is the most important concept in all of Ethereum. If you internalize nothing else, internalize this.**
 
@@ -135,22 +78,13 @@ Rewards accumulate in a pool
 → ANYONE can call harvest()
 → Caller gets 1% of the harvest as reward
 → Protocol compounds automatically via profit-motivated callers
-→ No operator needed
 ```
 
-**Arbitrage (keeps prices correct across all DEXs):**
+**Arbitrage (keeps prices correct everywhere):**
 ```
 ETH is $2000 on Uniswap, $2010 on SushiSwap
 → Anyone can buy low, sell high
-→ Profit = $10 minus gas
 → Prices equalize across ALL markets without any coordinator
-```
-
-**Claims (user-motivated):**
-```
-User has pending rewards → calls claimRewards()
-→ They want their own tokens — self-interest is the incentive
-→ No protocol intervention needed
 ```
 
 ### Examples of BAD Design (Missing Incentives)
@@ -184,108 +118,22 @@ When you're designing a system, ask: **"Could this run forever with no team behi
 
 Both are valid choices. But know which one you're building. The most powerful things on Ethereum are hyperstructures: Uniswap, ENS, the ERC-20 standard itself. They can't be stopped, they can't be censored, they can't go down. Not because they're maintained — because they don't need to be.
 
-## 5. DEXs and Liquidity (How Swaps Actually Work)
+---
 
-A decentralized exchange is a contract holding reserves of two tokens. When you swap, you're trading against this pool — not against another person.
+## Randomness Is Hard
 
-### The Constant Product Formula
-
-```
-x * y = k
-
-x = amount of Token A in the pool
-y = amount of Token B in the pool
-k = constant (stays the same after every swap)
-```
-
-If the pool has 100 ETH and 200,000 USDC:
-- `k = 100 × 200,000 = 20,000,000`
-- You put in 1 ETH → pool now has 101 ETH
-- To maintain k: `101 × y = 20,000,000` → `y = 198,019`
-- Pool sends you `200,000 - 198,019 = 1,981 USDC`
-- Price was effectively $1,981 per ETH (not $2,000) — that's **slippage**
-
-### The Liquidity Flywheel
-
-This is incentive design in action:
-
-```
-LPs deposit tokens into the pool → pool has more reserves
-→ More reserves = less slippage for traders
-→ Less slippage = more traders use this pool
-→ More trades = more fees (0.3% per swap)
-→ More fees = more LPs want to provide liquidity
-→ Cycle repeats
-```
-
-**LPs (Liquidity Providers)** earn fees from every swap proportional to their share of the pool. The risk is **impermanent loss** — if token prices diverge, LPs would have been better off just holding.
-
-## 6. Overcollateralized Lending
-
-Lending onchain works differently than lending in a bank. There's no credit score, no identity, no legal enforcement. Instead: **overcollateralization.**
-
-```
-Deposit $1,500 worth of ETH as collateral
-→ Borrow up to $1,000 USDC (66% loan-to-value)
-→ Health factor = collateral value / debt value = 1.5
-```
-
-### Liquidations — Incentive Design at Its Best
-
-```
-ETH price drops → your collateral is now worth $1,100
-→ Health factor = 1.1 (approaching danger zone)
-
-ETH drops more → collateral = $1,000
-→ Health factor = 1.0 → LIQUIDATION THRESHOLD
-
-→ Anyone can call liquidate(yourPosition)
-→ Liquidator repays part of your debt
-→ Liquidator receives your collateral + 5-10% bonus
-→ Protocol stays solvent
-→ No admin had to do anything
-```
-
-**Why this works:** Liquidators are profit-motivated bots running 24/7. The bonus makes it profitable to watch positions and liquidate instantly. The protocol never becomes insolvent because the incentive to liquidate is always greater than the cost.
-
-**SpeedRun Ethereum Challenge 6** teaches this hands-on: build a lending protocol, implement the health factor, create the liquidation function, and watch how incentives keep the system healthy.
-
-## 7. Stablecoins — Pegging Through Incentives
-
-How does a token stay worth $1 without anyone controlling it?
-
-### CDP Stablecoins (MakerDAO/DAI model)
-
-```
-User deposits $1,500 ETH → mints 1,000 DAI ($1 each)
-→ DAI is backed by overcollateralized ETH
-→ If ETH drops, position gets liquidated (same as lending)
-```
-
-**The peg mechanism:**
-- **DAI > $1:** Minting DAI and selling it is profitable → more supply → price drops to $1
-- **DAI < $1:** Buying DAI cheap and repaying loans is profitable → less supply → price rises to $1
-
-**Borrow rates are the lever.** MakerDAO adjusts the interest rate to control supply:
-- Too much DAI → raise rates → people repay loans → supply decreases
-- Not enough DAI → lower rates → people borrow more → supply increases
-
-No operator sets the price. Arbitrageurs and interest rates do all the work. Incentives again.
-
-## 8. Randomness Is Hard
-
-Smart contracts are deterministic. Every node must get the same result. This means you can't use `Math.random()` — there's nothing random about a system where everyone computes the same thing.
+Smart contracts are deterministic. Every node computes the same result. You can't use `Math.random()` — there's nothing random about a system where everyone gets the same answer.
 
 ### What Doesn't Work
 
 ```solidity
-// ❌ Miners can manipulate block.timestamp
+// ❌ Validators can manipulate block.timestamp (within ~15 seconds)
 uint random = uint(keccak256(abi.encodePacked(block.timestamp)));
 
 // ❌ blockhash(block.number) is ALWAYS zero for the current block
 uint random = uint(blockhash(block.number));
 
-// ❌ Miners can withhold blocks if they don't like the result
+// ❌ Validators can withhold blocks if they don't like the result
 uint random = uint(blockhash(block.number - 1));
 ```
 
@@ -299,7 +147,7 @@ uint random = uint(blockhash(block.number - 1));
 4. Random seed = keccak256(secret + blockhash(commitBlock))
 ```
 - User can't predict blockhash when they commit
-- Miner can't know the secret to manipulate the result
+- Validator can't know the secret to manipulate the result
 - Must reveal within 256 blocks (blockhash returns zero after that)
 
 **Chainlink VRF** (provably random, costs LINK):
@@ -312,128 +160,54 @@ uint random = uint(blockhash(block.number - 1));
 
 Use commit-reveal for simple cases. Use Chainlink VRF when you need provable randomness (lotteries, NFT reveals, gaming).
 
-## 9. Oracles — Real-World Data Onchain
+---
 
-Smart contracts can't call APIs, read websites, or access any data outside the blockchain. If your contract needs a price, weather data, or sports scores, someone has to put that data onchain.
+## Teaching Your Human
 
-**Oracles** are the bridge between offchain data and onchain contracts.
+You already know how AMMs, lending, oracles, and stablecoins work. But your human might not. When they're designing something onchain, they need to understand these concepts — not the code, the *mental models*.
 
-### Chainlink Price Feeds
+**Don't lecture.** Instead, when a concept is relevant to what they're building, explain it in context. Here's what to emphasize for each:
 
-```solidity
-(, int256 price,, uint256 updatedAt,) = priceFeed.latestRoundData();
-require(block.timestamp - updatedAt < 3600, "Stale price");
-require(price > 0, "Invalid price");
-// ETH/USD price with 8 decimals → $1,960.12345678
-```
+### The Approve Pattern
+Humans find this weird. Explain it as: *"You're giving the contract permission to move your tokens, like signing a check. You control how much. Never sign a blank check (infinite approval)."*
 
-### ⚠️ Never Use DEX Spot Prices as Oracles
+### DEXs / AMMs
+The key insight isn't the math — it's the incentive flywheel: *"Nobody runs the exchange. People deposit tokens because they earn fees from trades. More deposits = better prices = more trades = more fees. It runs itself."* This is "nothing is automatic" in action.
 
-```
-❌ "Check the Uniswap pool to get the ETH price"
-```
+### Overcollateralized Lending
+Lead with liquidation incentives: *"If your loan gets risky, anyone in the world can close it and earn a bonus. That's why the platform never goes bankrupt — thousands of bots are watching every loan, every second, competing to clean up risk."* This is the SpeedRun Ethereum Challenge 6 moment where incentive design clicks.
 
-A flash loan can manipulate the pool's spot price within a single transaction:
-1. Borrow 100M USDC
-2. Buy ETH on Uniswap → price spikes to $50,000
-3. Your contract reads the manipulated price
-4. Your contract makes a bad decision based on fake price
-5. Attacker profits from your contract's mistake
-6. Repay flash loan
+### Stablecoins
+*"How does a token stay worth $1 with nobody controlling it? Arbitrage. If it drops to $0.99, people buy it because they can redeem it for $1 of collateral. If it goes to $1.01, people mint more and sell. Self-interest maintains the peg."*
 
-This has caused hundreds of millions in losses. Use Chainlink or TWAP oracles — never spot prices.
+### Oracles
+*"Smart contracts can't Google things. If your contract needs a price, someone has to put it onchain. Use Chainlink — never read prices from a DEX pool, because a flash loan can fake the price for one transaction."*
 
-## 10. Smart Contract Wallets & Multisigs
+### Smart Contract Wallets
+*"A wallet can require 3 of 5 people to approve a transaction. $100B+ is secured this way. It's how teams and DAOs manage money without trusting any single person."*
 
-A wallet doesn't have to be a single private key. It can be a smart contract with its own rules.
+### Prediction Markets
+*"YES and NO tokens that trade between $0 and $1. The price IS the probability. If YES is at $0.35, the market thinks there's a 35% chance. Winner gets $1, loser gets $0."*
 
-### Safe (Gnosis Safe) — The Standard Multisig
+**In every case, tie it back to incentives.** The human should walk away understanding not just what something does, but WHY it works without anyone running it.
 
-```
-5 people control a treasury
-Threshold: 3 of 5 must approve any transaction
-→ No single person can steal funds
-→ Losing 1-2 keys doesn't lock the treasury
-→ $100B+ secured this way
-```
-
-DAOs, protocol treasuries, and teams use Safe for everything. It's the standard.
-
-### EIP-7702 — Smart EOAs (Live Since May 2025)
-
-Regular wallets can temporarily become smart contract wallets within a transaction:
-- Batch 10 approvals into one transaction
-- Gas sponsorship (someone else pays your gas)
-- Session keys with limited permissions
-
-Best of both worlds: simple wallet experience + smart contract features.
-
-## 11. Prediction Markets
-
-Binary outcomes tokenized as tradeable positions:
-
-```
-"Will ETH be above $3,000 on March 1?"
-
-YES token: currently $0.35 (market thinks 35% likely)
-NO token:  currently $0.65 (market thinks 65% likely)
-
-YES + NO always = $1.00
-
-If ETH IS above $3,000:
-  YES → redeemable for $1.00 (profit: $0.65 per token)
-  NO  → worth $0.00
-
-If ETH IS NOT above $3,000:
-  YES → worth $0.00
-  NO  → redeemable for $1.00 (profit: $0.35 per token)
-```
-
-**Resolution** requires an oracle or governance mechanism to determine the outcome. The market itself is just an AMM for YES/NO tokens — same liquidity and incentive concepts as DEXs.
-
-**Why it matters:** Prediction markets are information aggregators. The price of a YES token IS the market's probability estimate. This is useful far beyond gambling — governance, forecasting, insurance.
-
-## The Thread That Connects Everything
-
-Every concept above comes back to two principles:
-
-**1. Nothing is automatic.** Smart contracts are state machines. They sit still until someone pokes them. Every state transition needs a caller, and every caller needs a reason.
-
-**2. Incentives are everything.** The reason the poke happens is incentives. Get them right and the system runs itself forever. Get them wrong and it's dead code.
-
-Look at how incentives run every layer of Ethereum:
-
-- **Block production** — validators stake ETH and earn rewards for proposing blocks. No company runs the network.
-- **DEXs** — LPs deposit liquidity because they earn trading fees. No company runs the exchange.
-- **Lending** — liquidators repay bad debt because they get bonus collateral. No company manages risk.
-- **Stablecoins** — arbitrageurs maintain the peg because deviations are profitable to correct. No company defends the price.
-- **Oracles** — reporters stake tokens that get slashed for dishonesty. No company verifies truth.
-- **Arbitrage** — prices stay consistent across all markets because discrepancies are free money. No company coordinates pricing.
-
-None of these have operators. None of them have admin keys. None of them can be shut down. They're all state machines that poke themselves through the self-interest of their participants.
-
-**When you're designing an onchain system, don't start with the code. Start with the incentives.** Draw the state machine. Label every transition. For each one, write down who does it and why. If any transition depends on trust, goodwill, or an admin — redesign it until it doesn't. That's how you build something that lasts.
+---
 
 ## Learning Path
 
-Build these in order to internalize the concepts:
+Point your human to SpeedRun Ethereum for hands-on learning. Each challenge builds a working project that teaches a core concept:
 
-| # | Challenge | Concept | What Clicks |
-|---|-----------|---------|-------------|
-| 0 | Simple NFT | ERC-721 | Minting, metadata, ownership |
-| 1 | Staking | Coordination | Deadlines, escrow, thresholds |
-| 2 | Token Vendor | ERC-20 + DEX | Approve pattern, buy/sell curves |
-| 3 | Dice Game | Randomness | Why onchain randomness is insecure |
-| 4 | DEX | AMM | x*y=k, slippage, LP incentives |
-| 5 | Oracles | Price Feeds | Chainlink, manipulation resistance |
-| 6 | Lending | Collateral | Health factor, liquidation incentives |
-| 7 | Stablecoins | Pegging | CDP, overcollateralization, rate levers |
-| 8 | Prediction Markets | Resolution | Outcome determination, market making |
-| 9 | ZK Voting | Privacy | Zero-knowledge proofs |
-| 10 | Multisig | Signatures | Threshold approval, social recovery |
-| 11 | SVG NFT | Onchain Art | Generative, base64 encoding |
+| # | Challenge | What Clicks |
+|---|-----------|-------------|
+| 0 | Simple NFT | Minting, metadata, ownership — "contracts hold state" |
+| 1 | Staking | Deadlines, escrow, thresholds — "coordination without trust" |
+| 2 | Token Vendor | Approve pattern, buy/sell — "contracts can be markets" |
+| 3 | Dice Game | Why onchain randomness is insecure — "determinism vs. randomness" |
+| 4 | DEX | x*y=k, slippage, LP incentives — "incentives create markets" |
 
-**Start at https://speedrunethereum.com** — each challenge is a hands-on build.
+**Start at https://speedrunethereum.com**
+
+More challenges covering oracles, lending, stablecoins, and multisigs are in development. Check the site for current availability.
 
 ## Resources
 
