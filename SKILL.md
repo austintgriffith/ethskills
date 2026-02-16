@@ -21,6 +21,7 @@ For individual topics, fetch any of these directly:
 - [Security](https://ethskills.com/security/SKILL.md) — Smart contract security vulnerabilities and patterns
 - [Frontend UX](https://ethskills.com/frontend-ux/SKILL.md) — Frontend UX patterns for Ethereum dApps
 - [Frontend Playbook](https://ethskills.com/frontend-playbook/SKILL.md) — Step-by-step frontend build guide
+- [QA](https://ethskills.com/qa/SKILL.md) — Pre-ship audit checklist for a reviewer agent
 
 ---
 
