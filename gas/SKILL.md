@@ -110,7 +110,7 @@ cast blob-basefee --rpc-url https://eth.llamarpc.com
 
 ## Data Freshness
 
-> **Last verified:** 2026-02-13 | Base fee: ~0.05 gwei | ETH: ~$1,960
+> **Last verified:** 2026-02-16 | Base fee: ~.046 gwei | ETH: ~$1961.1
 
 If this date is more than 30 days old, verify current gas with:
 ```bash
