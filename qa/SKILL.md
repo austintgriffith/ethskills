@@ -102,6 +102,25 @@ Open `packages/nextjs/scaffold.config.ts`:
 
 ---
 
+## Important: Phantom Wallet in RainbowKit
+
+Phantom is NOT in the SE2 default wallet list. A lot of users have Phantom — if it's missing, they can't connect.
+
+- ❌ **FAIL:** Phantom wallet not in the RainbowKit wallet list
+- ✅ **PASS:** `phantomWallet` is in `wagmiConnectors.tsx`
+
+---
+
+## Important: Mobile Deep Linking
+
+On mobile, when a user taps a button that needs a signature, it must open their wallet app. Test this: open the app on a phone, connect a wallet, tap an action button that triggers a transaction — does the wallet app open?
+
+- ❌ **FAIL:** Nothing happens, user has to manually switch to their wallet app
+- ❌ **FAIL:** It opens the wrong wallet (e.g. opens MetaMask when user connected with Rainbow)
+- ✅ **PASS:** Tapping any transaction button deep links to the connected wallet app for signing
+
+---
+
 ## Audit Summary
 
 Report each as PASS or FAIL:
@@ -122,3 +141,5 @@ Report each as PASS or FAIL:
 - [ ] pollingInterval is 3000
 - [ ] RPC overrides set (not default SE2 key)
 - [ ] Favicon updated from SE2 default
+- [ ] Phantom wallet in RainbowKit wallet list
+- [ ] Mobile: tapping a transaction button opens the connected wallet app
