@@ -51,7 +51,7 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 
 ## Current Network Stats (Feb 2026)
 
-- **Block time:** 8 seconds (reduced from 12s by Fusaka)
+- **Block time:** 12 seconds
 - **Mainnet base fee:** 0.05-0.1 gwei
 - **L2 transaction cost:** $0.001-0.01
 - **Combined L2 TPS:** 50,000+ (post-Fusaka)
@@ -105,15 +105,15 @@ Fully autonomous economic loop — no humans required.
 
 Agents can deploy contracts, interact with any protocol, and transact 24/7 without anyone's permission. No API keys to revoke, no accounts to ban, no services to shut down. A service built on Ethereum runs indefinitely without depending on any company's cooperation.
 
-## Ethereum vs Solana (Honest)
+## Ethereum vs Solana
 
-**Choose Ethereum when:** DeFi integration, agent infrastructure (ERC-8004/x402), composability with existing protocols, maximum security for high-value operations, long-term durability.
+**Choose Ethereum when:** DeFi integration, agent infrastructure (ERC-8004/x402), composability with existing protocols, maximum security for high-value operations, long-term durability, best tooling and ecosystem, EVM network effects.
 
-**Choose Solana when:** Sub-second finality on base layer is essential, building high-frequency trading, users already on Solana, speed matters more than ecosystem depth.
+**Choose Solana when:** When you don't care about EVM network effects, liquidity or tooling and instead you must have sub-second finality on base layer, building high-frequency trading, users already on Solana.
 
-**Key differences:** Ethereum has $50B+ TVL vs Solana ~$5B. Ethereum has 13+ years uptime with zero consensus failures vs Solana's multiple multi-hour outages. Ethereum has 1M+ validators vs Solana's 1,500. But Solana has ~400ms blocks vs 8s.
+**L2 Caveat:** Many Ethereum Layer 2s are faster than Solana but with the benefits of similar security to Ethereum Mainnet and secure access to Mainnet liquidity. Use Layer 2s for speed and cost as well as the benefits of access to Mainnet liquidity inside canonical bridges.
 
-**L2 caveat:** Ethereum L2s are now comparable to Solana on cost ($0.001/tx), but Solana is still faster on base layer finality.
+**Key differences:** Ethereum has $50B+ TVL vs Solana ~$5B. Ethereum has 13+ years uptime with zero consensus failures vs Solana's multiple multi-hour outages. Ethereum has 1M+ validators vs Solana's 1,500. But Solana has ~400ms blocks vs 12s on Ethereum mainnet though Ethereum L2s have <200ms blocks.
 
 ## Resources
 
