@@ -252,21 +252,24 @@ h2 {
   Bot-readable. Each skill lives at /<topic>/SKILL.md
   Fetch any URL and read it into your context.
 
-  All skills (116KB):  https://ethskills.com/SKILL.md
+  All skills:  https://ethskills.com/SKILL.md
 
   Individual skills:
-    https://ethskills.com/why/SKILL.md              — Why Ethereum
-    https://ethskills.com/gas/SKILL.md              — Gas & Costs
-    https://ethskills.com/wallets/SKILL.md          — Wallets
-    https://ethskills.com/l2s/SKILL.md              — Layer 2s
-    https://ethskills.com/standards/SKILL.md        — Standards
-    https://ethskills.com/tools/SKILL.md            — Tools
-    https://ethskills.com/building-blocks/SKILL.md  — Money Legos (DeFi)
-    https://ethskills.com/orchestration/SKILL.md    — Orchestration
-    https://ethskills.com/addresses/SKILL.md        — Contract Addresses
-    https://ethskills.com/concepts/SKILL.md         — Concepts
-    https://ethskills.com/security/SKILL.md         — Security
-    https://ethskills.com/frontend-ux/SKILL.md      — Frontend UX
+    https://ethskills.com/ship/SKILL.md              — Ship (start here)
+    https://ethskills.com/why/SKILL.md               — Why Ethereum
+    https://ethskills.com/gas/SKILL.md               — Gas & Costs
+    https://ethskills.com/wallets/SKILL.md           — Wallets
+    https://ethskills.com/l2s/SKILL.md               — Layer 2s
+    https://ethskills.com/standards/SKILL.md         — Standards
+    https://ethskills.com/tools/SKILL.md             — Tools
+    https://ethskills.com/building-blocks/SKILL.md   — Money Legos (DeFi)
+    https://ethskills.com/orchestration/SKILL.md     — Orchestration
+    https://ethskills.com/addresses/SKILL.md         — Contract Addresses
+    https://ethskills.com/concepts/SKILL.md          — Concepts
+    https://ethskills.com/security/SKILL.md          — Security
+    https://ethskills.com/testing/SKILL.md           — Testing
+    https://ethskills.com/indexing/SKILL.md          — Indexing
+    https://ethskills.com/frontend-ux/SKILL.md       — Frontend UX
     https://ethskills.com/frontend-playbook/SKILL.md — Frontend Playbook
     https://ethskills.com/qa/SKILL.md               — QA (Pre-Ship Audit)
 -->
@@ -285,6 +288,12 @@ h2 {
 <button class="hero-btn copy-btn" data-url="https://ethskills.com/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/SKILL.md</button>
 
 <div class="skill" style="margin-top:2rem;">
+  <div class="skill-name">Ship</div>
+  <div class="skill-desc">End-to-end guide for AI agents — from a dApp idea to deployed production app. Fetch this FIRST, it routes you through all other skills.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/ship/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/ship/SKILL.md</button>
+</div>
+
+<div class="skill">
   <div class="skill-name">Why Ethereum</div>
   <div class="skill-desc">Why build on Ethereum specifically — Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle, countering stale FUD, matching use cases to strengths.</div>
   <button class="copy-btn" data-url="https://ethskills.com/why/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/why/SKILL.md</button>
@@ -348,6 +357,18 @@ h2 {
   <div class="skill-name">Security</div>
   <div class="skill-desc">Solidity security patterns and common vulnerabilities with defensive code. Token decimals, reentrancy, oracle manipulation, vault inflation attacks, and a pre-deploy checklist. Run through this before every deployment.</div>
   <button class="copy-btn" data-url="https://ethskills.com/security/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/security/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name">Testing</div>
+  <div class="skill-desc">Smart contract testing with Foundry — unit tests, fuzz testing, fork testing, invariant testing. What to test, what not to test, and what LLMs get wrong.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/testing/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/testing/SKILL.md</button>
+</div>
+
+<div class="skill">
+  <div class="skill-name">Indexing</div>
+  <div class="skill-desc">How to read and query onchain data — events, The Graph, Dune, indexing patterns. Why you cannot just loop through blocks, and what to use instead.</div>
+  <button class="copy-btn" data-url="https://ethskills.com/indexing/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/indexing/SKILL.md</button>
 </div>
 
 <div class="skill">

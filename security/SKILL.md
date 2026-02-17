@@ -247,6 +247,199 @@ Run through this for EVERY contract before deploying to production. No exception
 - [ ] **Fee-on-transfer safe** — if accepting arbitrary tokens, measure actual received amount
 - [ ] **Tested edge cases** — zero values, max values, unauthorized callers, reentrancy attempts
 
+## MEV & Sandwich Attacks
+
+**MEV (Maximal Extractable Value):** Validators and searchers can reorder, insert, or censor transactions within a block. They profit by frontrunning your transaction, backrunning it, or both.
+
+### Sandwich Attacks
+
+The most common MEV attack on DeFi users:
+
+```
+1. You submit: swap 10 ETH → USDC on Uniswap (slippage 1%)
+2. Attacker sees your tx in the mempool
+3. Attacker frontruns: buys USDC before you → price rises
+4. Your swap executes at a worse price (but within your 1% slippage)
+5. Attacker backruns: sells USDC after you → profits from the price difference
+6. You got fewer USDC than the true market price
+```
+
+### Protection
+
+```solidity
+// ✅ Set explicit minimum output — don't set amountOutMinimum to 0
+ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
+    .ExactInputSingleParams({
+        tokenIn: WETH,
+        tokenOut: USDC,
+        fee: 3000,
+        recipient: msg.sender,
+        amountIn: 1 ether,
+        amountOutMinimum: 1900e6, // ← Minimum acceptable USDC (protects against sandwich)
+        sqrtPriceLimitX96: 0
+    });
+```
+
+**For users/frontends:**
+- Use **Flashbots Protect RPC** (`https://rpc.flashbots.net`) — sends transactions to a private mempool, invisible to sandwich bots
+- Set tight slippage limits (0.5-1% for majors, 1-3% for small tokens)
+- Use MEV-aware DEX aggregators (CoW Swap, 1inch Fusion) that route through solvers instead of the public mempool
+
+**When MEV matters:**
+- Any swap on a DEX (especially large swaps)
+- Any large DeFi transaction (deposits, withdrawals, liquidations)
+- NFT mints with high demand (bots frontrun to mint first)
+
+**When MEV doesn't matter:**
+- Simple ETH/token transfers
+- L2 transactions (sequencers process transactions in order — no public mempool reordering)
+- Private mempool transactions (Flashbots, MEV Blocker)
+
+---
+
+## Proxy Patterns & Upgradeability
+
+Smart contracts are immutable by default. Proxies let you upgrade the logic while keeping the same address and state.
+
+### When to Use Proxies
+
+- **Use proxies:** Long-lived protocols that may need bug fixes or feature additions post-launch
+- **Don't use proxies:** MVPs, simple tokens, immutable-by-design contracts, contracts where "no one can change this" IS the value proposition
+
+**Proxies add complexity, attack surface, and trust assumptions.** Users must trust that the admin won't upgrade to a malicious implementation. Don't use proxies just because you can.
+
+### UUPS vs Transparent Proxy
+
+| | UUPS | Transparent |
+|---|---|---|
+| Upgrade logic location | In implementation contract | In proxy contract |
+| Gas cost for users | Lower (no admin check per call) | Higher (checks msg.sender on every call) |
+| Recommended | **Yes** (by OpenZeppelin) | Legacy pattern |
+| Risk | Forgetting `_authorizeUpgrade` locks the contract | More gas overhead |
+
+**Use UUPS.** It's cheaper, simpler, and what OpenZeppelin recommends.
+
+### UUPS Implementation
+
+```solidity
+// Implementation contract (the logic)
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+
+contract MyContractV1 is Initializable, UUPSUpgradeable, OwnableUpgradeable {
+    uint256 public value;
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers(); // Prevent implementation from being initialized
+    }
+
+    function initialize(address owner) public initializer {
+        __Ownable_init(owner);
+        __UUPSUpgradeable_init();
+        value = 42;
+    }
+
+    function _authorizeUpgrade(address) internal override onlyOwner {}
+}
+```
+
+### Critical Rules
+
+1. **Use `initializer` instead of `constructor`** — proxies don't run constructors
+2. **Never change storage layout** — only append new variables at the end, never delete or reorder
+3. **Use OpenZeppelin's upgradeable contracts** — `@openzeppelin/contracts-upgradeable`, not `@openzeppelin/contracts`
+4. **Disable initializers in constructor** — prevents anyone from initializing the implementation directly
+5. **Transfer upgrade authority to a multisig** — never leave upgrade power with a single EOA
+
+```solidity
+// ❌ WRONG — reordering storage breaks everything
+// V1: uint256 a; uint256 b;
+// V2: uint256 b; uint256 a;  ← Swapped! 'a' now reads 'b's value
+
+// ✅ CORRECT — only append
+// V1: uint256 a; uint256 b;
+// V2: uint256 a; uint256 b; uint256 c;  ← New variable at the end
+```
+
+---
+
+## EIP-712 Signatures & Delegatecall
+
+### EIP-712: Typed Structured Data Signing
+
+EIP-712 lets users sign structured data (not just raw bytes) with domain separation and replay protection. Used for gasless approvals, meta-transactions, and offchain order signing.
+
+**When to use:**
+- **Permit (ERC-2612)** — gasless token approvals (user signs, anyone can submit)
+- **Offchain orders** — sign buy/sell orders offchain, settle onchain (0x, Seaport)
+- **Meta-transactions** — user signs intent, relayer submits and pays gas
+
+```solidity
+// EIP-712 domain separator — prevents replay across contracts and chains
+bytes32 public constant DOMAIN_TYPEHASH = keccak256(
+    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+);
+
+bytes32 public constant PERMIT_TYPEHASH = keccak256(
+    "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
+);
+
+function permit(
+    address owner, address spender, uint256 value,
+    uint256 deadline, uint8 v, bytes32 r, bytes32 s
+) external {
+    require(block.timestamp <= deadline, "Permit expired");
+
+    bytes32 structHash = keccak256(abi.encode(
+        PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline
+    ));
+    bytes32 digest = keccak256(abi.encodePacked(
+        "\x19\x01", DOMAIN_SEPARATOR(), structHash
+    ));
+
+    address recovered = ecrecover(digest, v, r, s);
+    require(recovered == owner, "Invalid signature");
+
+    _approve(owner, spender, value);
+}
+```
+
+**Key properties:**
+- **Domain separator** prevents replaying signatures on different contracts or chains
+- **Nonce** prevents replaying the same signature twice
+- **Deadline** prevents stale signatures from being used later
+- In practice, use OpenZeppelin's `EIP712` and `ERC20Permit` — don't implement from scratch
+
+### Delegatecall
+
+`delegatecall` executes another contract's code in the caller's storage context. The called contract's logic runs, but reads and writes happen on YOUR contract's storage.
+
+**This is extremely dangerous if the target is untrusted.**
+
+```solidity
+// ❌ CRITICAL VULNERABILITY — delegatecall to user-supplied address
+function execute(address target, bytes calldata data) external {
+    target.delegatecall(data); // Attacker can overwrite ANY storage slot
+}
+
+// ✅ SAFE — delegatecall only to trusted, immutable implementation
+address public immutable trustedImplementation;
+
+function execute(bytes calldata data) external onlyOwner {
+    trustedImplementation.delegatecall(data);
+}
+```
+
+**Delegatecall rules:**
+- **Never delegatecall to a user-supplied address** — allows arbitrary storage manipulation
+- **Only delegatecall to contracts YOU control** — and preferably immutable ones
+- **Storage layouts must match** — the calling contract and target contract must have identical storage variable ordering
+- **This is how proxies work** — the proxy delegatecalls to the implementation, so the implementation's code runs on the proxy's storage. That's why storage layout matters so much for upgradeable contracts.
+
+---
+
 ## Automated Security Tools
 
 Run these before deployment:
