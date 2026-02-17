@@ -17,6 +17,8 @@ description: Frontend UX rules for Ethereum dApps that prevent the most common A
 
 ## Rule 1: Every Onchain Button — Loader + Disable
 
+> ⚠️ **THIS IS THE #1 BUG AI AGENTS SHIP.** The user clicks Approve, signs in their wallet, comes back to the app, and the Approve button is clickable again — so they click it again, send a duplicate transaction, and now two approvals are pending. **The button MUST be disabled and show a spinner from the moment they click until the transaction confirms onchain.** Not until the wallet closes. Not until the signature is sent. Until the BLOCK CONFIRMS.
+
 ANY button that triggers a blockchain transaction MUST:
 1. **Disable immediately** on click
 2. **Show a spinner** ("Approving...", "Staking...", etc.)
@@ -64,15 +66,18 @@ await writeContractAsync({...}); // Waits for actual onchain confirmation
 
 ---
 
-## Rule 2: Three-Button Flow — Network → Approve → Action
+## Rule 2: Four-State Flow — Connect → Network → Approve → Action
 
-When a user needs to approve tokens then perform an action (stake, deposit, swap), there are THREE states. Show exactly ONE button at a time:
+When a user needs to interact with the app, there are FOUR states. Show exactly ONE big, obvious button at a time:
 
 ```
-1. Wrong network?       → "Switch to Base" button
-2. Not enough approved? → "Approve" button  
-3. Enough approved?     → "Stake" / "Deposit" / action button
+1. Not connected?       → Big "Connect Wallet" button (NOT text saying "connect your wallet to play")
+2. Wrong network?       → Big "Switch to Base" button
+3. Not enough approved? → "Approve" button (with loader per Rule 1)
+4. Enough approved?     → "Stake" / "Deposit" / action button
 ```
+
+> **NEVER show a text prompt like "Connect your wallet to play" or "Please connect to continue."** Show a button. The user should always have exactly one thing to click.
 
 ```typescript
 const { data: allowance } = useScaffoldReadContract({
@@ -83,8 +88,11 @@ const { data: allowance } = useScaffoldReadContract({
 
 const needsApproval = !allowance || allowance < amount;
 const wrongNetwork = chain?.id !== targetChainId;
+const notConnected = !address;
 
-{wrongNetwork ? (
+{notConnected ? (
+  <RainbowKitCustomConnectButton />  // Big connect button — NOT text
+) : wrongNetwork ? (
   <button onClick={switchNetwork} disabled={isSwitching}>
     {isSwitching ? "Switching..." : "Switch to Base"}
   </button>
@@ -141,6 +149,17 @@ import { AddressInput } from "~~/components/scaffold-eth";
 `<AddressInput/>` provides ENS resolution (type "vitalik.eth" → resolves to address), blockie avatar preview, validation, and paste handling.
 
 **The pair: `<Address/>` for DISPLAY, `<AddressInput/>` for INPUT. Always.**
+
+### Show Your Contract Address
+
+**Every dApp should display its deployed contract address** at the bottom of the main page using `<Address/>`. Users want to verify the contract on a block explorer. This builds trust and is standard practice.
+
+```typescript
+<div className="text-center mt-8 text-sm opacity-70">
+  <p>Contract:</p>
+  <Address address={deployedContractAddress} />
+</div>
+```
 
 ---
 
@@ -251,13 +270,17 @@ export const metadata: Metadata = {
 - NOT an environment variable that could be unset
 - Actually reachable (test by visiting the URL in a browser)
 
+**Remove ALL Scaffold-ETH 2 default identity:**
+- [ ] README rewritten — not the SE2 template README
+- [ ] Footer cleaned — remove BuidlGuidl links, "Fork me" link, support links, any SE2 branding. Replace with your project's repo link
+- [ ] Favicon updated — not the SE2 default
+- [ ] Tab title is your app name — not "Scaffold-ETH 2"
+
 **Full checklist:**
 - [ ] OG image URL is absolute, live production domain
 - [ ] OG title and description set (not default SE2 text)
 - [ ] Twitter card type set (`summary_large_image`)
-- [ ] Favicon updated from SE2 default
-- [ ] README updated from SE2 default
-- [ ] Footer "Fork me" link → your actual repo (not SE2)
+- [ ] All SE2 default branding removed (README, footer, favicon, tab title)
 - [ ] Browser tab title is correct
 - [ ] RPC overrides set (not public RPCs)
 - [ ] `pollingInterval` is 3000

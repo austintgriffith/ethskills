@@ -9,12 +9,11 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 
 **DeFi TVL:** Ethereum DeFi TVL is **$50B+** (Feb 2026). If you're quoting numbers from 2023-2024, they're stale.
 
-**Uniswap V4:** V4 introduced a **hooks system** — custom logic attached to pools (dynamic fees, TWAMM, limit orders, custom oracles). This is a major composability upgrade.
-<!-- VERIFICATION NEEDED: V4 deployment status and mainnet addresses -->
+**Uniswap V4 is live.** Launched mainnet **January 31, 2025** on 10+ chains. V4 introduced a **hooks system** — custom logic attached to pools (dynamic fees, TWAMM, limit orders, custom oracles). This is the biggest composability upgrade since flash loans. PoolManager addresses are different per chain (NOT deterministic like V3).
 
 **Costs changed everything:** A flash loan arbitrage on mainnet costs ~$0.05-0.50 in gas now (was $5-50). This opens composability patterns that were previously uneconomical.
 
-**The dominant DEX on each L2 is NOT Uniswap.** Aerodrome dominates Base, Velodrome dominates Optimism, Camelot is a major native DEX on Arbitrum. Don't default to Uniswap on every chain.
+**The dominant DEX on each L2 is NOT Uniswap.** Aerodrome and Velodrome merged into **Aero** (November 2025, Dromos Labs) — the unified DEX dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. Don't default to Uniswap on every chain.
 
 ## Key Protocol Addresses (Verified Feb 2026)
 
@@ -24,7 +23,8 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 | Uniswap V2 Factory | Factory | `0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f` |
 | Uniswap V3 Factory | Factory | `0x1F98431c8aD98523631AE4a59f267346ea31F984` |
 | Uniswap V3 SwapRouter02 | Router | `0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45` |
-| Uniswap Universal Router | Router | `0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD` |
+| Uniswap V4 PoolManager | PoolManager | `0x000000000004444c5dc75cB358380D2e3dE08A90` |
+| Uniswap Universal Router (V4) | Router | `0x66a9893cc07d91d95644aedd05d03f95e1dba8af` |
 | Aave V3 Pool | Pool | `0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2` |
 
 See `addresses/SKILL.md` for complete multi-chain address list including L2-native protocols (Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, Morpho).
@@ -166,9 +166,9 @@ contract FlashLoanArb is FlashLoanSimpleReceiverBase {
 
 ## Building on Base
 
-**Dominant DEX: Aerodrome** (~$500-600M TVL) — NOT Uniswap. Uses the ve(3,3) model.
+**Dominant DEX: Aero** (formerly Aerodrome, ~$500-600M TVL) — NOT Uniswap. In November 2025, Dromos Labs merged Aerodrome (Base) and Velodrome (Optimism) into a unified cross-chain DEX called **Aero**. Same contracts, same ve(3,3) model, new brand.
 
-### How Aerodrome Works (Critical Difference from Uniswap)
+### How Aero Works (Critical Difference from Uniswap)
 - **LPs deposit tokens** into pools → earn **AERO emissions** (not trading fees!)
 - **veAERO voters** lock AERO → vote on which pools get emissions → earn **100% of trading fees + bribes**
 - This is the opposite of Uniswap where LPs earn fees directly

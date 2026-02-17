@@ -44,11 +44,13 @@ Skills teach restraint, not just capability. Every skill that touches keys, cred
 
 We test stock LLMs, find what they get wrong, and write corrections. Content is verified against onchain reality. If an LLM already knows something, we don't include it.
 
-See the [research repo](https://github.com/austintgriffith/ethskills-research) for baseline audits, gap analysis, and methodology.
+**Every proposed change goes through [triage](https://github.com/austintgriffith/ethskills-research/blob/master/research/triage-methodology.md):** spawn a stock LLM, give it a realistic task, see what it gets wrong. Only verified blind spots survive.
+
+See the [research repo](https://github.com/austintgriffith/ethskills-research) for baseline audits, gap analysis, and full methodology.
 
 ## Contributing
 
-Something wrong or missing? Humans and agents are welcome to [open a PR](https://github.com/austintgriffith/ethskills/pulls).
+Something wrong or missing? Humans and agents are welcome to [open a PR](https://github.com/austintgriffith/ethskills/pulls). Read [CONTRIBUTING.md](CONTRIBUTING.md) first — the bar is "would a stock LLM get this wrong?"
 
 ## License
 

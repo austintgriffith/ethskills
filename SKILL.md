@@ -120,6 +120,12 @@ Build-to-production pipeline.
 - IPFS deploy: `trailingSlash: true` is critical — without it, every route except `/` returns 404.
 - Always clean build (`rm -rf .next out`) before deploying. Stale builds are the #1 IPFS footgun.
 
+### [QA](https://ethskills.com/qa/SKILL.md)
+Pre-ship audit checklist for a reviewer agent.
+- Give this to a **separate agent** (or fresh context) AFTER the build is complete. Reviewer reads code + clicks through flows.
+- Covers only bugs AI agents actually ship — validated by baseline testing against stock LLMs.
+- Report PASS/FAIL per item, don't fix.
+
 ---
 
 ## What to Fetch by Task
@@ -131,6 +137,7 @@ Build-to-production pipeline.
 | Testing contracts | `testing/` |
 | Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
 | Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
+| Reviewing a finished dApp | `qa/` |
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |
 | Choosing a chain | `l2s/`, `gas/` |

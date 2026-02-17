@@ -19,7 +19,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **Unichain exists.** Launched mainnet February 10, 2025. Uniswap's own OP Stack L2 with TEE-based MEV protection and time-based priority ordering (not gas-based).
 
-**The dominant DEX on each L2 is NOT Uniswap.** Aerodrome dominates Base (~$500-600M TVL). Velodrome dominates Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
+**Aerodrome and Velodrome merged into "Aero."** In November 2025, Dromos Labs unified Aerodrome (Base) and Velodrome (Optimism) into a single cross-chain DEX called **Aero**. Same contracts, new brand. Aero dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
 
 ## L2 Comparison Table (Feb 2026)
 
@@ -88,8 +88,8 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 ### Dominant DEX Per Chain
 | Chain | Dominant DEX | Model | Why NOT Uniswap |
 |-------|-------------|-------|-----------------|
-| Base | Aerodrome | ve(3,3) — LPs earn emissions, voters earn fees | Deeper liquidity for most pairs |
-| Optimism | Velodrome | ve(3,3) — same team as Aerodrome | Same flywheel model |
+| Base | **Aero** (was Aerodrome) | ve(3,3) — LPs earn emissions, voters earn fees | Deeper liquidity for most pairs |
+| Optimism | **Aero** (was Velodrome) | ve(3,3) — merged Nov 2025 under Dromos Labs | Same flywheel, unified brand |
 | Arbitrum | Camelot + GMX | Native DEX + perps | Camelot for spot, GMX for perps |
 | zkSync | SyncSwap | Classic AMM | Largest native DEX on zkSync |
 
