@@ -144,7 +144,7 @@ Use aggregators for best swap prices — they route across all DEXs.
 | DAI Savings Rate (Pot) | `0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7` | ✅ Verified |
 | sDAI (Savings Dai ERC-4626) | `0x83F20F44975D03b1b09e64809B757c47f942BEeA` | ✅ Verified |
 
-DSR currently returning ~1.25% APY. sDAI is an ERC-4626 vault — deposit DAI, earn DSR automatically.
+sDAI is an ERC-4626 vault — deposit DAI, earn DSR automatically. Check current rate via `pot.dsr()`.
 
 ### Aave
 
@@ -303,7 +303,7 @@ Source: [docs.across.to/reference/contract-addresses](https://docs.across.to/ref
 
 ### Yearn V3 (Mainnet)
 
-Deployed via CREATE2 — should be same addresses on supported chains.
+Deployed via CREATE2. Addresses below verified on Mainnet — verify on other chains before use.
 
 | Contract | Address | Status |
 |----------|---------|--------|
