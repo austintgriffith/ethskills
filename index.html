@@ -282,7 +282,7 @@ h2 {
 
 <p class="tagline">The missing knowledge between AI agents and production Ethereum.<span class="cursor"></span></p>
 
-<button class="hero-btn" data-url="https://ethskills.com/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/SKILL.md</button>
+<button class="hero-btn copy-btn" data-url="https://ethskills.com/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/SKILL.md</button>
 
 <div class="skill" style="margin-top:2rem;">
   <div class="skill-name">Why Ethereum</div>
@@ -492,18 +492,7 @@ document.querySelectorAll('.copy-btn[data-url]').forEach(btn => {
   });
 });
 
-// Hero button copy (no stopPropagation)
-document.querySelector('.hero-btn[data-url]').addEventListener('click', async (e) => {
-  const url = e.currentTarget.dataset.url;
-  try { await navigator.clipboard.writeText(url); } catch(err) {
-    const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t);
-  }
-  const btn = e.currentTarget;
-  const orig = btn.innerHTML;
-  btn.classList.add('copied');
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-  setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
-});
+// Hero button now uses copy-btn class — handled by the querySelectorAll above.
 
 // Modal: open on card click, fetch skill and render markdown
 const modal = document.getElementById('modal');
