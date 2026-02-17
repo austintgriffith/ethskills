@@ -1,13 +1,13 @@
 ---
 name: addresses
-description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, USDC, USDT, DAI, ENS, Safe, Chainlink, and more. Always verify addresses against a block explorer before sending transactions.
+description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, Lido, Rocket Pool, 1inch, Permit2, MakerDAO/sDAI, EigenLayer, Across, Chainlink CCIP, Yearn V3, USDC, USDT, DAI, ENS, Safe, Chainlink, and more. Always verify addresses against a block explorer before sending transactions.
 ---
 
 # Contract Addresses
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
-**Last Verified:** February 15, 2026 (all addresses verified onchain via `cast code` + `cast call`)
+**Last Verified:** February 16, 2026 (all addresses verified onchain via `eth_getCode` + `eth_call`)
 
 ---
 
@@ -52,6 +52,30 @@ description: Verified contract addresses for major Ethereum protocols across mai
 
 ---
 
+## Liquid Staking
+
+### Lido — wstETH (Wrapped stETH)
+| Network | Address | Status |
+|---------|---------|--------|
+| Mainnet | `0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0` | ✅ Verified |
+| Arbitrum | `0x5979D7b546E38E414F7E9822514be443A4800529` | ✅ Verified |
+| Optimism | `0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb` | ✅ Verified |
+| Base | `0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452` | ✅ Verified |
+
+### Lido — Staking & Withdrawal
+| Contract | Address | Status |
+|----------|---------|--------|
+| stETH / Lido (deposit ETH here) | `0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84` | ✅ Verified |
+| Withdrawal Queue (unstETH NFT) | `0x889edC2eDab5f40e902b864aD4d7AdE8E412F9B1` | ✅ Verified |
+
+### Rocket Pool
+| Contract | Address | Status |
+|----------|---------|--------|
+| rETH Token | `0xae78736Cd615f374D3085123A210448E74Fc6393` | ✅ Verified |
+| Deposit Pool v1.1 | `0x2cac916b2A963Bf162f076C0a8a4a8200BCFBfb4` | ✅ Verified |
+
+---
+
 ## DeFi Protocols
 
 ### Uniswap
@@ -82,10 +106,45 @@ description: Verified contract addresses for major Ethereum protocols across mai
 |----------|---------|--------|
 | Universal Router | `0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD` | ✅ Verified |
 
+#### Permit2 (Universal Token Approval)
+
+Used by Uniswap Universal Router and many other protocols. Same address on all chains (CREATE2).
+
+| Network | Address | Status |
+|---------|---------|--------|
+| All chains | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | ✅ Verified |
+
+Verified on: Mainnet, Arbitrum, Base, Optimism (identical bytecode on all).
+
 #### UNI Token
 | Network | Address | Status |
 |---------|---------|--------|
 | Mainnet | `0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984` | ✅ Verified |
+
+### 1inch Aggregation Router
+
+Use aggregators for best swap prices — they route across all DEXs.
+
+#### V6 (Current — same address on all chains via CREATE2)
+| Network | Address | Status |
+|---------|---------|--------|
+| Mainnet | `0x111111125421cA6dc452d289314280a0f8842A65` | ✅ Verified |
+| Arbitrum | `0x111111125421cA6dc452d289314280a0f8842A65` | ✅ Verified |
+| Base | `0x111111125421cA6dc452d289314280a0f8842A65` | ✅ Verified |
+
+#### V5 (Legacy)
+| Network | Address | Status |
+|---------|---------|--------|
+| Mainnet | `0x1111111254EEB25477B68fb85Ed929f73A960582` | ✅ Verified |
+
+### MakerDAO / Sky
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| DAI Savings Rate (Pot) | `0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7` | ✅ Verified |
+| sDAI (Savings Dai ERC-4626) | `0x83F20F44975D03b1b09e64809B757c47f942BEeA` | ✅ Verified |
+
+sDAI is an ERC-4626 vault — deposit DAI, earn DSR automatically. Check current rate via `pot.dsr()`.
 
 ### Aave
 
@@ -184,6 +243,15 @@ All EVM chains (CREATE2).
 | BTC/USD | `0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c` | ✅ Verified |
 | USDC/USD | `0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6` | ✅ Verified |
 
+#### Additional Mainnet Feeds
+| Feed | Address | Status |
+|------|---------|--------|
+| LINK/USD | `0x2c1d072e956AFFC0D435Cb7AC38EF18d24d9127c` | ✅ Verified |
+| stETH/USD | `0xCfE54B5cD566aB89272946F602D76Ea879CAb4a8` | ✅ Verified |
+| AAVE/USD | `0x547a514d5e3769680Ce22B2361c10Ea13619e8a9` | ✅ Verified |
+
+All feeds confirmed returning live prices via `latestAnswer()` (Feb 16, 2026).
+
 #### ETH/USD Price Feeds (Multi-Chain)
 | Network | Address | Status |
 |---------|---------|--------|
@@ -196,6 +264,62 @@ All EVM chains (CREATE2).
 |---------|---------|--------|
 | Arbitrum | `0xf97f4df75117a78c1A5a0DBb814Af92458539FB4` | ✅ Verified |
 | Base | `0x88Fb150BDc53A65fe94Dea0c9BA0a6dAf8C6e196` | ✅ Verified |
+
+### EigenLayer (Mainnet)
+
+Restaking protocol. Both are upgradeable proxies (EIP-1967).
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| StrategyManager | `0x858646372CC42E1A627fcE94aa7A7033e7CF075A` | ✅ Verified |
+| DelegationManager | `0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A` | ✅ Verified |
+
+Source: [eigenlayer.xyz](https://docs.eigenlayer.xyz/)
+
+### Chainlink CCIP Router (v1.2.0)
+
+Cross-chain messaging. Call `typeAndVersion()` to confirm — returns "Router 1.2.0".
+
+| Network | Address | Status |
+|---------|---------|--------|
+| Mainnet | `0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D` | ✅ Verified |
+| Arbitrum | `0x141fa059441E0ca23ce184B6A78bafD2A517DdE8` | ✅ Verified |
+| Base | `0x881e3A65B4d4a04dD529061dd0071cf975F58Bcd` | ✅ Verified |
+
+Source: [docs.chain.link/ccip](https://docs.chain.link/ccip/directory/mainnet)
+
+### Across Protocol — SpokePool
+
+Cross-chain bridge. All SpokePool contracts are upgradeable proxies.
+
+| Network | Address | Status |
+|---------|---------|--------|
+| Mainnet | `0x5c7BCd6E7De5423a257D81B442095A1a6ced35C5` | ✅ Verified |
+| Arbitrum | `0xe35e9842fceaCA96570B734083f4a58e8F7C5f2A` | ✅ Verified |
+| Base | `0x09aea4b2242abC8bb4BB78D537A67a245A7bEC64` | ✅ Verified |
+| Optimism | `0x6f26Bf09B1C792e3228e5467807a900A503c0281` | ✅ Verified |
+
+Source: [docs.across.to/reference/contract-addresses](https://docs.across.to/reference/contract-addresses)
+
+### Yearn V3 (Mainnet)
+
+Deployed via CREATE2. Addresses below verified on Mainnet — verify on other chains before use.
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| VaultFactory 3.0.4 | `0x770D0d1Fb036483Ed4AbB6d53c1C88fb277D812F` | ✅ Verified |
+| TokenizedStrategy | `0xDFC8cD9F2f2d306b7C0d109F005DF661E14f4ff2` | ✅ Verified |
+| 4626 Router | `0x1112dbCF805682e828606f74AB717abf4b4FD8DE` | ✅ Verified |
+
+Source: [docs.yearn.fi/developers/addresses/v3-contracts](https://docs.yearn.fi/developers/addresses/v3-contracts)
+
+### Deterministic Deployer (CREATE2)
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| Arachnid's Deployer | `0x4e59b44847b379578588920cA78FbF26c0B4956C` | ✅ Verified |
+
+Same address on every EVM chain. Used by many protocols for deterministic deployments.
 
 ---
 
@@ -372,16 +496,23 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 - **Camelot:** https://docs.camelot.exchange/contracts/arbitrum/one-mainnet
 - **SyncSwap:** https://docs.syncswap.xyz/syncswap/smart-contracts/smart-contracts
 - **Morpho:** https://docs.morpho.org/get-started/resources/addresses/
+- **Lido:** https://docs.lido.fi/deployed-contracts/
+- **Rocket Pool:** https://docs.rocketpool.net/overview/contracts-integrations
+- **1inch:** https://docs.1inch.io/docs/aggregation-protocol/introduction
+- **EigenLayer:** https://docs.eigenlayer.xyz/
+- **Across:** https://docs.across.to/reference/contract-addresses
+- **Chainlink CCIP:** https://docs.chain.link/ccip/directory/mainnet
+- **Yearn V3:** https://docs.yearn.fi/developers/addresses/v3-contracts
 - **CoinGecko:** https://www.coingecko.com (token addresses)
 - **Token Lists:** https://tokenlists.org/
 - **DeFi Llama:** https://defillama.com (TVL rankings by chain)
 
 ## Multi-Chain Notes
 
-- **CREATE2 deployments** (same address cross-chain): Uniswap V3, Safe, Seaport, ERC-4337 EntryPoint, ERC-8004
-- **Different addresses per chain:** USDC, USDT, DAI, WETH — always check per-chain
+- **CREATE2 deployments** (same address cross-chain): Uniswap V3, Safe, Seaport, ERC-4337 EntryPoint, ERC-8004, Permit2, 1inch v6, Yearn V3, Arachnid Deployer
+- **Different addresses per chain:** USDC, USDT, DAI, WETH, wstETH, Across SpokePool, Chainlink CCIP Router — always check per-chain
 - **Native vs Bridged USDC:** Some chains have both! Use native.
 
 ---
 
-✅ **All addresses verified onchain via `cast code` + `cast call` — February 15, 2026. Bytecode confirmed present, identity confirmed via symbol/name/cross-reference calls. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
+✅ **All addresses verified onchain via `eth_getCode` + `eth_call` — February 16, 2026. Bytecode confirmed present, identity confirmed via symbol/name/cross-reference calls. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
