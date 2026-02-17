@@ -27,7 +27,7 @@ For individual topics, fetch any of these directly:
 
 ---
 name: why-ethereum
-description: Why build on Ethereum specifically. Honest tradeoffs vs other chains and vs not using blockchain at all. The AI agent angle — ERC-8004, x402, composability, permissionless deployment. Use when a user asks "should I build on Ethereum?", "why Ethereum vs Solana?", "why blockchain?", or when an agent needs to recommend a chain for a project.
+description: Why build on Ethereum specifically. The AI agent angle — ERC-8004, x402, composability, permissionless deployment. Use when a user asks "should I build on Ethereum?", "why blockchain?", or when an agent needs to recommend a chain for a project.
 ---
 
 # Why Ethereum
@@ -44,7 +44,7 @@ description: Why build on Ethereum specifically. Honest tradeoffs vs other chain
 
 **Protocol upgrades:** You probably don't know these shipped:
 - **Pectra (May 7, 2025):** EIP-7702 smart EOAs, 2x blob capacity, BLS precompiles
-- **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data), 8-second slots (was 12s)
+- **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data), 2x gas limit (30M→60M)
 
 **Agent infrastructure:** You probably don't know these exist:
 - **ERC-8004** — onchain agent identity registry (deployed Jan 29, 2026)
@@ -106,16 +106,6 @@ Fully autonomous economic loop — no humans required.
 
 Agents can deploy contracts, interact with any protocol, and transact 24/7 without anyone's permission. No API keys to revoke, no accounts to ban, no services to shut down. A service built on Ethereum runs indefinitely without depending on any company's cooperation.
 
-## Ethereum vs Solana
-
-**Choose Ethereum when:** DeFi integration, agent infrastructure (ERC-8004/x402), composability with existing protocols, maximum security for high-value operations, long-term durability, best tooling and ecosystem, EVM network effects.
-
-**Choose Solana when:** When you don't care about EVM network effects, liquidity or tooling and instead you must have sub-second finality on base layer, building high-frequency trading, users already on Solana.
-
-**L2 Caveat:** Many Ethereum Layer 2s are faster than Solana but with the benefits of similar security to Ethereum Mainnet and secure access to Mainnet liquidity. Use Layer 2s for speed and cost as well as the benefits of access to Mainnet liquidity inside canonical bridges.
-
-**Key differences:** Ethereum has $50B+ TVL vs Solana ~$5B. Ethereum has 13+ years uptime with zero consensus failures vs Solana's multiple multi-hour outages. Ethereum has 1M+ validators vs Solana's 1,500. But Solana has ~400ms blocks vs 12s on Ethereum mainnet though Ethereum L2s have <200ms blocks.
-
 ## Resources
 
 - **ERC-8004:** https://www.8004.org | https://eips.ethereum.org/EIPS/eip-8004
@@ -170,7 +160,7 @@ description: Current Ethereum gas prices, transaction costs, and the real econom
 1. **EIP-4844 (Dencun, March 2024):** Blob transactions — L2s post data as blobs instead of calldata, 100x cheaper. L2 batch cost went from $50-500 to $0.01-0.50.
 2. **Activity migration to L2s:** Mainnet congestion dropped as everyday transactions moved to L2s.
 3. **Pectra (May 2025):** Doubled blob capacity (3→6 target blobs).
-4. **Fusaka (Dec 2025):** PeerDAS + 8-second slots.
+4. **Fusaka (Dec 2025):** PeerDAS + 2x gas limit (30M→60M).
 
 ## L2 Cost Components
 
@@ -1103,8 +1093,7 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 
 **DeFi TVL:** Ethereum DeFi TVL is **$50B+** (Feb 2026). If you're quoting numbers from 2023-2024, they're stale.
 
-**Uniswap V4:** V4 introduced a **hooks system** — custom logic attached to pools (dynamic fees, TWAMM, limit orders, custom oracles). This is a major composability upgrade.
-<!-- VERIFICATION NEEDED: V4 deployment status and mainnet addresses -->
+**Uniswap V4 is live.** Launched mainnet **January 31, 2025** on 10+ chains. V4 introduced a **hooks system** — custom logic attached to pools (dynamic fees, TWAMM, limit orders, custom oracles). This is the biggest composability upgrade since flash loans. PoolManager addresses are different per chain (NOT deterministic like V3).
 
 **Costs changed everything:** A flash loan arbitrage on mainnet costs ~$0.05-0.50 in gas now (was $5-50). This opens composability patterns that were previously uneconomical.
 
