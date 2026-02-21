@@ -7,12 +7,27 @@ LLMs think gas is 30 gwei. It's 0.05. They've never heard of ERC-8004 or x402. T
 Each skill is a markdown file. Give any URL to your AI agent — it reads it and instantly corrects its Ethereum knowledge.
 
 ```
-https://ethskills.com/SKILL.md          ← everything (133KB)
+https://ethskills.com/SKILL.md          ← table of contents
 https://ethskills.com/gas/SKILL.md      ← just gas & costs
 https://ethskills.com/why/SKILL.md      ← why ethereum
 ```
 
-No install. No CLI. No package manager. Just a URL.
+### Add the top-level SKILL.md to your agent's context
+The agent will look up the specific skills when needed.
+
+Just prompt your agent with this:
+
+```
+Install the https://github.com/austintgriffith/ethskills/blob/master/SKILL.md skill
+```
+
+### Claude Code Plugin
+
+Install directly from GitHub — no clone required:
+
+```bash
+claude plugin install https://github.com/austintgriffith/ethskills
+```
 
 ## Terminology
 

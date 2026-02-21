@@ -1,0 +1,32 @@
+{
+  "name": "ethskills",
+  "version": "1.0.0",
+  "description": "Ethereum development skills — corrects LLM blind spots on gas costs, L2s, DeFi protocols, security, and the current tool landscape.",
+  "author": {
+    "name": "Austin Griffith",
+    "url": "https://github.com/austintgriffith"
+  },
+  "homepage": "https://ethskills.com",
+  "repository": "https://github.com/austintgriffith/ethskills",
+  "license": "MIT",
+  "keywords": ["ethereum", "solidity", "defi", "web3", "blockchain", "scaffold-eth"],
+  "skills": [
+    "./ship",
+    "./why",
+    "./gas",
+    "./wallets",
+    "./l2s",
+    "./standards",
+    "./tools",
+    "./building-blocks",
+    "./orchestration",
+    "./addresses",
+    "./concepts",
+    "./security",
+    "./testing",
+    "./indexing",
+    "./frontend-ux",
+    "./frontend-playbook",
+    "./qa"
+  ]
+}
