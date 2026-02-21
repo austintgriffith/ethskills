@@ -146,9 +146,12 @@ function testFuzz_DepositWithdrawRoundtrip(uint256 amount) public {
     vault.withdraw(vault.balanceOf(alice), alice, alice);
     vm.stopPrank();
 
-    // Property: user gets back what they deposited (minus any fees)
+    // Property: user gets back what they deposited (minus any fees/rounding)
     assertGe(token.balanceOf(alice), balanceBefore - 1); // Allow 1 wei rounding
 }
+
+// ERC-4626 with _decimalsOffset() = N: rounding dust can be up to 10^N wei per user.
+// For offset=3: use assertApproxEqAbs(out, in, 1000) instead of allowing only 1 wei.
 ```
 
 ### Bounding Inputs
@@ -244,6 +247,36 @@ contract SwapTest is Test {
 - **Always:** Any contract that reads oracle prices
 - **Never:** Pure logic contracts with no external calls — use unit tests
 
+### EIP-7702 Warning (Mainnet Fork)
+
+On a mainnet fork, Anvil default accounts and `makeAddr()`-generated addresses may have **EIP-7702 delegation code** (`0xef01...`). This affects **all safe transfer acceptance checks**, not just ERC-721:
+
+- **ERC-721**: `_safeMint` / `safeTransferFrom` → calls `onERC721Received` → reverts with `ERC721InvalidReceiver`
+- **ERC-1155**: `_mint` / `_mintBatch` / `safeTransferFrom` → calls `onERC1155Received` → reverts with `ERC1155InvalidReceiver`
+
+Any function that mints or transfers tokens to a 7702-enabled address will revert — this includes `createMarket`, `buyYes`, `buyNo`, `deposit`, or any function that mints tokens to `msg.sender`.
+
+**This breaks any forge script or fork-mode test that mints tokens to derived addresses.**
+
+```solidity
+// ❌ BREAKS on mainnet fork — alice may have EIP-7702 delegation code
+address alice = makeAddr("alice");
+nft.mint(alice, tokenId); // _safeMint → onERC721Received → revert
+// Also breaks: market.buyYes{value: 1 ether}(id, 0); // ERC-1155 _mint → revert
+
+// ❌ ALSO BREAKS — small "cute" PKs derive known addresses that are often delegated
+uint256 constant ALICE_PK = 0xA11CE;
+address alice = vm.addr(ALICE_PK); // 0x3e6E...  — may have delegation code
+
+// ✅ SAFE — high-entropy PK derives an address nobody has touched
+uint256 constant ALICE_PK = uint256(keccak256("alice"));
+address alice = vm.addr(ALICE_PK); // Random-looking address, no onchain code
+```
+
+**The private key needs sufficient entropy.** Small integers (`0xA11CE`, `0xB0B`, `0xC0C`) derive specific, well-known addresses that security researchers and automated wallets have delegated post-EIP-7702. Use `uint256(keccak256("label"))` to get a high-entropy PK that maps to an untouched address.
+
+For forge scripts that broadcast, use `vm.addr(pk)` with high-entropy private keys. For tests that don't need fork state, run without `--fork-url` to avoid the issue entirely.
+
 ### Running Fork Tests
 
 ```bash
@@ -302,6 +335,19 @@ contract VaultInvariantTest is Test {
     function invariant_SharePriceNeverZero() public view {
         if (vault.totalSupply() > 0) {
             assertGt(vault.convertToAssets(1e18), 0, "Share price must never be zero");
+        }
+    }
+
+    // Solvency: vault can always honor all redemptions
+    function invariant_VaultIsSolvent() public view {
+        uint256 totalShares = vault.totalSupply();
+        if (totalShares > 0) {
+            uint256 redeemable = vault.convertToAssets(totalShares);
+            assertGe(
+                vault.totalAssets(),
+                redeemable,
+                "Vault must always be able to honor all redemptions"
+            );
         }
     }
 }
@@ -363,6 +409,29 @@ forge test --fuzz-runs 1000
 
 **Focus your testing effort on:** Custom business logic, mathematical operations, integration points with external protocols, access control boundaries, and economic edge cases.
 
+**Guard function check order matters.** When a function has multiple `require` checks that can all be violated simultaneously, the first check that fires determines the error message. Prefer semantic checks (state: `outcome != NONE`) before timing checks (`block.timestamp < deadline`) — it produces clearer UX. For example, if a market is both resolved AND past deadline, "Market already resolved" is more helpful than "Betting period closed."
+
+**For security property tests, always assert economic outcomes.** Don't just test that a function doesn't revert — test that the attacker loses money. For example, an inflation attack test must assert `attackerFinalBalance < attackerCost`, not just that the victim received some shares.
+
+---
+
+## Test Hygiene
+
+Tests are code too. Sloppy tests leak into production habits and create noise that hides real issues.
+
+- **Remove unused imports.** `forge build` emits `unused-import` notes — fix them before finalizing. Leftover imports signal copy-paste and make tests harder to read.
+- **Use `SafeERC20` in test helpers too.** Even though your MockToken's `transfer` won't fail, using `token.transfer()` instead of `token.safeTransfer()` triggers `erc20-unchecked-transfer` warnings from forge. More importantly, if you copy test patterns into production code, the unsafe habit follows. Use `SafeERC20` everywhere:
+  ```solidity
+  // In setUp(): fund test accounts safely
+  using SafeERC20 for IERC20;
+
+  IERC20(address(token)).safeTransfer(alice, 10_000e18);  // ✅
+  // NOT: token.transfer(alice, 10_000e18);               // ❌ triggers warning
+  ```
+- **Ignore acronym casing notes.** Foundry's linter flags acronyms like NFT, DAO, ERC, and ABI as non-`mixedCase` (e.g., suggests `listNft` instead of `listNFT`). These are style notes, not errors — do NOT rename public contract functions based on them. Renaming breaks the ABI and any frontend code that calls the function by name.
+- **Use `uint256` for all fee/basis-point constants.** Declaring `uint16 constant FEE_BPS = 200;` then using it in `uint256` arithmetic (`grossBonus * FEE_BPS / 10_000`) fails in compile-time expressions unless explicitly cast: `uint256(FEE_BPS)`. Avoid the gotcha entirely by declaring `uint256 constant FEE_BPS = 200;`.
+- **Clean up before committing.** Run `forge build` one final time and resolve all warnings and notes. A clean build output means nothing is hiding. Acronym casing notes are the one exception — leave those alone.
+
 ---
 
 ## Pre-Deploy Test Checklist
@@ -376,4 +445,225 @@ forge test --fuzz-runs 1000
 - [ ] Events verified with `expectEmit`
 - [ ] Gas snapshots taken with `forge snapshot` to catch regressions
 - [ ] Static analysis with `slither .` — no high/medium findings unaddressed
+- [ ] Playwright E2E tests pass (page load, wallet connect, read display, write tx)
 - [ ] All tests pass: `forge test -vvv`
+
+---
+
+## Frontend E2E Testing with Playwright
+
+Foundry tests verify contracts. Playwright tests verify the frontend actually works — buttons call the right functions, amounts parse correctly, pages don't crash on load.
+
+### SE2 Burner Wallet Auto-Connect
+
+Scaffold-ETH 2 auto-connects a burner wallet when `targetNetworks` includes `chains.foundry`. No RainbowKit modal clicking needed. Tests just wait for the ETH balance to appear in the header:
+
+```typescript
+// Wait for wallet connection — balance appears in header
+await expect(page.getByText(/ETH/)).toBeVisible({ timeout: 15_000 });
+```
+
+**Fragile balance regex warning:** The balance text format varies by SE2 version and locale — `"0 ETH"` vs `"0.00 ETH"` vs `"10000.00 ETH"`. If `/\d+\.?\d*\s*ETH/` proves flaky, fall back to just `/ETH/` (checks that the balance component rendered at all) or target the header element by role:
+
+```typescript
+// More resilient — just checks ETH text exists anywhere in the header
+await expect(page.locator("header").getByText(/ETH/)).toBeVisible({ timeout: 15_000 });
+```
+
+### What to Test
+
+- **Page loads without errors** — no hydration errors, no missing providers
+- **Wallet connects** — burner wallet auto-connects, balance visible in header
+- **Read data displays** — contract state renders (balances, lists, statuses)
+- **Write transaction completes** — submit a form, confirm tx succeeds, verify UI updates
+
+### Playwright Config
+
+```typescript
+// packages/nextjs/playwright.config.ts
+import { defineConfig } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "./e2e",
+  timeout: 60_000,
+  use: {
+    baseURL: "http://localhost:3000",
+    headless: true,
+  },
+  webServer: {
+    command: "yarn start",
+    url: "http://localhost:3000",
+    reuseExistingServer: true,
+    timeout: 30_000,
+  },
+});
+```
+
+### Test Template
+
+```typescript
+// packages/nextjs/e2e/app.spec.ts
+import { test, expect } from "@playwright/test";
+
+test.describe("dApp E2E", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/");
+    // Wait for burner wallet auto-connect (SE2 + chains.foundry)
+    await expect(page.getByText(/ETH/)).toBeVisible({ timeout: 15_000 });
+    // If your page shows contract data, also wait for it before each test:
+    // await expect(page.getByText(/Total Supply|Active Markets|No Markets/i)).toBeVisible({ timeout: 15_000 });
+  });
+
+  test("page loads without errors", async ({ page }) => {
+    // No error overlay
+    await expect(page.locator("#__next")).toBeVisible();
+    await expect(page.getByRole("heading")).toBeVisible();
+  });
+
+  test("read data displays", async ({ page }) => {
+    // Replace with your contract's read data
+    // Example: await expect(page.getByText("Total Supply")).toBeVisible({ timeout: 10_000 });
+  });
+
+  test("write transaction completes", async ({ page }) => {
+    // Replace with your contract's write interaction
+    // Example:
+    // await page.getByPlaceholder("Enter amount").fill("1.0");
+    // await page.getByRole("button", { name: /stake/i }).click();
+    // Verify the UI updates after tx — use watch:true on read hooks so
+    // polling picks up new state, and assert the changed value appears:
+    // await expect(page.getByText(/success|confirmed/i)).toBeVisible({ timeout: 30_000 });
+  });
+});
+```
+
+### Selector Strategy
+
+SE2 doesn't use `data-testid` attributes. Use semantic selectors:
+
+```typescript
+// ✅ Semantic — resilient to markup changes
+page.getByRole("button", { name: /stake/i })
+page.getByText("Total Staked")
+page.getByPlaceholder("Enter amount")
+page.getByRole("heading", { name: /dashboard/i })
+
+// ❌ Fragile — breaks on CSS/class changes
+page.locator(".btn-primary")
+page.locator("[data-testid='stake-btn']")  // SE2 doesn't add these
+```
+
+### Timeout Guidelines
+
+| Action | Timeout | Why |
+|--------|---------|-----|
+| Wallet connect (burner) | 15s | Page + hydration + auto-connect |
+| Contract read display | 10s | RPC fetch + React re-render |
+| Contract write tx | 30s | Submit + Anvil mine + UI update |
+| Page navigation | 10s | Next.js client-side routing |
+
+**Never use `waitForTimeout()`.** Always use assertion timeouts. This rule is non-negotiable — `waitForTimeout` creates tests that pass in warm environments and fail in cold replays:
+
+```typescript
+// ❌ Flaky — might be too slow or too fast
+await page.waitForTimeout(5000);
+await expect(page.getByText("Done")).toBeVisible();
+
+// ✅ Resilient — polls until visible or timeout
+await expect(page.getByText("Done")).toBeVisible({ timeout: 10_000 });
+```
+
+**Write transaction tests must assert a UI state change**, not just that the page didn't crash. After a buy/stake/mint, assert the new balance, updated price, or success indicator:
+
+```typescript
+// ❌ Weak — only checks page is still alive
+await page.getByRole("button", { name: /buy/i }).click();
+await page.waitForTimeout(3000); // hoping tx completed
+
+// ✅ Strong — asserts economic outcome in the UI
+await page.getByRole("button", { name: /buy/i }).click();
+await expect(page.getByText(/balance: [1-9]/i)).toBeVisible({ timeout: 30_000 });
+```
+
+**Pre-seed chain state for complex write tests.** When the write function under test requires complex UI inputs (datetime pickers, multi-step forms), use `cast send` in `beforeAll` to set up the state, then test simpler write functions in E2E:
+
+```typescript
+test.beforeAll(async () => {
+  // Pre-create a market via cast so E2E tests can focus on buy/sell
+  const { execSync } = require("child_process");
+  execSync(`cast send ${CONTRACT} "createMarket(string,address,uint256)" "Test" ${RESOLVER} ${DEADLINE} --value 1ether --rpc-url http://127.0.0.1:8545 --private-key ${DEPLOYER_PK}`);
+});
+```
+
+### Native Input Gotchas
+
+**`datetime-local` inputs:** `page.fill()` does NOT fire React's synthetic `onChange` on `<input type="datetime-local">` in headless Chromium. The input value updates in the DOM but React state stays empty. Use `page.evaluate()` to set the value and dispatch events:
+
+```typescript
+// ❌ BROKEN — React state never updates
+await page.locator('input[type="datetime-local"]').fill("2026-03-01T12:00");
+
+// ✅ WORKS — dispatches events React can see
+await page.evaluate((val) => {
+  const el = document.querySelector('input[type="datetime-local"]') as HTMLInputElement;
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype, "value"
+  )!.set!;
+  nativeInputValueSetter.call(el, val);
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+  el.dispatchEvent(new Event("change", { bubbles: true }));
+}, "2026-03-01T12:00");
+```
+
+This also affects `date`, `time`, and `color` input types. Regular text inputs work fine with `page.fill()`.
+
+### Contract Address in E2E Tests
+
+**Never hardcode deployed contract addresses in E2E tests.** When Anvil restarts and `yarn deploy` reruns, the address changes. Import from SE2's generated file:
+
+```typescript
+import deployedContracts from "../contracts/deployedContracts";
+
+const chainId = 31337; // foundry
+const CONTRACT = deployedContracts[chainId].PredictionMarket.address;
+```
+
+If the import doesn't work in Playwright's test context (different tsconfig), use `cast` to read it:
+
+```typescript
+const { execSync } = require("child_process");
+const address = execSync(`jq -r '.["31337"].PredictionMarket.address' packages/nextjs/contracts/deployedContracts.ts`).toString().trim();
+```
+
+### E2E State Isolation
+
+`beforeAll` contract setup (e.g., `cast send createMarket`) is sensitive to accumulated Anvil state from previous test runs. If your contract accumulates state (markets, auctions, positions), subsequent runs may fail because selectors match multiple elements or setup transactions revert silently.
+
+**Design `beforeAll` to be resilient:**
+- Wrap `execSync` cast commands in try-catch and log failures explicitly — silent `cast send` failures with `{ stdio: "pipe" }` are hard to debug
+- Use unique identifiers (timestamps, random strings) in created entities so tests don't collide with leftover state
+- If using `{ stdio: "pipe" }` on `execSync`, check the result or catch errors:
+
+```typescript
+function castSend(cmd: string): string {
+  try {
+    return execSync(cmd, { stdio: "pipe" }).toString().trim();
+  } catch (e: any) {
+    console.error("cast send failed:", e.stderr?.toString());
+    throw e;
+  }
+}
+```
+
+### Multi-Entity Selector Strategy
+
+In contracts that hold multiple instances (markets, auctions, NFT listings), accumulated state from previous test runs causes `getByText()` to match multiple elements. Playwright strict mode throws when more than one match exists.
+
+**Always use `.first()` on selectors that may match multiple cards:**
+```typescript
+// ✅ Handles accumulated state from previous runs
+await expect(page.getByText(/my market question/i).first()).toBeVisible();
+
+// ❌ Fails if multiple markets contain similar text
+await expect(page.getByText(/my market question/i)).toBeVisible();
+```
