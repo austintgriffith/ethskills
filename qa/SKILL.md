@@ -119,8 +119,6 @@ AI agents love the aesthetic of a dark UI and will hardcode it directly on the p
 
 This bypasses the entire DaisyUI theme system. Light-mode users get a black page. The `SwitchTheme` toggle in the SE2 header stops working. `prefers-color-scheme` is ignored.
 
-**Real example:** clawd-stake shipped with `bg-[#0a0a0a] text-white` hardcoded on the root div while `globals.css` had a full DaisyUI light + dark theme configured — the theme system was completely invisible to the page.
-
 **Check for this pattern:**
 ```bash
 grep -rn 'bg-\[#0\|bg-black\|bg-gray-9\|bg-zinc-9\|bg-neutral-9\|bg-slate-9' packages/nextjs/app/
