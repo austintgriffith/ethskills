@@ -108,6 +108,38 @@ vercel env ls | grep RPC
 
 ---
 
+## Important: Dark Mode — No Hardcoded Dark Backgrounds
+
+AI agents love the aesthetic of a dark UI and will hardcode it directly on the page wrapper:
+
+```tsx
+// ❌ FAIL — hardcoded black background, ignores system preference AND DaisyUI theme
+<div className="min-h-screen bg-[#0a0a0a] text-white">
+```
+
+This bypasses the entire DaisyUI theme system. Light-mode users get a black page. The `SwitchTheme` toggle in the SE2 header stops working. `prefers-color-scheme` is ignored.
+
+**Real example:** clawd-stake shipped with `bg-[#0a0a0a] text-white` hardcoded on the root div while `globals.css` had a full DaisyUI light + dark theme configured — the theme system was completely invisible to the page.
+
+**Check for this pattern:**
+```bash
+grep -rn 'bg-\[#0\|bg-black\|bg-gray-9\|bg-zinc-9\|bg-neutral-9\|bg-slate-9' packages/nextjs/app/
+```
+Any match on a root layout div or page wrapper → **FAIL**.
+
+- ❌ **FAIL:** Root page wrapper uses a hardcoded hex color or Tailwind dark bg class (`bg-[#0a0a0a]`, `bg-black`, `bg-zinc-900`, etc.)
+- ❌ **FAIL:** `SwitchTheme` toggle is present in the header but the page ignores `data-theme` entirely
+- ✅ **PASS:** All backgrounds use DaisyUI semantic variables — `bg-base-100`, `bg-base-200`, `text-base-content`
+- ✅ **PASS (dark-only exception):** Theme is explicitly forced via `data-theme="dark"` on `<html>` **AND** the `<SwitchTheme/>` component is removed from the header
+
+**The fix:**
+```tsx
+// ✅ CORRECT — responds to light/dark toggle and prefers-color-scheme
+<div className="min-h-screen bg-base-200 text-base-content">
+```
+
+---
+
 ## Important: Phantom Wallet in RainbowKit
 
 Phantom is NOT in the SE2 default wallet list. A lot of users have Phantom — if it's missing, they can't connect.
@@ -216,6 +248,7 @@ Report each as PASS or FAIL:
 - [ ] pollingInterval is 3000
 - [ ] RPC overrides set (not default SE2 key) AND env var confirmed set on hosting platform
 - [ ] Favicon updated from SE2 default
+- [ ] No hardcoded dark backgrounds — page wrapper uses `bg-base-200 text-base-content` (or `data-theme="dark"` forced + `<SwitchTheme/>` removed)
 - [ ] Phantom wallet in RainbowKit wallet list
 - [ ] Mobile: ALL transaction buttons deep link to wallet (fire TX first, then `setTimeout(openWallet, 2000)`)
 - [ ] Mobile: wallet detection checks WC session data, not just `connector.id`

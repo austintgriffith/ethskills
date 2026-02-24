@@ -242,7 +242,53 @@ pollingInterval: 3000,  // 3 seconds, not the default 30000
 
 ---
 
-## Rule 7: Pre-Publish Checklist
+## Rule 7: Use DaisyUI Semantic Colors — Never Hardcode Dark Backgrounds
+
+AI agents love dark UIs and will hardcode them. This is always wrong:
+
+```tsx
+// ❌ WRONG — hardcoded black, defeats the entire DaisyUI theme system
+<div className="min-h-screen bg-[#0a0a0a] text-white">
+```
+
+**Why this is a problem:** SE2 ships with DaisyUI configured for both light and dark themes (usually via `globals.css` or `tailwind.config.ts`). It also includes a `<SwitchTheme/>` toggle in the header. When you hardcode a dark background, you break all of this:
+- Light-mode users (macOS/iOS/Windows system setting) get a black page
+- The theme toggle does nothing — the page ignores `data-theme`
+- `prefers-color-scheme: light` is silently ignored
+
+**Always use DaisyUI semantic color variables:**
+
+```tsx
+// ✅ CORRECT — responds to system preference AND the theme toggle
+<div className="min-h-screen bg-base-200 text-base-content">
+
+// DaisyUI semantic classes — use these everywhere:
+// bg-base-100   (lightest surface — cards, inputs)
+// bg-base-200   (default page background)
+// bg-base-300   (borders, dividers)
+// text-base-content   (primary text)
+// text-base-content/60  (secondary/muted text)
+```
+
+**If you genuinely want dark-only**, you must commit to it fully — don't half-do it:
+
+```tsx
+// ✅ Acceptable dark-only — but ALSO remove <SwitchTheme/> from the header
+// In app/layout.tsx:
+<html data-theme="dark">
+// AND delete <SwitchTheme /> from Header.tsx
+// Don't leave a theme toggle that does nothing
+```
+
+**Quick scan for the mistake:**
+```bash
+grep -rn 'bg-\[#0\|bg-black\|bg-gray-9\|bg-zinc-9\|bg-neutral-9\|bg-slate-9' packages/nextjs/app/
+```
+Any match on a root page wrapper → fix it.
+
+---
+
+## Rule 8: Pre-Publish Checklist
 
 **BEFORE deploying frontend to production, EVERY item must pass:**
 
@@ -294,6 +340,7 @@ export const metadata: Metadata = {
 - [ ] Every onchain button has its own loader + disabled state
 - [ ] Approve flow has network check → approve → action pattern
 - [ ] No duplicate h1 title matching header
+- [ ] No hardcoded dark backgrounds — page uses `bg-base-200 text-base-content` (or dark forced + toggle removed)
 
 ---
 
