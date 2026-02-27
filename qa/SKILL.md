@@ -226,6 +226,41 @@ const openWallet = useCallback(() => {
 
 ---
 
+## Important: Button Loading State — DaisyUI `loading` Class Is Wrong
+
+AI agents almost always implement button loading states incorrectly when using DaisyUI + SE2.
+
+**The mistake:** Adding `loading` as a class directly on a `btn`:
+
+```tsx
+// ❌ FAIL — DaisyUI's `loading` class on a `btn` replaces the entire button content
+// with a spinner that fills the full button. No text, misaligned, looks broken.
+<button className={`btn btn-primary ${isPending ? "loading" : ""}`}>
+  {isPending ? "Approving..." : "Approve"}
+</button>
+```
+
+**The fix:** Remove `loading` from the button class, add an inline `loading-spinner` span inside the button alongside the text:
+
+```tsx
+// ✅ PASS — small spinner inside the button, text visible next to it
+<button className="btn btn-primary" disabled={isPending}>
+  {isPending && <span className="loading loading-spinner loading-sm mr-2" />}
+  {isPending ? "Approving..." : "Approve"}
+</button>
+```
+
+**Check for this in code:**
+```bash
+grep -rn '"loading"' packages/nextjs/app/
+```
+Any `"loading"` string in a button's className → **FAIL**.
+
+- ❌ **FAIL:** `className={... isPending ? "loading" : ""}` on a button
+- ✅ **PASS:** `<span className="loading loading-spinner loading-sm" />` inside the button
+
+---
+
 ## Audit Summary
 
 Report each as PASS or FAIL:
@@ -247,6 +282,7 @@ Report each as PASS or FAIL:
 - [ ] RPC overrides set (not default SE2 key) AND env var confirmed set on hosting platform
 - [ ] Favicon updated from SE2 default
 - [ ] No hardcoded dark backgrounds — page wrapper uses `bg-base-200 text-base-content` (or `data-theme="dark"` forced + `<SwitchTheme/>` removed)
+- [ ] Button loaders use inline `<span className="loading loading-spinner loading-sm" />` — NOT `className="... loading"` on the button itself
 - [ ] Phantom wallet in RainbowKit wallet list
 - [ ] Mobile: ALL transaction buttons deep link to wallet (fire TX first, then `setTimeout(openWallet, 2000)`)
 - [ ] Mobile: wallet detection checks WC session data, not just `connector.id`
