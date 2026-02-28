@@ -158,21 +158,104 @@ The first depositor in an ERC-4626 vault can manipulate the share price to steal
 4. Victim deposits 1999 tokens → gets `1999 * 1 / 2000 = 0 shares` (rounds down)
 5. Attacker redeems 1 share → gets all 3000 tokens
 
-**The fix — virtual offset:**
+**The fix — use OpenZeppelin v5's built-in virtual offset:**
 ```solidity
-function convertToShares(uint256 assets) public view returns (uint256) {
-    return assets.mulDiv(
-        totalSupply() + 1e3,    // Virtual shares
-        totalAssets() + 1        // Virtual assets
-    );
+// Override _decimalsOffset() to increase the virtual offset (default is 0).
+// An offset of 3 means 1000 virtual shares per virtual asset — makes the attack
+// cost the attacker ~1000x what they'd steal.
+function _decimalsOffset() internal view virtual override returns (uint8) {
+    return 3;
 }
 ```
 
-The virtual offset makes the attack uneconomical — the attacker would need to donate enormous amounts to manipulate the ratio.
+The virtual offset makes the attack uneconomical — the attacker would need to donate enormous amounts to manipulate the ratio. OpenZeppelin's ERC4626 includes this mechanism since v5; you just need to override `_decimalsOffset()` to strengthen it beyond the default.
 
-OpenZeppelin's ERC4626 implementation includes this mitigation by default since v5.
+**OpenZeppelin v5 ERC4626 notes:**
+- OZ v5 includes virtual offset mitigation by default (offset 0). Override `_decimalsOffset()` returning 3 for stronger protection.
+- `deposit(0)` is a valid no-op in OZ v5 — it mints 0 shares and does NOT revert. Don't write `test_RevertWhen_DepositZero` for a v5 vault; test `test_DepositZero_MintsNoShares` instead.
+- A decimal offset of N means up to `10^N` wei of rounding dust per user on full withdrawal. For offset=3, expect up to 1000 wei dust — account for this in fuzz test tolerances.
 
-### 7. Infinite Approvals
+### Simulated Yield Pattern
+
+The most common ERC-4626 test pattern — inject yield into the vault without minting new shares:
+
+```solidity
+/// @notice Owner injects yield into the vault (simulates real yield for testing)
+function addYield(uint256 amount) external onlyOwner {
+    IERC20(asset()).safeTransferFrom(msg.sender, address(this), amount);
+    emit YieldAdded(amount);
+}
+```
+
+The owner approves the vault, then calls `addYield`. This increases `totalAssets()` which raises the share price for all existing holders. Use this for testing yield distribution, share price appreciation, and proportional withdrawal.
+
+### Testing the Inflation Attack
+Don't just log the attacker's outcome — assert it. The test must prove the attack is unprofitable:
+```solidity
+function test_InflationAttackIsUnprofitable() public {
+    uint256 attackCost = 1_000 ether;
+
+    // Attacker: deposit 1 wei, donate attackCost directly to vault
+    vm.startPrank(attacker);
+    token.approve(address(vault), 1);
+    vault.deposit(1, attacker);
+    token.transfer(address(vault), attackCost); // direct donation
+    vm.stopPrank();
+
+    // Victim deposits
+    vm.startPrank(victim);
+    token.approve(address(vault), attackCost);
+    vault.deposit(attackCost, victim);
+    vm.stopPrank();
+
+    // Attacker redeems everything
+    vm.startPrank(attacker);
+    uint256 attackerShares = vault.balanceOf(attacker);
+    uint256 attackerAssets = vault.redeem(attackerShares, attacker, attacker);
+    vm.stopPrank();
+
+    // KEY ASSERTION: attacker must lose money
+    assertLt(attackerAssets, attackCost, "Attacker must not profit from inflation attack");
+}
+```
+
+### 7. Prediction Market Patterns
+
+Prediction markets have unique security patterns that differ from token/vault contracts:
+
+**Resolver trust:** The resolver is typically a trusted EOA or multisig — not a separate oracle contract for MVP. If the resolver disappears, user funds are locked forever. Always include a `cancel` escape hatch that the resolver (or a timelock fallback) can trigger:
+```solidity
+// Allow resolver to cancel and refund all bettors
+function cancel(uint256 marketId) external {
+    require(msg.sender == markets[marketId].resolver, "Only resolver");
+    markets[marketId].outcome = Outcome.CANCELLED;
+    // Users call claimRefund() to get their ETH back
+}
+```
+
+**One-sided market:** If nobody bet on the winning side (`winningPool == 0`), there are no claimants — the losing pool is stuck. If nobody bet on the losing side (`losingPool == 0`), winners just get their stake back with no bonus. Guard against division-by-zero:
+```solidity
+uint256 bonus = losingPool > 0
+    ? (userBet * losingPool) / winningPool
+    : 0;
+uint256 payout = userBet + bonus;
+```
+
+**Fee accumulation:** Accumulate fees per claim rather than per resolution. Users claim at different times, so the creator sweeps incrementally. Track `creatorFeeAccumulated` and let the creator call `claimCreatorFee()` at any time.
+
+**Pure-ETH contracts don't need `SafeERC20`.** Agents trained on ERC-20 patterns may import SafeERC20 even when the contract only handles ETH. If all value transfer is via `msg.value` and `call{value:}`, skip the SafeERC20 import entirely.
+
+### 8. EIP-7702 and Safe Transfers
+
+EIP-7702 went live on Ethereum mainnet in May 2025. Any EOA with a 7702 delegation has bytecode (`0xef01...`), which means OpenZeppelin's `_safeMint` and `safeTransferFrom` treat it as a contract and call `onERC721Received`. If the delegation target doesn't implement `IERC721Receiver`, the transfer reverts with `ERC721InvalidReceiver`.
+
+**Impact:** This affects any contract that uses `_safeMint` or `safeTransferFrom` — NFT collections, marketplaces, airdrops, and any system that mints or transfers NFTs to user addresses. On a mainnet fork, many common addresses (Anvil defaults, `makeAddr()` derivations) already have delegation code.
+
+**In production code:** No fix needed — users with 7702 delegations are responsible for ensuring their delegate handles ERC-721 callbacks. But be aware: your contract may "silently" reject transfers to 7702-enabled addresses if their delegate doesn't implement `onERC721Received`.
+
+**In tests on mainnet fork:** Use explicitly constructed private keys to get fresh addresses without delegation code. See `testing/SKILL.md` Fork Testing section for the workaround.
+
+### 9. Infinite Approvals
 
 **Never use `type(uint256).max` as approval amount.**
 
@@ -189,7 +272,7 @@ token.approve(someContract, amountPerTx * 5); // 5 transactions worth
 
 If a contract with infinite approval gets exploited (proxy upgrade bug, governance attack, undiscovered vulnerability), the attacker can drain every approved token from every user who granted unlimited access.
 
-### 8. Access Control
+### 10. Access Control
 
 Every state-changing function needs explicit access control. "Who should be able to call this?" is the first question.
 
@@ -209,7 +292,7 @@ function emergencyWithdraw() external onlyOwner {
 
 For complex permissions, use OpenZeppelin's `AccessControl` with role-based separation (ADMIN_ROLE, OPERATOR_ROLE, etc.).
 
-### 9. Input Validation
+### 11. Input Validation
 
 Never trust inputs. Validate everything.
 
@@ -242,7 +325,7 @@ Run through this for EVERY contract before deploying to production. No exception
 - [ ] **Return values checked** — using SafeERC20 for all token operations
 - [ ] **Input validation** — zero address, zero amount, bounds checks on all public functions
 - [ ] **Events emitted** — every state change emits an event for offchain tracking
-- [ ] **Incentive design** — maintenance functions callable by anyone with sufficient incentive
+- [ ] **Incentive design** — for every external function, answer: "Who profits from calling this, and could they profit in unintended ways?" Maintenance functions callable by anyone with sufficient incentive
 - [ ] **No infinite approvals** — approve exact amounts or small bounded multiples
 - [ ] **Fee-on-transfer safe** — if accepting arbitrary tokens, measure actual received amount
 - [ ] **Tested edge cases** — zero values, max values, unauthorized callers, reentrancy attempts
@@ -464,7 +547,7 @@ forge test --gas-report       # Identify expensive functions
 
 ## Further Reading
 
-- **OpenZeppelin Contracts:** https://docs.openzeppelin.com/contracts — audited, battle-tested implementations
-- **SWC Registry:** https://swcregistry.io — comprehensive vulnerability catalog
-- **Rekt News:** https://rekt.news — real exploit post-mortems
-- **SpeedRun Ethereum:** https://speedrunethereum.com — hands-on secure development practice
+- [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts) — audited, battle-tested implementations
+- [SWC Registry](https://swcregistry.io) — comprehensive vulnerability catalog
+- [Rekt News](https://rekt.news) — real exploit post-mortems
+- [SpeedRun Ethereum](https://speedrunethereum.com) — hands-on challenges for learning Solidity security patterns
