@@ -10,7 +10,7 @@ metadata:
   }
 ---
 
-# ETHSKILLS ⟠
+# ETHSkills ⟠
 
 > The missing knowledge between AI agents and production Ethereum.
 
