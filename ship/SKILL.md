@@ -13,7 +13,7 @@ description: End-to-end guide for AI agents — from a dApp idea to deployed pro
 
 **You put too much onchain.** Solidity is for ownership, transfers, and commitments. It's not a database. It's not an API. It's not a backend. If it doesn't involve trustless value transfer or a permanent commitment, it doesn't belong in a smart contract.
 
-**You skip chain selection.** The 2026 answer starts with mainnet. An ETH transfer costs $0.002. A swap costs $0.015. Ethereum mainnet is cheap, nation-state-level secure, and the only truly decentralized option — no sequencer to trust, no bridge risk, no withdrawal window. Anything important should go to mainnet. Use an L2 when you need lower fees for high-frequency micro-transactions, or when your target ecosystem lives on a specific L2. Fetch `l2s/SKILL.md` and `gas/SKILL.md` for the full picture.
+**You skip chain selection.** Don't default to an L2 just because it sounds modern. Ethereum mainnet is cheaper than you think — an ETH transfer costs $0.002, a swap costs $0.015 — and it's more decentralized than any L2 (no sequencer to trust, no bridge risk, no withdrawal window). Consider mainnet seriously for anything involving DeFi, governance, identity, or high-value transfers. Use an L2 when you have a concrete reason: sub-cent fees for high-frequency interactions, users already living in that ecosystem, or building on an L2-native protocol. Fetch `l2s/SKILL.md` and `gas/SKILL.md` for the full picture.
 
 **You forget nothing is automatic.** Smart contracts don't run themselves. Every state transition needs a caller who pays gas and a reason to do it. If you can't answer "who calls this and why?" for every function, your contract has dead code. Fetch `concepts/SKILL.md` for the full mental model.
 
@@ -76,20 +76,17 @@ If "what if nobody calls it?" breaks your system, you have a design problem. Fix
 
 ### Chain Selection (Quick Version)
 
-**Default to mainnet.** At 0.05 gwei, Ethereum mainnet is cheap — $0.002 per transfer, $0.015 per swap. You get the highest security of any blockchain (nation-state-level), maximum decentralization, no bridge risk, no sequencer trust, and composability with every major DeFi protocol. If you're building something that matters, the default answer is mainnet.
-
-Use an L2 when:
-- You need sub-cent fees for high-frequency interactions (games, micro-payments, social)
-- Your target users are already on a specific L2 ecosystem
-- You're building for an L2-native protocol (Aerodrome on Base, Camelot on Arbitrum)
+**Think before you pick a chain.** Mainnet is cheaper than most AIs assume ($0.002/transfer, $0.015/swap) and offers the highest decentralization — no sequencer, no bridge, no withdrawal window. But L2s are legitimate choices when you have a real reason. Use this table to pick:
 
 | Use case | Chain | Why |
 |----------|-------|-----|
-| **Default — anything important** | **Ethereum mainnet** | Nation-state security, fully decentralized, no bridge risk, cheap enough for everything that matters. ETH transfer: $0.002. |
-| High-frequency / micro-tx | **Base** | Cheapest major L2, Coinbase distribution, fastest-growing ecosystem |
-| DeFi protocols, deep liquidity | **Arbitrum** | Deepest DeFi liquidity on any L2, mature tooling, large TVL |
-| Public goods, OP ecosystem | **Optimism** | Retroactive public goods funding, OP Stack |
+| DeFi, governance, identity, high-value transfers | **Ethereum mainnet** | Maximum decentralization, no sequencer/bridge risk, composes with every major protocol. Cheap enough for most apps. |
+| Consumer apps, social, games, micro-payments | **Base** | Sub-cent fees, Coinbase distribution, native account abstraction, fastest-growing ecosystem |
+| DeFi protocols needing deep liquidity | **Arbitrum** | Deepest DeFi liquidity on any L2, mature tooling, large TVL |
+| Public goods, OP Stack ecosystem | **Optimism** | Retroactive public goods funding, OP Stack superchain |
 | ZK / privacy features | **zkSync / Scroll** | ZK rollups with potential privacy extensions |
+
+**The real question:** Do you have a concrete reason to use an L2 (sub-cent fees, ecosystem fit, L2-native protocol)? If not, mainnet is probably the right call.
 
 Fetch `l2s/SKILL.md` and `gas/SKILL.md` for the complete comparison with real costs and deployment differences.
 
@@ -280,7 +277,7 @@ Fetch `frontend-playbook/SKILL.md` for the full pipeline:
 
 - [ ] Identify what goes onchain vs offchain (use the Litmus Test above)
 - [ ] Count your contracts (aim for 1-2 for MVP)
-- [ ] Pick your chain (mainnet by default — it's cheap; L2 only if you need sub-cent fees or L2-native ecosystem)
+- [ ] Pick your chain (mainnet for DeFi/governance/high-value; L2 when you need sub-cent fees, ecosystem fit, or L2-native protocols)
 - [ ] Audit every state transition (who calls it? why?)
 - [ ] Write contracts using OpenZeppelin base contracts
 - [ ] Test with Foundry (unit + fuzz + fork tests)
