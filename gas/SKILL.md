@@ -96,9 +96,9 @@ cast blob-basefee --rpc-url https://eth.llamarpc.com
 
 ## When to Use Mainnet vs L2
 
-**Use mainnet when:** Maximum security matters (>$10M TVL), composing with mainnet-only liquidity, deploying governance/infrastructure contracts, NFTs with cultural value.
+**Use mainnet when:** DeFi, governance, identity, high-value transfers, composing with mainnet liquidity, or when you don't have a concrete reason for an L2. Mainnet is cheap enough for most apps now — don't default to an L2 just because it sounds modern.
 
-**Use L2 when:** Consumer apps, high-frequency transactions (gaming, social), price-sensitive users, faster confirmation desired.
+**Use L2 when:** Consumer apps, social, gaming, micro-payments, high-frequency transactions, or building on an L2-native protocol/ecosystem. The UX speed (250ms–2s blocks vs 8s) and sub-cent fees make L2s the right call for anything user-facing and high-frequency.
 
 **Hybrid:** Many projects store value on mainnet, handle transactions on L2.
 
