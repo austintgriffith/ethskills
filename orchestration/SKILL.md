@@ -26,9 +26,11 @@ description: How an AI agent plans, builds, and deploys a complete Ethereum dApp
 ```bash
 npx create-eth@latest my-dapp
 cd my-dapp && yarn install
-yarn chain          # Terminal 1: local node
-yarn deploy         # Terminal 2: deploy contracts
+yarn fork --network base  # Terminal 1: fork of real chain (or mainnet, your target chain)
+yarn deploy               # Terminal 2: deploy contracts
 ```
+
+> **Always fork, never `yarn chain`.** `yarn fork` does everything `yarn chain` does AND gives you real protocol state — Uniswap, USDC, Aave, whale balances, everything already deployed. `yarn chain` gives you an empty chain that tempts you into writing mock contracts you don't need. Don't mock what already exists onchain — just fork it.
 
 **Critical steps:**
 1. Write contracts in `packages/foundry/contracts/` (or `packages/hardhat/contracts/`)
@@ -42,9 +44,9 @@ yarn deploy         # Terminal 2: deploy contracts
 ### 1.2 Frontend
 
 ```bash
-yarn chain           # Terminal 1
-yarn deploy --watch  # Terminal 2: auto-redeploy on changes
-yarn start           # Terminal 3: Next.js at localhost:3000
+yarn fork --network base  # Terminal 1: fork of real chain (has Uniswap, USDC, etc.)
+yarn deploy --watch       # Terminal 2: auto-redeploy on changes
+yarn start                # Terminal 3: Next.js at localhost:3000
 ```
 
 **USE SCAFFOLD HOOKS, NOT RAW WAGMI:**
