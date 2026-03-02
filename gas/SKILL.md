@@ -43,7 +43,7 @@ description: Current Ethereum gas prices, transaction costs, and the real econom
 1. **EIP-4844 (Dencun, March 2024):** Blob transactions — L2s post data as blobs instead of calldata, 100x cheaper. L2 batch cost went from $50-500 to $0.01-0.50.
 2. **Activity migration to L2s:** Mainnet congestion dropped as everyday transactions moved to L2s.
 3. **Pectra (May 2025):** Doubled blob capacity (3→6 target blobs).
-4. **Fusaka (Dec 2025):** PeerDAS + 8-second slots.
+4. **Fusaka (Dec 2025):** PeerDAS (nodes sample 1/8 of data) + 2x gas limit (30M→60M).
 
 ## L2 Cost Components
 

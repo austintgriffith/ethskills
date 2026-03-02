@@ -22,7 +22,7 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 End-to-end guide from idea to deployed dApp. Routes you through all other skills.
 - Most dApps need 0-2 contracts, not 5-10. Three is the upper bound for an MVP.
 - Solidity is for ownership, transfers, and commitments. Not a database, not a backend.
-- The 2026 answer for chain selection is almost always an L2.
+- Chain selection: usually an L2 for consumer apps, but mainnet is cheaper than you think ($0.002/transfer) — consider it for DeFi, governance, and high-value use cases.
 
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
 Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.

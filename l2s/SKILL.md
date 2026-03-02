@@ -50,6 +50,8 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 ## L2 Selection Guide
 
+> **Before choosing an L2:** Mainnet is $0.002/transfer, $0.015/swap — cheap enough for most apps. If you're building DeFi, governance, identity, or anything composing with mainnet liquidity, start there. See `ship/SKILL.md` and `gas/SKILL.md` for the full chain selection framework.
+
 | Need | Choose | Why |
 |------|--------|-----|
 | Consumer / social apps | **Base** | Farcaster, Smart Wallet, Coinbase on-ramp, OnchainKit |
