@@ -252,7 +252,7 @@ import { createWallet } from '@x402/evm';
 import { ethers } from 'ethers';
 
 const wallet = createWallet(process.env.AGENT_PRIVATE_KEY);
-const provider = new ethers.JsonRpcProvider('https://base-mainnet.g.alchemy.com/v2/YOUR_KEY');
+const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
 
 const IDENTITY_REGISTRY = '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432';
 const REPUTATION_REGISTRY = '0x8004BAa17C55a88189AE136b182e5fdA19dE9b63';
