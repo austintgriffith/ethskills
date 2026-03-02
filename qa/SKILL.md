@@ -226,6 +226,29 @@ const openWallet = useCallback(() => {
 
 ---
 
+## 🚨 Critical: Contract Verification on Block Explorer
+
+After deploying, every contract MUST be verified on the block explorer. Unverified contracts are a trust red flag — users can't read the source code, and it looks like you're hiding something.
+
+- ❌ **FAIL:** Block explorer shows "Contract source code not verified" for any deployed contract
+- ✅ **PASS:** All deployed contracts show verified source code with a green checkmark on the block explorer
+
+**How to check:** Take each contract address from `deployedContracts.ts`, open it on the block explorer (Etherscan, Basescan, Arbiscan, etc.), and look for the "Contract" tab with a ✅ checkmark. If it shows bytecode only — not verified.
+
+**How to fix (SE2):**
+```bash
+yarn verify --network mainnet   # or base, arbitrum, optimism, etc.
+```
+
+**How to fix (Foundry):**
+```bash
+forge verify-contract <ADDRESS> <CONTRACT> --chain <CHAIN_ID> --etherscan-api-key $ETHERSCAN_API_KEY
+```
+
+AI agents frequently skip verification because `yarn deploy` succeeds and they move on. Deployment is not done until verification passes.
+
+---
+
 ## Important: Button Loading State — DaisyUI `loading` Class Is Wrong
 
 AI agents almost always implement button loading states incorrectly when using DaisyUI + SE2.
@@ -270,6 +293,7 @@ Report each as PASS or FAIL:
 - [ ] Wrong network shows a Switch button
 - [ ] One button at a time (Connect → Network → Approve → Action)
 - [ ] Approve button disabled with spinner through block confirmation
+- [ ] Contracts verified on block explorer (Etherscan/Basescan/Arbiscan) — source code readable by anyone
 - [ ] SE2 footer branding removed
 - [ ] SE2 tab title removed
 - [ ] SE2 README replaced

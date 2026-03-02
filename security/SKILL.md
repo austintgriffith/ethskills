@@ -246,6 +246,7 @@ Run through this for EVERY contract before deploying to production. No exception
 - [ ] **No infinite approvals** — approve exact amounts or small bounded multiples
 - [ ] **Fee-on-transfer safe** — if accepting arbitrary tokens, measure actual received amount
 - [ ] **Tested edge cases** — zero values, max values, unauthorized callers, reentrancy attempts
+- [ ] **Source verified on block explorer** — `yarn verify` or `forge verify-contract` after every deploy. Unverified contracts can't be audited by users and look indistinguishable from scams
 
 ## MEV & Sandwich Attacks
 
