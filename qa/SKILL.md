@@ -1,0 +1,196 @@
+---
+name: qa
+description: Pre-ship audit checklist for Ethereum dApps built with Scaffold-ETH 2. Give this to a separate reviewer agent (or fresh context) AFTER the build is complete. Covers only the bugs AI agents actually ship — validated by baseline testing against stock LLMs.
+---
+
+# dApp QA — Pre-Ship Audit
+
+This skill is for **review, not building.** Give it to a fresh agent after the dApp is built. The reviewer should:
+
+1. Read the source code (`app/`, `components/`, `contracts/`)
+2. Open the app in a browser and click through every flow
+3. Check every item below — report PASS/FAIL, don't fix
+
+---
+
+## 🚨 Critical: Wallet Flow — Button Not Text
+
+Open the app with NO wallet connected.
+
+- ❌ **FAIL:** Text saying "Connect your wallet to play" / "Please connect to continue" / any paragraph telling the user to connect
+- ✅ **PASS:** A big, obvious Connect Wallet **button** is the primary UI element
+
+**This is the most common AI agent mistake.** Every stock LLM writes a `<p>Please connect your wallet</p>` instead of rendering `<RainbowKitCustomConnectButton />`.
+
+---
+
+## 🚨 Critical: Four-State Button Flow
+
+The app must show exactly ONE primary button at a time, progressing through:
+
+```
+1. Not connected  → Connect Wallet button
+2. Wrong network  → Switch to [Chain] button
+3. Needs approval → Approve button
+4. Ready          → Action button (Stake/Deposit/Swap)
+```
+
+Check specifically:
+- ❌ **FAIL:** Approve and Action buttons both visible simultaneously
+- ❌ **FAIL:** No network check — app tries to work on wrong chain and fails silently
+- ❌ **FAIL:** User can click Approve, sign in wallet, come back, and click Approve again while tx is pending
+- ✅ **PASS:** One button at a time. Approve button shows spinner, stays disabled until block confirms onchain. Then switches to the action button.
+
+**In the code:** the button's `disabled` prop must be tied to `isPending` from `useScaffoldWriteContract`. Verify it uses `useScaffoldWriteContract` (waits for block confirmation), NOT raw wagmi `useWriteContract` (resolves on wallet signature):
+
+```
+grep -rn "useWriteContract" packages/nextjs/
+```
+Any match outside scaffold-eth internals → bug.
+
+---
+
+## 🚨 Critical: SE2 Branding Removal
+
+AI agents treat the scaffold as sacred and leave all default branding in place.
+
+- [ ] **Footer:** Remove BuidlGuidl links, "Built with 🏗️ SE2", "Fork me" link, support links. Replace with project's own repo link or clean it out
+- [ ] **Tab title:** Must be the app name, NOT "Scaffold-ETH 2" or "SE-2 App" or "App Name | Scaffold-ETH 2"
+- [ ] **README:** Must describe THIS project. Not the SE2 template README. Remove "Built with Scaffold-ETH 2" sections and SE2 doc links
+- [ ] **Favicon:** Must not be the SE2 default
+
+---
+
+## Important: Contract Address Display
+
+- ❌ **FAIL:** The deployed contract address appears nowhere on the page
+- ✅ **PASS:** Contract address displayed using `<Address/>` component (blockie, ENS, copy, explorer link)
+
+Agents display the connected wallet address but forget to show the contract the user is interacting with.
+
+---
+
+## Important: USD Values
+
+- ❌ **FAIL:** Token amounts shown as "1,000 TOKEN" or "0.5 ETH" with no dollar value
+- ✅ **PASS:** "0.5 ETH (~$1,250)" with USD conversion
+
+Agents never add USD values unprompted. Check every place a token or ETH amount is displayed, including inputs.
+
+---
+
+## Important: OG Image Must Be Absolute URL
+
+- ❌ **FAIL:** `images: ["/thumbnail.jpg"]` — relative path, breaks unfurling everywhere
+- ✅ **PASS:** `images: ["https://yourdomain.com/thumbnail.jpg"]` — absolute production URL
+
+Quick check:
+```
+grep -n "og:image\|images:" packages/nextjs/app/layout.tsx
+```
+
+---
+
+## Important: RPC & Polling Config
+
+Open `packages/nextjs/scaffold.config.ts`:
+
+- ❌ **FAIL:** `pollingInterval: 30000` (default — makes the UI feel broken, 30 second update lag)
+- ✅ **PASS:** `pollingInterval: 3000`
+- ❌ **FAIL:** Using default Alchemy API key that ships with SE2
+- ✅ **PASS:** `rpcOverrides` uses `process.env.NEXT_PUBLIC_*` variables
+
+---
+
+## Important: Contract Error Translation
+
+When a contract reverts, the error comes back as a raw hex selector like `0xe450d38c`. By default, the user sees nothing — the catch block silently resets the button.
+
+**You must map every revert to plain English and display it.**
+
+```typescript
+function parseContractError(e: unknown): string {
+  const msg = e instanceof Error ? e.message : String(e);
+
+  // Wallet
+  if (/user rejected|user denied|rejected the request/i.test(msg)) return "Transaction cancelled";
+  if (/insufficient funds for gas/i.test(msg)) return "Not enough ETH for gas fees";
+
+  // OpenZeppelin ERC-20 v5 (selectors you won't find in your own ABI)
+  if (/e450d38c|InsufficientBalance/i.test(msg))   return "Insufficient token balance";
+  if (/fb8f41b2|InsufficientAllowance/i.test(msg)) return "Allowance too low — approve again";
+  if (/5274afe7|SafeERC20FailedOperation/i.test(msg)) return "Token transfer failed";
+
+  // OpenZeppelin access control
+  if (/118cdaa7|OwnableUnauthorizedAccount/i.test(msg)) return "Not authorized";
+  if (/3ee5aeb5|ReentrancyGuardReentrantCall/i.test(msg)) return "Reentrant call — try again";
+
+  // Your contract's require() strings — add one entry per require in your contract
+  // if (/Job not OPEN/i.test(msg)) return "This job is no longer open";
+  // if (/Dispute window active/i.test(msg)) return "Executor must wait for the dispute window to close";
+
+  // Fallback: extract the quoted revert reason if present
+  const match = msg.match(/reverted[^"']*["']([^"']{3,80})["']/i);
+  if (match) return match[1];
+
+  return "Transaction failed — please try again";
+}
+```
+
+Use this in every catch block. Display the result below the button — not an alert, not a toast, a visible inline error that persists until the user edits the form:
+
+```tsx
+const [txError, setTxError] = useState<string | null>(null);
+
+// in catch:
+setTxError(parseContractError(e));
+
+// in JSX, after the button:
+{txError && (
+  <div className="mt-3 alert alert-error text-sm">
+    <span>{txError}</span>
+  </div>
+)}
+```
+
+Clear `txError` when the user edits inputs so it doesn't linger after they fix the problem.
+
+**ERC-20 selectors reference** (OpenZeppelin v5 — these are NOT in your contract's ABI, so viem can't decode them automatically):
+
+| Selector | Error |
+|---|---|
+| `0xe450d38c` | `ERC20InsufficientBalance` |
+| `0xfb8f41b2` | `ERC20InsufficientAllowance` |
+| `0x96c6fd1e` | `ERC20InvalidSender` |
+| `0xec442f05` | `ERC20InvalidReceiver` |
+| `0xe602df05` | `ERC20InvalidApprover` |
+| `0x5274afe7` | `SafeERC20FailedOperation` |
+| `0x118cdaa7` | `OwnableUnauthorizedAccount` |
+| `0x3ee5aeb5` | `ReentrancyGuardReentrantCall` |
+
+- ❌ **FAIL:** Catch blocks do `console.error(e)` only — user sees the button reset with no explanation
+- ✅ **PASS:** Every catch block calls `parseContractError`, displays the result inline, clears on edit
+
+---
+
+## Audit Summary
+
+Report each as PASS or FAIL:
+
+### Ship-Blocking
+- [ ] Wallet connection shows a BUTTON, not text
+- [ ] Wrong network shows a Switch button
+- [ ] One button at a time (Connect → Network → Approve → Action)
+- [ ] Approve button disabled with spinner through block confirmation
+- [ ] SE2 footer branding removed
+- [ ] SE2 tab title removed
+- [ ] SE2 README replaced
+
+### Should Fix
+- [ ] Contract address displayed with `<Address/>`
+- [ ] USD values next to all token/ETH amounts
+- [ ] OG image is absolute production URL
+- [ ] pollingInterval is 3000
+- [ ] RPC overrides set (not default SE2 key)
+- [ ] Favicon updated from SE2 default
+- [ ] Every catch block calls `parseContractError` — no raw hex selectors or silent failures shown to users
