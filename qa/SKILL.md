@@ -122,3 +122,4 @@ Report each as PASS or FAIL:
 - [ ] pollingInterval is 3000
 - [ ] RPC overrides set (not default SE2 key)
 - [ ] Favicon updated from SE2 default
+- [ ] All DaisyUI form inputs (`input`, `select`, `textarea`) have `rounded-md` to override the default 1rem `--rounded-box` radius

@@ -240,7 +240,27 @@ pollingInterval: 3000,  // 3 seconds, not the default 30000
 
 ---
 
-## Rule 7: Pre-Publish Checklist
+## Rule 7: DaisyUI Form Elements — Override `--rounded-box`
+
+DaisyUI's `input`, `select`, and `textarea` classes use `border-radius: var(--rounded-box)` which defaults to **`1rem`** — extremely round, like a pill. It looks wrong on every form.
+
+Fix: always add `rounded-md` (6px) to override it:
+
+```tsx
+// ❌ WRONG — inherits 1rem radius, looks like a pill
+<textarea className="textarea textarea-bordered w-full" />
+<input className="input input-bordered w-full" />
+<select className="select select-bordered w-full" />
+
+// ✅ CORRECT
+<textarea className="textarea textarea-bordered w-full rounded-md" />
+<input className="input input-bordered w-full rounded-md" />
+<select className="select select-bordered w-full rounded-md" />
+```
+
+---
+
+## Rule 8: Pre-Publish Checklist
 
 **BEFORE deploying frontend to production, EVERY item must pass:**
 
