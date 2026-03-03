@@ -48,6 +48,29 @@ grep -rn "useWriteContract" packages/nextjs/
 ```
 Any match outside scaffold-eth internals → bug.
 
+**Watch out: the post-confirmation allowance refresh gap.** Even after `writeContractAsync` resolves (block confirmed), wagmi needs a few seconds to re-fetch the allowance from the chain. During this window `isMining` is false AND `needsApproval` is still true (stale data) — so the Approve button reappears clickable. The fix: after the approve tx resolves, hold the button disabled for an extra 4 seconds with a `setTimeout`:
+
+```tsx
+const [approveCooldown, setApproveCooldown] = useState(false);
+
+const handleApprove = async () => {
+  await approveWrite({ functionName: "approve", args: [spender, amount] });
+  // Hold disabled while allowance re-fetches
+  setApproveCooldown(true);
+  setTimeout(() => setApproveCooldown(false), 4000);
+};
+
+// Button:
+<button disabled={isMining || approveCooldown}>
+  {isMining || approveCooldown
+    ? <><span className="loading loading-spinner loading-sm" /> Approving...</>
+    : "Approve"}
+</button>
+```
+
+- ❌ **FAIL:** Approve button becomes clickable again for a few seconds after the tx confirms
+- ✅ **PASS:** Button stays locked through confirmation + 4s cooldown, then switches to the action button
+
 ---
 
 ## 🚨 Critical: SE2 Branding Removal
