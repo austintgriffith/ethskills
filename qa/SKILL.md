@@ -330,6 +330,7 @@ Report each as PASS or FAIL:
 - [ ] pollingInterval is 3000
 - [ ] RPC overrides set (not default SE2 key) AND env var confirmed set on hosting platform
 - [ ] Favicon updated from SE2 default
+- [ ] `--radius-field` in `globals.css` changed from `9999rem` to `0.5rem` (or similar) — no pill-shaped textareas
 - [ ] No hardcoded dark backgrounds — page wrapper uses `bg-base-200 text-base-content` (or `data-theme="dark"` forced + `<SwitchTheme/>` removed)
 - [ ] Button loaders use inline `<span className="loading loading-spinner loading-sm" />` — NOT `className="... loading"` on the button itself
 - [ ] Phantom wallet in RainbowKit wallet list

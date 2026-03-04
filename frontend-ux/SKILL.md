@@ -288,7 +288,32 @@ Any match on a root page wrapper → fix it.
 
 ---
 
-## Rule 8: Pre-Publish Checklist
+## Rule 8: Fix SE2's Pill-Shaped Form Inputs
+
+SE2's DaisyUI theme sets `--radius-field: 9999rem` — fully pill-shaped inputs. Single-line inputs look fine, but textareas, multi-line inputs, and selects look broken — text clips against the extreme border radius.
+
+AI agents never fix this. They see the DaisyUI class, assume it's correct, and ship pill-shaped textareas.
+
+**Fix it in the theme, not per-element.** In `packages/nextjs/styles/globals.css`, change both themes:
+
+```css
+/* In BOTH @plugin "daisyui/theme" blocks (light AND dark): */
+
+--radius-field: 9999rem;   /* ❌ default — pill-shaped, clips textarea text */
+--radius-field: 0.5rem;    /* ✅ rounded-lg equivalent — works for all form elements */
+```
+
+That's it — one line per theme, every `input`, `select`, and `textarea` inherits it globally. Do NOT add `rounded-md` to individual elements — that fights the theme system and breaks when the theme changes.
+
+**Quick check:**
+```bash
+grep "radius-field" packages/nextjs/styles/globals.css
+```
+If it says `9999rem`, fix it.
+
+---
+
+## Rule 9: Pre-Publish Checklist
 
 **BEFORE deploying frontend to production, EVERY item must pass:**
 
