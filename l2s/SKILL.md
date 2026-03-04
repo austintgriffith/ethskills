@@ -41,18 +41,20 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **Mainnet for comparison:** $0.002-0.01 per tx, 8s blocks, instant finality. Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current TVL.
 
-## Cost Comparison (Real Examples, Feb 2026)
+## Cost Comparison (Real Examples, Early 2026)
+
+> Mainnet costs at ~0.1 gwei base fee, ~$2,000 ETH. L2 costs are approximate. All fluctuate — see `gas/SKILL.md` for methodology.
 
 | Action | Mainnet | Arbitrum | Base | zkSync | Scroll |
 |--------|---------|----------|------|--------|--------|
-| ETH transfer | $0.002 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
-| Uniswap swap | $0.018 | $0.003 | $0.002 | $0.005 | $0.004 |
-| NFT mint | $0.015 | $0.002 | $0.002 | $0.004 | $0.003 |
-| ERC-20 deploy | $0.118 | $0.020 | $0.018 | $0.040 | $0.030 |
+| ETH transfer | $0.004 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
+| Uniswap swap | $0.036 | $0.003 | $0.002 | $0.005 | $0.004 |
+| NFT mint | $0.030 | $0.002 | $0.002 | $0.004 | $0.003 |
+| ERC-20 deploy | $0.240 | $0.020 | $0.018 | $0.040 | $0.030 |
 
 ## L2 Selection Guide
 
-> **Before choosing an L2:** Mainnet is $0.002/transfer, $0.018/swap — cheap enough for most apps. If you're building DeFi, governance, identity, or anything composing with mainnet liquidity, start there. See `ship/SKILL.md` and `gas/SKILL.md` for the full chain selection framework.
+> **Before choosing an L2:** Mainnet is ~$0.004/transfer, ~$0.04/swap at current gas — cheap enough for most apps. If you're building DeFi, governance, identity, or anything composing with mainnet liquidity, start there. See `ship/SKILL.md` and `gas/SKILL.md` for the full chain selection framework.
 
 | Need | Choose | Why |
 |------|--------|-----|

@@ -13,28 +13,30 @@ description: Current Ethereum gas prices, transaction costs, and the real econom
 - **Priority fee (tip):** ~0.01-0.1 gwei
 - **ETH price:** ~$2,000 (not $2,500-3,000) — volatile, always check a [Chainlink feed](https://data.chain.link/feeds/ethereum/mainnet/eth-usd) or CoinGecko
 
-## What Things Actually Cost (Feb 2026)
+## What Things Actually Cost (Early 2026)
 
-| Action | Gas Used | Cost at 0.05 gwei | Cost at 1 gwei (spike) | Cost at 10 gwei (event) |
+> Costs calculated at ETH ~$2,000. Gas fluctuates — use `cast base-fee` for current. These are order-of-magnitude guides, not exact quotes.
+
+| Action | Gas Used | Cost at 0.1 gwei | Cost at 1 gwei (busy) | Cost at 10 gwei (event) |
 |--------|----------|-------------------|------------------------|--------------------------|
-| ETH transfer | 21,000 | **$0.002** | $0.04 | $0.41 |
-| ERC-20 transfer | ~65,000 | **$0.006** | $0.13 | $1.27 |
-| ERC-20 approve | ~46,000 | **$0.005** | $0.09 | $0.90 |
-| Uniswap V3 swap | ~180,000 | **$0.018** | $0.35 | $3.53 |
-| NFT mint (ERC-721) | ~150,000 | **$0.015** | $0.29 | $2.94 |
-| Simple contract deploy | ~500,000 | **$0.049** | $0.98 | $9.80 |
-| ERC-20 deploy | ~1,200,000 | **$0.118** | $2.35 | $23.52 |
-| Complex DeFi contract | ~3,000,000 | **$0.294** | $5.88 | $58.80 |
+| ETH transfer | 21,000 | **$0.004** | $0.04 | $0.42 |
+| ERC-20 transfer | ~65,000 | **$0.013** | $0.13 | $1.30 |
+| ERC-20 approve | ~46,000 | **$0.009** | $0.09 | $0.92 |
+| Uniswap V3 swap | ~180,000 | **$0.036** | $0.36 | $3.60 |
+| NFT mint (ERC-721) | ~150,000 | **$0.030** | $0.30 | $3.00 |
+| Simple contract deploy | ~500,000 | **$0.100** | $1.00 | $10.00 |
+| ERC-20 deploy | ~1,200,000 | **$0.240** | $2.40 | $24.00 |
+| Complex DeFi contract | ~3,000,000 | **$0.600** | $6.00 | $60.00 |
 
-## Mainnet vs L2 Costs (Feb 2026)
+## Mainnet vs L2 Costs (Early 2026)
 
-| Action | Mainnet (0.05 gwei) | Arbitrum | Base | zkSync | Scroll |
+| Action | Mainnet (0.1 gwei) | Arbitrum | Base | zkSync | Scroll |
 |--------|---------------------|----------|------|--------|--------|
-| ETH transfer | $0.002 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
-| ERC-20 transfer | $0.006 | $0.001 | $0.001 | $0.002 | $0.001 |
-| Swap | $0.018 | $0.003 | $0.003 | $0.005 | $0.004 |
-| NFT mint | $0.015 | $0.002 | $0.002 | $0.004 | $0.003 |
-| ERC-20 deploy | $0.118 | $0.020 | $0.020 | $0.040 | $0.030 |
+| ETH transfer | $0.004 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
+| ERC-20 transfer | $0.013 | $0.001 | $0.001 | $0.002 | $0.001 |
+| Swap | $0.036 | $0.003 | $0.002 | $0.005 | $0.004 |
+| NFT mint | $0.030 | $0.002 | $0.002 | $0.004 | $0.003 |
+| ERC-20 deploy | $0.240 | $0.020 | $0.018 | $0.040 | $0.030 |
 
 **Key insight:** Mainnet is now cheap enough for most use cases. L2s are 5-10x cheaper still.
 
@@ -68,12 +70,12 @@ L2 transactions have two cost components:
 - Mainnet: $150 total
 - Arbitrum: $10 total
 
-## Practical Fee Settings (Feb 2026)
+## Practical Fee Settings (Early 2026)
 
 ```javascript
 // Rule of thumb for current conditions
-maxFeePerGas: "0.5-1 gwei"        // headroom for spikes
-maxPriorityFeePerGas: "0.01-0.05 gwei"  // enough for quick inclusion
+maxFeePerGas: "1-2 gwei"          // headroom for spikes (base is usually 0.1-0.5)
+maxPriorityFeePerGas: "0.01-0.1 gwei"   // enough for quick inclusion
 ```
 
 **Spike detection:**

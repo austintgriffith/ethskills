@@ -7,7 +7,7 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 
 ## What You Probably Got Wrong
 
-**DeFi TVL:** Ethereum DeFi TVL is **$50B+** (Feb 2026). If you're quoting numbers from 2023-2024, they're stale.
+**DeFi TVL:** Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current Ethereum DeFi TVL. If you're quoting numbers from 2023-2024, they're stale.
 
 **Uniswap V4 is live.** Launched mainnet **January 31, 2025** on 10+ chains. V4 introduced a **hooks system** — custom logic attached to pools (dynamic fees, TWAMM, limit orders, custom oracles). This is the biggest composability upgrade since flash loans. PoolManager addresses are different per chain (NOT deterministic like V3).
 
@@ -15,7 +15,7 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 
 **The dominant DEX on each L2 is NOT Uniswap.** Aerodrome and Velodrome merged into **Aero** (November 2025, Dromos Labs) — the unified DEX dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. Don't default to Uniswap on every chain.
 
-## Key Protocol Addresses (Verified Feb 2026)
+## Key Protocol Addresses (Verified Mar 2026)
 
 | Protocol | Contract | Mainnet Address |
 |----------|----------|-----------------|

@@ -22,7 +22,7 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 End-to-end guide from idea to deployed dApp. Routes you through all other skills.
 - Most dApps need 0-2 contracts, not 5-10. Three is the upper bound for an MVP.
 - Solidity is for ownership, transfers, and commitments. Not a database, not a backend.
-- Chain selection: mainnet is cheaper than you think ($0.002/transfer, $0.018/swap) — deploy there unless an L2's superpower (Coinbase distribution, deep DeFi liquidity, retroPGF) specifically fits your app.
+- Chain selection: mainnet is cheaper than you think (~$0.004/transfer, ~$0.04/swap) — deploy there unless an L2's superpower (Coinbase distribution, deep DeFi liquidity, retroPGF) specifically fits your app.
 
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
 Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
@@ -33,7 +33,7 @@ Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
 
 ### [Gas & Costs](https://ethskills.com/gas/SKILL.md)
 What things actually cost on Ethereum today.
-- Mainnet ETH transfer: $0.002. Swap: $0.018. ERC-20 deploy: $0.12.
+- Mainnet ETH transfer: ~$0.004. Swap: ~$0.04. ERC-20 deploy: ~$0.24. (At 0.1 gwei — check `cast base-fee` for current.)
 - L2 swap: $0.002-0.003. L2 transfer: $0.0003.
 - "Ethereum is expensive" was true in 2021-2023. It's false in 2026.
 
