@@ -313,7 +313,50 @@ If it says `9999rem`, fix it.
 
 ---
 
-## Rule 9: Pre-Publish Checklist
+## Rule 9: Contract Error Translation
+
+When a contract reverts, the user must see a human-readable explanation. Not a hex selector. Not a silent button reset. Not a console.error.
+
+**The principle:** Read your contract's ABI. Find every custom error. Map each one to plain English. Display it inline below the button that triggered it.
+
+Steps:
+1. **Extract all errors from your ABI** — your contract's custom errors AND inherited ones (OpenZeppelin, etc.)
+2. **Write a mapping function** that takes a caught error and returns a user-facing string
+3. **Include wallet-level errors** — user rejected, insufficient gas
+4. **Add a fallback** — if you can't parse it, still show *something* ("Transaction failed")
+5. **Display inline** — a persistent alert below the button, not a toast. Clear it when the user edits an input.
+
+```tsx
+// ❌ WRONG — user sees nothing
+try { await writeTx(...) }
+catch (e) { console.error(e) }
+
+// ✅ RIGHT — user sees "Insufficient token balance"
+try { await writeTx(...) }
+catch (e) { setTxError(parseContractError(e)) }
+
+// Below the button:
+{txError && (
+  <div className="mt-3 alert alert-error text-sm">
+    <span>{txError}</span>
+  </div>
+)}
+```
+
+**How to find your errors:**
+```bash
+# List all custom errors in your contract's ABI
+cat deployedContracts.ts | grep -o '"name":"[^"]*Error[^"]*"' | sort -u
+
+# Or from the Solidity source
+grep -rn 'error ' contracts/src/ | grep -v '//'
+```
+
+Every error in that list needs a human-readable string in your frontend. If you inherit OpenZeppelin, their errors (`ERC20InsufficientBalance`, `OwnableUnauthorizedAccount`, etc.) are in YOUR ABI too — don't forget them.
+
+---
+
+## Rule 10: Pre-Publish Checklist
 
 **BEFORE deploying frontend to production, EVERY item must pass:**
 
