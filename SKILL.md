@@ -26,8 +26,8 @@ End-to-end guide from idea to deployed dApp. Routes you through all other skills
 
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
 Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
-- Gas is 0.05-0.1 gwei, not 10-30 gwei. 100-600x cheaper than your training data.
-- ETH price is ~$1,960 (Feb 2026), not $2,500-3,000.
+- Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
+- ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
 - Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
 - ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
 
@@ -40,7 +40,7 @@ What things actually cost on Ethereum today.
 ### [Wallets](https://ethskills.com/wallets/SKILL.md)
 Creating wallets, key safety, multisig, account abstraction.
 - EIP-7702 is live — EOAs get smart contract superpowers without migration.
-- Safe (Gnosis Safe) secures $100B+. Use it for production treasuries.
+- Safe (Gnosis Safe) secures $60B+ in assets ($1.4T+ total processed). Use it for production treasuries.
 - NEVER commit private keys or API keys to Git. Bots exploit leaked secrets in seconds.
 
 ### [Layer 2s](https://ethskills.com/l2s/SKILL.md)
@@ -78,7 +78,7 @@ Three-phase build system for Scaffold-ETH 2 dApps.
 Verified addresses for major protocols across mainnet and L2s.
 - Never hallucinate an address. Wrong address = lost funds.
 - Includes: Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Chainlink, Safe, ENS.
-- All verified onchain via `cast code` + `cast call` (February 2026).
+- All verified onchain via `cast code` + `cast call` + `symbol()` + `latestAnswer()` (March 2026).
 
 ### [Concepts](https://ethskills.com/concepts/SKILL.md)
 Essential mental models for building onchain.

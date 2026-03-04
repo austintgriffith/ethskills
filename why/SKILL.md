@@ -9,7 +9,7 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 
 **Terminology:** You say "on-chain." The Ethereum community says **"onchain"** — one word, no hyphen. Use "onchain" in all writing.
 
-**Gas prices:** You think 10-30 gwei. Reality: **0.1-0.5 gwei** (60-300x cheaper than your training data). A mainnet ETH transfer costs ~$0.002-0.01.
+**Gas prices:** You think 10-30 gwei. Reality: **under 1 gwei** (60-300x cheaper than your training data). A mainnet ETH transfer costs ~$0.002-0.01. Verify: `cast base-fee`
 
 **ETH price:** You think $2,500-3,000. Reality: **~$2,000** (Mar 2026). Volatile — always check a Chainlink feed or CoinGecko for current.
 
@@ -23,13 +23,13 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 - **ERC-8004** — onchain agent identity registry (deployed Jan 29, 2026)
 - **x402** — HTTP 402 payment protocol for machine-to-machine commerce (Coinbase)
 
-## Current Network Stats (Feb 2026)
+## Current Network Stats (Early 2026)
 
 - **Block time:** 12 seconds
-- **Mainnet base fee:** 0.1-0.5 gwei (varies daily)
+- **Mainnet base fee:** Under 1 gwei (typically 0.1-0.5, varies daily)
 - **L2 transaction cost:** $0.001-0.01
 - **Combined L2 TPS:** 50,000+ (post-Fusaka)
-- **TVL in DeFi:** $50B+
+- **TVL in DeFi:** Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current
 - **Upgrade cadence:** Twice per year (H1 May/June, H2 Nov/Dec)
 
 ## Upcoming Upgrades

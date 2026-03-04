@@ -23,23 +23,23 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 ## L2 Comparison Table (Mar 2026)
 
-> **TVL note:** DeFi TVL (from DeFi Llama) measures value in DeFi protocols. L2Beat's TVS (Total Value Secured) includes all bridged + natively minted assets and is much higher. Both are volatile — check DeFi Llama or L2Beat for current numbers.
+> **TVL changes fast.** Don't memorize numbers — check [DeFi Llama](https://defillama.com/chains) or [L2Beat](https://l2beat.com/scaling/tvl) for current rankings. DeFi TVL (DeFi Llama) measures value locked in protocols. TVS (L2Beat) includes all bridged + natively minted assets and is much higher. As of early 2026: Base and Arbitrum lead in DeFi TVL among L2s. Optimism's DeFi TVL is surprisingly low despite Superchain adoption.
 
-| L2 | Type | DeFi TVL | Tx Cost | Block Time | Finality | Chain ID |
-|----|------|-----|---------|------------|----------|----------|
-| **Arbitrum** | Optimistic | ~$2B | $0.001-0.003 | 250ms | 7 days | 42161 |
-| **Base** | Optimistic (OP Stack) | ~$3.9B | $0.0008-0.002 | 2s | 7 days | 8453 |
-| **Optimism** | Optimistic (OP Stack) | ~$213M | $0.001-0.003 | 2s | 7 days | 10 |
-| **Unichain** | Optimistic (OP Stack) | Growing | $0.001-0.003 | 1s | 7 days | 130 |
-| **Celo** | Optimistic (OP Stack) | $200M+ | <$0.001 | 5s | 7 days | 42220 |
-| **Linea** | ZK | $900M+ | $0.003-0.006 | 2s | 30-60min | 59144 |
-| **zkSync Era** | ZK | $800M+ | $0.003-0.008 | 1s | 15-60min | 324 |
-| **Scroll** | ZK | $250M+ | $0.002-0.005 | 3s | 30-120min | 534352 |
-| ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | — | ~~1101~~ |
+| L2 | Type | Tx Cost | Block Time | Finality | Chain ID |
+|----|------|---------|------------|----------|----------|
+| **Arbitrum** | Optimistic | $0.001-0.003 | 250ms | 7 days | 42161 |
+| **Base** | Optimistic (OP Stack) | $0.0008-0.002 | 2s | 7 days | 8453 |
+| **Optimism** | Optimistic (OP Stack) | $0.001-0.003 | 2s | 7 days | 10 |
+| **Unichain** | Optimistic (OP Stack) | $0.001-0.003 | 1s | 7 days | 130 |
+| **Celo** | Optimistic (OP Stack) | <$0.001 | 5s | 7 days | 42220 |
+| **Linea** | ZK | $0.003-0.006 | 2s | 30-60min | 59144 |
+| **zkSync Era** | ZK | $0.003-0.008 | 1s | 15-60min | 324 |
+| **Scroll** | ZK | $0.002-0.005 | 3s | 30-120min | 534352 |
+| ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | ~~1101~~ |
 
 ⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
 
-**Mainnet for comparison:** ~$53B DeFi TVL, $0.002-0.01, 8s blocks, instant finality.
+**Mainnet for comparison:** $0.002-0.01 per tx, 8s blocks, instant finality. Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current TVL.
 
 ## Cost Comparison (Real Examples, Feb 2026)
 
