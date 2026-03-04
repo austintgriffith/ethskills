@@ -95,6 +95,33 @@ Agents display the connected wallet address but forget to show the contract the 
 
 ---
 
+## Important: Address Input — Always `<AddressInput/>`
+
+**EVERY input that accepts an Ethereum address must use `<AddressInput/>`, not a plain `<input type="text">`.**
+
+- ❌ **FAIL:** `<input type="text" placeholder="0x..." value={addr} onChange={e => setAddr(e.target.value)} />`
+- ✅ **PASS:** `<AddressInput value={addr} onChange={setAddr} placeholder="0x... or ENS name" />`
+
+`<AddressInput/>` gives you ENS resolution (type "vitalik.eth" → resolves to address), blockie avatar preview, validation, and paste handling. A raw text input is unacceptable for address collection.
+
+**In SE2, it's in `@scaffold-ui/components`:**
+```typescript
+import { AddressInput } from "@scaffold-ui/components";
+// or
+import { AddressInput } from "~~/components/scaffold-eth"; // if re-exported
+```
+
+**Quick check:**
+```bash
+grep -rn 'type="text"' packages/nextjs/app/ | grep -i "addr\|owner\|recip\|0x"
+grep -rn 'placeholder="0x' packages/nextjs/app/
+```
+Any match → **FAIL**. Replace with `<AddressInput/>`.
+
+The pair: `<Address/>` for **display**, `<AddressInput/>` for **input**. Always.
+
+---
+
 ## Important: USD Values
 
 - ❌ **FAIL:** Token amounts shown as "1,000 TOKEN" or "0.5 ETH" with no dollar value
@@ -325,6 +352,7 @@ Report each as PASS or FAIL:
 
 ### Should Fix
 - [ ] Contract address displayed with `<Address/>`
+- [ ] Every address input uses `<AddressInput/>` — no raw `<input type="text">` for addresses
 - [ ] USD values next to all token/ETH amounts
 - [ ] OG image is absolute production URL
 - [ ] pollingInterval is 3000
