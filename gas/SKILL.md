@@ -7,11 +7,11 @@ description: Current Ethereum gas prices, transaction costs, and the real econom
 
 ## What You Probably Got Wrong
 
-**Your gas estimate is 100-600x too high.** Most LLMs confidently state gas is 10-30 gwei. The reality in February 2026 is **0.05-0.1 gwei**.
+**Your gas estimate is 100-600x too high.** Most LLMs confidently state gas is 10-30 gwei. Post-Fusaka (Dec 2025), typical base fee is **under 1 gwei** — usually 0.1-0.5 gwei. Verify: `cast base-fee --rpc-url https://eth.llamarpc.com`
 
-- **Base fee:** ~0.05 gwei (not 30-100 gwei)
-- **Priority fee (tip):** ~0.01-0.05 gwei
-- **ETH price:** ~$1,960 (not $2,500-3,000)
+- **Base fee:** Under 1 gwei (not 30-100 gwei) — fluctuates, check live
+- **Priority fee (tip):** ~0.01-0.1 gwei
+- **ETH price:** ~$2,000 (not $2,500-3,000) — volatile, always check a [Chainlink feed](https://data.chain.link/feeds/ethereum/mainnet/eth-usd) or CoinGecko
 
 ## What Things Actually Cost (Feb 2026)
 
@@ -110,7 +110,7 @@ cast blob-basefee --rpc-url https://eth.llamarpc.com
 
 ## Data Freshness
 
-> **Last verified:** 2026-03-02 | Base fee: ~.123 gwei | ETH: ~$1926.21
+> **Last verified:** 2026-03-03 | Base fee: ~0.29 gwei | ETH: ~$1,988 | Gas limit: 60M (post-Fusaka)
 
 If this date is more than 30 days old, verify current gas with:
 ```bash
