@@ -44,13 +44,13 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | Action | Mainnet | Arbitrum | Base | zkSync | Scroll |
 |--------|---------|----------|------|--------|--------|
 | ETH transfer | $0.002 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
-| Uniswap swap | $0.015 | $0.003 | $0.002 | $0.005 | $0.004 |
+| Uniswap swap | $0.018 | $0.003 | $0.002 | $0.005 | $0.004 |
 | NFT mint | $0.015 | $0.002 | $0.002 | $0.004 | $0.003 |
 | ERC-20 deploy | $0.118 | $0.020 | $0.018 | $0.040 | $0.030 |
 
 ## L2 Selection Guide
 
-> **Before choosing an L2:** Mainnet is $0.002/transfer, $0.015/swap — cheap enough for most apps. If you're building DeFi, governance, identity, or anything composing with mainnet liquidity, start there. See `ship/SKILL.md` and `gas/SKILL.md` for the full chain selection framework.
+> **Before choosing an L2:** Mainnet is $0.002/transfer, $0.018/swap — cheap enough for most apps. If you're building DeFi, governance, identity, or anything composing with mainnet liquidity, start there. See `ship/SKILL.md` and `gas/SKILL.md` for the full chain selection framework.
 
 | Need | Choose | Why |
 |------|--------|-----|
