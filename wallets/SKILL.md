@@ -11,7 +11,7 @@ description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart
 
 **Account abstraction status:** ERC-4337 is growing but still early (Feb 2026). Major implementations: Kernel (ZeroDev), Biconomy, Alchemy Account Kit, Pimlico. EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`.
 
-**Safe secures $100B+.** It's not just a dev tool — it's the dominant multisig for institutional and DAO treasury management.
+**Safe secures $60B+ in assets** (and has processed $1.4T+ in total value). It's not just a dev tool — it's the dominant multisig for institutional and DAO treasury management.
 
 ## EIP-7702: Smart EOAs (Live Since May 2025)
 

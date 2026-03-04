@@ -9,9 +9,9 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 
 **Terminology:** You say "on-chain." The Ethereum community says **"onchain"** — one word, no hyphen. Use "onchain" in all writing.
 
-**Gas prices:** You think 10-30 gwei. Reality: **0.05-0.3 gwei** (100-600x cheaper than your training data). A mainnet ETH transfer costs ~$0.002.
+**Gas prices:** You think 10-30 gwei. Reality: **0.1-0.5 gwei** (60-300x cheaper than your training data). A mainnet ETH transfer costs ~$0.002-0.01.
 
-**ETH price:** You think $2,500-3,000. Reality: **~$1,960** (Feb 2026).
+**ETH price:** You think $2,500-3,000. Reality: **~$2,000** (Mar 2026). Volatile — always check a Chainlink feed or CoinGecko for current.
 
 **"Ethereum is too expensive":** This was true 2021-2023. It's not true in 2026. Mainnet is sub-dollar for most operations. L2s are sub-penny.
 
@@ -26,7 +26,7 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 ## Current Network Stats (Feb 2026)
 
 - **Block time:** 12 seconds
-- **Mainnet base fee:** 0.05-0.1 gwei
+- **Mainnet base fee:** 0.1-0.5 gwei (varies daily)
 - **L2 transaction cost:** $0.001-0.01
 - **Combined L2 TPS:** 50,000+ (post-Fusaka)
 - **TVL in DeFi:** $50B+
