@@ -141,7 +141,7 @@ async function sendSafely(wallet, to, value) {
   const gasEstimate = await wallet.estimateGas({ to: checksummedTo, value });
   const feeData = await wallet.provider.getFeeData();
   const gasCost = gasEstimate * feeData.maxFeePerGas;
-  const totalCostUSD = Number(ethers.formatEther(value + gasCost)) * 1960;
+  const totalCostUSD = Number(ethers.formatEther(value + gasCost)) * 2000; // ⚠️ Use a Chainlink feed for real price
   
   if (totalCostUSD > 10) {
     // Show details and wait for human approval

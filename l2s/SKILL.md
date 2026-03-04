@@ -9,7 +9,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **L2 costs:** You think $0.01-2.00 per transaction. Reality: **$0.001-0.003** for swaps, **$0.0003** for transfers. After EIP-4844, L2 batch costs dropped from $50-500 to $0.01-0.50.
 
-**Mainnet is cheap too:** At 0.05 gwei, mainnet ETH transfers cost $0.002. "Ethereum is too expensive" is false for both L1 and L2s in 2026.
+**Mainnet is cheap too:** At under 1 gwei, mainnet ETH transfers cost ~$0.002. "Ethereum is too expensive" is false for both L1 and L2s in 2026.
 
 **Base is the cheapest major L2:** Often 50% cheaper than Arbitrum/Optimism. Direct Coinbase on-ramp. Fastest-growing L2 with consumer/AI agent focus.
 

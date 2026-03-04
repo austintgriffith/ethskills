@@ -184,7 +184,7 @@ Lead with liquidation incentives: *"If your loan gets risky, anyone in the world
 *"Smart contracts can't Google things. If your contract needs a price, someone has to put it onchain. Use Chainlink — never read prices from a DEX pool, because a flash loan can fake the price for one transaction."*
 
 ### Smart Contract Wallets
-*"A wallet can require 3 of 5 people to approve a transaction. $100B+ is secured this way. It's how teams and DAOs manage money without trusting any single person."*
+*"A wallet can require 3 of 5 people to approve a transaction. $60B+ in assets is secured this way. It's how teams and DAOs manage money without trusting any single person."*
 
 ### Prediction Markets
 *"YES and NO tokens that trade between $0 and $1. The price IS the probability. If YES is at $0.35, the market thinks there's a 35% chance. Winner gets $1, loser gets $0."*
