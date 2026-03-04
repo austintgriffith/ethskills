@@ -309,6 +309,74 @@ Any `"loading"` string in a button's className → **FAIL**.
 
 ---
 
+## Important: Contract Error Translation
+
+When a contract reverts, the error comes back as a raw hex selector like `0xe450d38c`. By default, the user sees nothing — the catch block silently resets the button.
+
+**You must map every revert to plain English and display it.**
+
+```typescript
+function parseContractError(e: unknown): string {
+  const msg = e instanceof Error ? e.message : String(e);
+
+  // Wallet
+  if (/user rejected|user denied|rejected the request/i.test(msg)) return "Transaction cancelled";
+  if (/insufficient funds for gas/i.test(msg)) return "Not enough ETH for gas fees";
+
+  // OpenZeppelin ERC-20 v5 (selectors you won't find in your own ABI)
+  if (/e450d38c|InsufficientBalance/i.test(msg))   return "Insufficient token balance";
+  if (/fb8f41b2|InsufficientAllowance/i.test(msg)) return "Allowance too low — approve again";
+  if (/5274afe7|SafeERC20FailedOperation/i.test(msg)) return "Token transfer failed";
+
+  // OpenZeppelin access control
+  if (/118cdaa7|OwnableUnauthorizedAccount/i.test(msg)) return "Not authorized";
+  if (/3ee5aeb5|ReentrancyGuardReentrantCall/i.test(msg)) return "Reentrant call — try again";
+
+  // Your contract's require() strings — add one entry per require
+  // if (/Job not OPEN/i.test(msg)) return "This job is no longer open";
+
+  // Fallback: extract the quoted revert reason if present
+  const match = msg.match(/reverted[^"']*["']([^"']{3,80})["']/i);
+  if (match) return match[1];
+
+  return "Transaction failed — please try again";
+}
+```
+
+Display the result inline below the button — not an alert, not a toast. Clear when the user edits inputs:
+
+```tsx
+const [txError, setTxError] = useState<string | null>(null);
+
+// in catch:
+setTxError(parseContractError(e));
+
+// in JSX, after the button:
+{txError && (
+  <div className="mt-3 alert alert-error text-sm">
+    <span>{txError}</span>
+  </div>
+)}
+```
+
+**ERC-20 selectors reference** (OpenZeppelin v5 — NOT in your contract's ABI, viem can't decode these):
+
+| Selector | Error |
+|---|---|
+| `0xe450d38c` | `ERC20InsufficientBalance` |
+| `0xfb8f41b2` | `ERC20InsufficientAllowance` |
+| `0x96c6fd1e` | `ERC20InvalidSender` |
+| `0xec442f05` | `ERC20InvalidReceiver` |
+| `0xe602df05` | `ERC20InvalidApprover` |
+| `0x5274afe7` | `SafeERC20FailedOperation` |
+| `0x118cdaa7` | `OwnableUnauthorizedAccount` |
+| `0x3ee5aeb5` | `ReentrancyGuardReentrantCall` |
+
+- ❌ **FAIL:** Catch blocks do `console.error(e)` only — user sees the button reset with no explanation
+- ✅ **PASS:** Every catch block calls `parseContractError`, displays the result inline, clears on edit
+
+---
+
 ## Audit Summary
 
 Report each as PASS or FAIL:
@@ -336,3 +404,4 @@ Report each as PASS or FAIL:
 - [ ] Mobile: ALL transaction buttons deep link to wallet (fire TX first, then `setTimeout(openWallet, 2000)`)
 - [ ] Mobile: wallet detection checks WC session data, not just `connector.id`
 - [ ] Mobile: no deep link when `window.ethereum` exists (in-app browser)
+- [ ] Every catch block calls `parseContractError` — no raw hex selectors or silent failures shown to users
