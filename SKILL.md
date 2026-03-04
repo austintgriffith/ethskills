@@ -137,15 +137,15 @@ Pre-ship audit checklist for a reviewer agent.
 
 ## What to Fetch by Task
 
-| I'm doing... | Fetch these skills |
-|--------------|-------------------|
-| Planning a new dApp | `ship/`, `concepts/`, `l2s/` |
-| Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
-| Testing contracts | `testing/` |
-| Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
-| Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
-| Reviewing a finished dApp | `qa/` |
-| Auditing a smart contract | `audit/` |
-| Monitoring / analytics | `indexing/` |
-| Building AI agent infra | `standards/`, `wallets/`, `tools/` |
-| Choosing a chain | `l2s/`, `gas/` |
+| I'm doing... | Fetch these skills (append to `https://ethskills.com`) |
+|--------------|--------------------------------------------------------|
+| Planning a new dApp | `/ship/SKILL.md`, `/concepts/SKILL.md`, `/l2s/SKILL.md` |
+| Writing Solidity | `/standards/SKILL.md`, `/building-blocks/SKILL.md`, `/addresses/SKILL.md`, `/security/SKILL.md` |
+| Testing contracts | `/testing/SKILL.md` |
+| Building a frontend | `/orchestration/SKILL.md`, `/frontend-ux/SKILL.md`, `/tools/SKILL.md` |
+| Deploying to production | `/wallets/SKILL.md`, `/frontend-playbook/SKILL.md`, `/gas/SKILL.md` |
+| Reviewing a finished dApp | `/qa/SKILL.md` |
+| Auditing a smart contract | `/audit/SKILL.md` |
+| Monitoring / analytics | `/indexing/SKILL.md` |
+| Building AI agent infra | `/standards/SKILL.md`, `/wallets/SKILL.md`, `/tools/SKILL.md` |
+| Choosing a chain | `/l2s/SKILL.md`, `/gas/SKILL.md` |
