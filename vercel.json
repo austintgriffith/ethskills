@@ -1,26 +1,9 @@
 {
   "rewrites": [
-    { "source": "/ship",             "destination": "/ship/SKILL.md" },
-    { "source": "/why",              "destination": "/why/SKILL.md" },
-    { "source": "/gas",              "destination": "/gas/SKILL.md" },
-    { "source": "/wallets",          "destination": "/wallets/SKILL.md" },
-    { "source": "/l2s",              "destination": "/l2s/SKILL.md" },
-    { "source": "/l2",               "destination": "/l2s/SKILL.md" },
-    { "source": "/layer2",           "destination": "/l2s/SKILL.md" },
-    { "source": "/standards",        "destination": "/standards/SKILL.md" },
-    { "source": "/tools",            "destination": "/tools/SKILL.md" },
-    { "source": "/building-blocks",  "destination": "/building-blocks/SKILL.md" },
-    { "source": "/defi",             "destination": "/building-blocks/SKILL.md" },
-    { "source": "/orchestration",    "destination": "/orchestration/SKILL.md" },
-    { "source": "/addresses",        "destination": "/addresses/SKILL.md" },
-    { "source": "/concepts",         "destination": "/concepts/SKILL.md" },
-    { "source": "/security",         "destination": "/security/SKILL.md" },
-    { "source": "/testing",          "destination": "/testing/SKILL.md" },
-    { "source": "/indexing",         "destination": "/indexing/SKILL.md" },
-    { "source": "/frontend-ux",      "destination": "/frontend-ux/SKILL.md" },
-    { "source": "/frontend-playbook","destination": "/frontend-playbook/SKILL.md" },
-    { "source": "/qa",               "destination": "/qa/SKILL.md" },
-    { "source": "/audit",            "destination": "/audit/SKILL.md" }
+    { "source": "/l2",      "destination": "/l2s/SKILL.md" },
+    { "source": "/layer2",  "destination": "/l2s/SKILL.md" },
+    { "source": "/defi",    "destination": "/building-blocks/SKILL.md" },
+    { "source": "/:skill",  "destination": "/:skill/SKILL.md" }
   ],
   "headers": [
     {
