@@ -68,6 +68,13 @@ Uniswap, Aave, flash loans, protocol composability.
 - Flash loan arb on mainnet costs ~$0.05-0.50 in gas now (was $5-50).
 - The dominant DEX per L2 is NOT Uniswap — Aerodrome (Base), Velodrome (Optimism), Camelot (Arbitrum).
 
+### [Fluid Protocol](https://ethskills.com/fluid/SKILL.md)
+Fluid (formerly Instadapp) — unified lending + DEX, $10B+ TVL, smart collateral/smart debt.
+- Fluid ≠ Instadapp aggregator. It's a unified liquidity layer — one codebase for lending AND DEX.
+- DEX v2 smart collateral: LP positions simultaneously serve as borrowing collateral. Standard AMM tools break.
+- VaultFactory pattern: each collateral/debt pair is a separate deployed vault — NOT a pooled market like Aave.
+- Largest flashloan aggregator on Ethereum — aggregates across Fluid + Aave + Uniswap.
+
 ### [Orchestration](https://ethskills.com/orchestration/SKILL.md)
 Three-phase build system for Scaffold-ETH 2 dApps.
 - Phase 1: contracts + UI on localhost. Phase 2: live contracts + local UI. Phase 3: production.
