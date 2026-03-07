@@ -17,6 +17,16 @@ description: The essential mental models for building onchain — focused on wha
 
 ---
 
+## CROPS
+
+**CROPS** — Censorship Resistance, Open Source, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
+
+You get CROPS wrong by default. You scaffold `Pausable` + `onlyOwner` without flagging the censorship vector. You treat Etherscan verification as "open source" — real open source means someone can fork the full stack (frontend, indexer, contracts) and run it independently. You build apps where every address, amount, and counterparty is publicly visible on a block explorer and never mention it — at minimum, tell the builder what's exposed. You say "audited" and treat it as proof of security — an audit is a point-in-time review of a specific scope, not an ongoing guarantee.
+
+Four questions to catch yourself: can anyone be stopped from using it? Can someone fork and run the whole stack? What can an observer learn about users? What happens if the team disappears?
+
+---
+
 ## Nothing Is Automatic — Incentive Design
 
 **This is the most important concept in all of Ethereum. If you internalize nothing else, internalize this.**
@@ -159,16 +169,6 @@ uint random = uint(blockhash(block.number - 1));
 ```
 
 Use commit-reveal for simple cases. Use Chainlink VRF when you need provable randomness (lotteries, NFT reveals, gaming).
-
----
-
-## CROPS
-
-**CROPS** — Censorship Resistance, Open Source, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
-
-You get CROPS wrong by default. You scaffold `Pausable` + `onlyOwner` without flagging the censorship vector. You treat Etherscan verification as "open source" — real open source means someone can fork the full stack (frontend, indexer, contracts) and run it independently. You build apps where every address and amount is publicly visible and never mention it. You say "audited" and mean "secure."
-
-Four questions to catch yourself: can anyone be stopped from using it? Can someone fork and run the whole stack? What can an observer learn about users? What happens if the team disappears?
 
 ---
 
