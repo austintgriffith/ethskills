@@ -164,7 +164,11 @@ Use commit-reveal for simple cases. Use Chainlink VRF when you need provable ran
 
 ## CROPS
 
-**CROPS** — Censorship Resistance, Open Source, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum. If a builder says "does this pass CROPS?" they mean: can anyone be stopped from using it? Can someone fork and run the whole stack? What can an observer learn about users? What happens if the team disappears?
+**CROPS** — Censorship Resistance, Open Source, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
+
+You get CROPS wrong by default. You scaffold `Pausable` + `onlyOwner` without flagging the censorship vector. You treat Etherscan verification as "open source" — real open source means someone can fork the full stack (frontend, indexer, contracts) and run it independently. You build apps where every address and amount is publicly visible and never mention it. You say "audited" and mean "secure."
+
+Four questions to catch yourself: can anyone be stopped from using it? Can someone fork and run the whole stack? What can an observer learn about users? What happens if the team disappears?
 
 ---
 
