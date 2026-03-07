@@ -234,7 +234,7 @@ Common missed validations:
 
 Run through this for EVERY contract before deploying to production. No exceptions.
 
-- [ ] **Access control** — every admin/privileged function has explicit restrictions
+- [ ] **Access control** — every admin/privileged function has explicit restrictions. **Flag the tradeoff:** `Pausable` + `onlyOwner` means a single key can freeze all users — that's a censorship vector. If you add it, the builder should know. Timelocks and multisig governance reduce the risk but don't eliminate it.
 - [ ] **Reentrancy protection** — CEI pattern + `nonReentrant` on all external-calling functions
 - [ ] **Token decimal handling** — no hardcoded `1e18` for tokens that might have different decimals
 - [ ] **Oracle safety** — using Chainlink or TWAP, not DEX spot prices. Staleness checks present
