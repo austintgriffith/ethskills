@@ -85,6 +85,7 @@ Essential mental models for building onchain.
 - Smart contracts cannot execute themselves. Every function needs a caller who pays gas.
 - For every state transition: who calls it? Why would they? What if nobody does?
 - There are no timers, no cron jobs, no schedulers. Design with incentives.
+- CROPS (Censorship Resistance, Open Source, Privacy, Security) — the 4-question lens for whether something belongs on Ethereum.
 
 ### [Security](https://ethskills.com/security/SKILL.md)
 Solidity security patterns, common vulnerabilities, pre-deploy checklist.
