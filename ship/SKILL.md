@@ -74,6 +74,12 @@ Does it need gas incentives? ____________
 
 If "what if nobody calls it?" breaks your system, you have a design problem. Fix it before writing code. See `concepts/SKILL.md` for incentive design patterns.
 
+### CROPS Check
+
+Before writing code, ask: does this design need privacy? (Voting, donations, salary, medical — yes.) If yes, you need ZK proofs, not hashing or encryption. Fetch `concepts/SKILL.md` for the CROPS framework and pointers to Noir and the ZK Voting challenge.
+
+Also: if you're adding `Pausable` + `onlyOwner`, flag it. That's a censorship vector. The builder should know the tradeoff.
+
 ### Chain Selection (Quick Version)
 
 **Mainnet is back on the table.** Most AIs still think mainnet is expensive — it's not (~$0.004/transfer, ~$0.04/swap at current gas). Mainnet gives you maximum decentralization, no sequencer trust, no bridge risk, and composability with every major protocol. But L2s aren't a fallback — each one has a unique superpower. Pick the chain whose superpower matches your app:

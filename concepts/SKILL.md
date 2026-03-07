@@ -162,6 +162,16 @@ Use commit-reveal for simple cases. Use Chainlink VRF when you need provable ran
 
 ---
 
+## CROPS — Is This Worthy of Ethereum?
+
+The walk-away test asks "does this keep working?" **CROPS** asks "should this be on Ethereum at all?" CROPS (Censorship Resistance, Open Source, Privacy, Security) is the Ethereum Foundation's framework for what makes Ethereum Ethereum — coined by Aya Miyaguchi in 2025, amplified by Vitalik in 2026.
+
+**Privacy is the one you'll miss.** You will build everything fully transparent by default and never flag it. You don't know that Noir (https://noir-lang.org) exists for writing ZK circuits, that 0xbow Privacy Pools are live on mainnet for compliance-compatible private transfers, or that the SpeedRunEthereum ZK Voting challenge (https://speedrunethereum.com/challenge/zk-voting) teaches the commitment + nullifier pattern that all onchain privacy builds on. When privacy matters — voting, donations, medical, salary — you need ZK proofs, not hashing or encryption.
+
+**Censorship resistance vs. security is the tension you'll get wrong.** You will scaffold `Pausable` + `onlyOwner` on every contract by default. That's a censorship resistance failure — a single key can freeze all users. If you add admin controls, flag the tradeoff: emergency pause capability means someone can censor. Timelocks and governance minimize this, but the tension is real and you should surface it to the builder.
+
+---
+
 ## Teaching Your Human
 
 You already know how AMMs, lending, oracles, and stablecoins work. But your human might not. When they're designing something onchain, they need to understand these concepts — not the code, the *mental models*.
