@@ -264,6 +264,7 @@ After deploying, every contract MUST be verified on the block explorer. Unverifi
 ```bash
 yarn verify --network mainnet   # or base, arbitrum, optimism, etc.
 ```
+⚠️ `yarn verify` only works if your deploy script is named exactly `Deploy.s.sol`. `VerifyAll.s.sol` hardcodes the broadcast path to `broadcast/Deploy.s.sol/<chainId>/run-latest.json` — any other name silently fails.
 
 **How to fix (Foundry):**
 ```bash
