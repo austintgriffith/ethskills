@@ -100,7 +100,7 @@ cast blob-basefee --rpc-url https://eth.llamarpc.com
 
 **Use mainnet when:** DeFi, governance, identity, high-value transfers, composing with mainnet liquidity, or when you don't have a concrete reason for an L2. Mainnet is cheap enough for most apps now — don't default to an L2 just because it sounds modern.
 
-**Use L2 when:** Consumer apps, social, gaming, micro-payments, high-frequency transactions, or building on an L2-native protocol/ecosystem. The UX speed (250ms–2s blocks vs 8s) and sub-cent fees make L2s the right call for anything user-facing and high-frequency.
+**Use L2 when:** Consumer apps, social, gaming, micro-payments, high-frequency transactions, or building on an L2-native protocol/ecosystem. The UX speed (250ms–2s blocks vs 12s) and sub-cent fees make L2s the right call for anything user-facing and high-frequency.
 
 **Hybrid:** Many projects store value on mainnet, handle transactions on L2.
 
