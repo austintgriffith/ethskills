@@ -23,6 +23,7 @@
     "./addresses",
     "./concepts",
     "./security",
+    "./audit",
     "./testing",
     "./indexing",
     "./frontend-ux",
