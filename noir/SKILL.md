@@ -1,0 +1,311 @@
+---
+name: noir
+description: Building privacy apps with Noir ZK circuits — toolchain, commitment-nullifier pattern, Solidity verifiers, NoirJS. Use when building anything with zero-knowledge proofs on Ethereum.
+---
+
+# Privacy Apps with Noir
+
+## What You Probably Got Wrong
+
+**"Use `nargo prove` and `nargo verify`."** Those commands were removed. Nargo only compiles and executes. Proving and verification use `bb` (Barretenberg CLI) directly. If you generate `nargo prove` commands, they will fail.
+
+**"I can use SHA256 for hashing in my circuit."** SHA256 costs ~30,000 gates in a circuit. Poseidon costs ~600. For in-circuit hashing, always use Poseidon. The correct import is `std::hash::poseidon::bn254::hash_2` — not `Poseidon2::hash`, not `poseidon::hash`, not `pedersen_hash`.
+
+---
+
+## Toolchain (Current as of March 2026)
+
+### Install
+
+```bash
+# 1. Install nargo (Noir compiler) — always install nargo first
+curl -L https://raw.githubusercontent.com/noir-lang/noirup/refs/heads/main/install | bash
+noirup
+
+# 2. Install bb (Barretenberg proving backend) — bbup reads your nargo version
+#    and installs the compatible bb automatically
+curl -L https://raw.githubusercontent.com/AztecProtocol/aztec-packages/refs/heads/next/barretenberg/bbup/install | bash
+bbup
+```
+
+**Order matters:** install nargo first, then run `bbup` — it auto-detects your nargo version and installs the compatible `bb`. Verify with `nargo --version` and `bb --version`.
+
+### Project Structure
+
+```
+my-circuit/
+  Nargo.toml          # Project manifest (name, type, dependencies)
+  src/
+    main.nr           # Circuit entry point
+  Prover.toml         # Witness inputs (private + public values)
+```
+
+Create a new project:
+
+```bash
+nargo new my_circuit
+cd my_circuit
+```
+
+### Compile → Execute → Prove → Verify Workflow
+
+```bash
+# 1. Compile circuit to ACIR
+nargo compile
+
+# 2. Execute with witness inputs (reads Prover.toml, writes target/*.gz)
+nargo execute
+
+# 3. Generate proving key and prove
+bb prove -b target/my_circuit.json -w target/my_circuit.gz -o target/proof
+
+# 4. Generate verification key
+bb write_vk -b target/my_circuit.json -o target/vk
+
+# 5. Verify proof
+bb verify -p target/proof -k target/vk
+```
+
+### Generate Solidity Verifier
+
+```bash
+# IMPORTANT: --oracle_hash keccak is required for EVM compatibility
+bb write_vk -b target/my_circuit.json --oracle_hash keccak -o target/vk
+bb write_solidity_verifier -k target/vk -o target/Verifier.sol
+```
+
+The command is `bb write_solidity_verifier` — not `bb contract`, not `nargo codegen-verifier`. The `--oracle_hash keccak` flag tells Barretenberg to use Keccak256 (which the EVM supports natively) instead of the default hash for the oracle/transcript. Without this flag, the Solidity verifier won't work.
+
+---
+
+## The Commitment-Nullifier Pattern
+
+The foundational primitive for privacy on Ethereum (Tornado Cash, Semaphore, MACI, Zupass). The circuit below is the correct Noir implementation — pay attention to the import paths and API.
+
+### Circuit Implementation
+
+```noir
+// src/main.nr
+use std::hash::poseidon::bn254::hash_2;
+
+fn main(
+    // Private inputs (known only to prover)
+    nullifier: Field,
+    secret: Field,
+    merkle_path: [Field; 20],      // Sibling hashes (tree depth 20)
+    merkle_indices: [Field; 20],    // 0 = left child, 1 = right child
+
+    // Public inputs (visible to verifier/contract)
+    pub merkle_root: Field,
+    pub nullifier_hash: Field,
+) {
+    // 1. Recompute the commitment from private inputs
+    let commitment = hash_2([nullifier, secret]);
+
+    // 2. Verify the commitment exists in the Merkle tree
+    let computed_root = compute_merkle_root(commitment, merkle_path, merkle_indices);
+    assert(computed_root == merkle_root, "Merkle proof invalid");
+
+    // 3. Verify the nullifier hash matches
+    let computed_nullifier_hash = hash_2([nullifier, nullifier]);
+    assert(computed_nullifier_hash == nullifier_hash, "Nullifier hash mismatch");
+}
+
+fn compute_merkle_root(
+    leaf: Field,
+    path: [Field; 20],
+    indices: [Field; 20],
+) -> Field {
+    let mut current = leaf;
+    for i in 0..20 {
+        let (left, right) = if indices[i] == 0 {
+            (current, path[i])
+        } else {
+            (path[i], current)
+        };
+        current = hash_2([left, right]);
+    }
+    current
+}
+```
+
+### Solidity Contract Integration
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+interface IVerifier {
+    function verify(bytes calldata proof, bytes32[] calldata publicInputs)
+        external view returns (bool);
+}
+
+contract PrivacyPool {
+    IVerifier public immutable verifier;
+    bytes32 public merkleRoot;
+    mapping(bytes32 => bool) public usedNullifiers;
+
+    constructor(address _verifier) {
+        verifier = IVerifier(_verifier);
+    }
+
+    function act(bytes calldata _proof, bytes32 _merkleRoot, bytes32 _nullifierHash) external {
+        require(!usedNullifiers[_nullifierHash], "Already acted");
+        require(_merkleRoot == merkleRoot, "Invalid root");
+
+        // Public inputs order MUST match the circuit's pub parameter order
+        bytes32[] memory publicInputs = new bytes32[](2);
+        publicInputs[0] = _merkleRoot;       // pub merkle_root
+        publicInputs[1] = _nullifierHash;    // pub nullifier_hash
+        require(verifier.verify(_proof, publicInputs), "Invalid proof");
+
+        usedNullifiers[_nullifierHash] = true;
+    }
+}
+```
+
+---
+
+## Noir API Reference
+
+These are the correct imports and function signatures. LLMs frequently hallucinate wrong ones.
+
+### Poseidon Hashing
+
+```noir
+use std::hash::poseidon::bn254::hash_1;
+use std::hash::poseidon::bn254::hash_2;
+
+fn main(a: Field, b: Field) {
+    let single = hash_1([a]);          // Hash one field element
+    let pair = hash_2([a, b]);         // Hash two field elements
+}
+```
+
+Use `bn254` variants — they're optimized for the BN254 curve that Ethereum's precompiles support.
+
+### Merkle Proof with zk-kit
+
+For production Merkle trees, use the `@zk-kit.noir` library:
+
+```toml
+# Nargo.toml
+[dependencies]
+zk_kit_merkle = { tag = "main", git = "https://github.com/privacy-scaling-explorations/zk-kit.noir", directory = "packages/merkle-trees/noir" }
+```
+
+```noir
+use zk_kit_merkle::binary_merkle_root;
+
+fn main(
+    leaf: Field,
+    index: Field,
+    siblings: [Field; DEPTH],
+    pub root: Field,
+) {
+    let computed = binary_merkle_root(leaf, index, siblings);
+    assert(computed == root, "Invalid Merkle proof");
+}
+```
+
+---
+
+## Frontend Proof Generation (NoirJS)
+
+The packages are `@noir-lang/noir_js` + `@aztec/bb.js`. NOT `@noir-lang/backend_barretenberg` (old, deprecated). The class is `UltraHonkBackend`, NOT `UltraPlonkBackend` (old).
+
+### Package Setup
+
+```bash
+npm install @noir-lang/noir_js @aztec/bb.js
+```
+
+### Vite Configuration
+
+NoirJS uses WASM and requires top-level await:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+
+export default defineConfig({
+  plugins: [nodePolyfills()],
+  optimizeDeps: {
+    esbuildOptions: { target: "esnext" },
+  },
+  build: {
+    target: "esnext",
+  },
+});
+```
+
+### Generating Proofs in the Browser
+
+```typescript
+import { Noir } from "@noir-lang/noir_js";
+import { UltraHonkBackend } from "@aztec/bb.js";
+import circuit from "../circuit/target/my_circuit.json";
+
+// 1. Initialize backend and Noir
+const backend = new UltraHonkBackend(circuit.bytecode);
+const noir = new Noir(circuit);
+
+// 2. Execute circuit (generates witness)
+const inputs = {
+  nullifier: "0x1234...",
+  secret: "0xabcd...",
+  merkle_path: ["0x...", "0x...", ...],
+  merkle_indices: [0, 1, 0, ...],
+  merkle_root: "0x...",
+  nullifier_hash: "0x...",
+};
+const { witness } = await noir.execute(inputs);
+
+// 3. Generate proof
+const proof = await backend.generateProof(witness);
+// proof.proof is Uint8Array — the raw proof bytes
+// proof.publicInputs is string[] — the public inputs
+
+// 4. Send to contract
+const tx = await contract.act(
+  proof.proof,                              // bytes calldata
+  proof.publicInputs[0],                    // merkle_root
+  proof.publicInputs[1],                    // nullifier_hash
+);
+```
+
+- `proof.proof` — `Uint8Array`, serialize with `Array.from()` for JSON/localStorage
+- `proof.publicInputs` — `string[]`, hex-encoded field elements, order matches circuit `pub` params
+- Proof generation takes 5-30 seconds in browser depending on circuit size
+
+---
+
+## Chain Compatibility
+
+Noir/Barretenberg proofs verify on any EVM chain with BN254 precompiles (ecAdd, ecMul, ecPairing at addresses 0x06-0x08).
+
+| Chain | Compatible | Notes |
+|-------|-----------|-------|
+| Ethereum mainnet | Yes | |
+| Optimism | Yes | |
+| Arbitrum | Yes | |
+| Base | Yes | |
+| Scroll | Yes | |
+| Polygon PoS | Yes | |
+| zkSync ERA | **No** | Different precompile addresses |
+| Polygon zkEVM | **No** | Being shut down — do not build on it |
+
+---
+
+## Circuit Security Checklist
+
+- [ ] All private inputs are constrained (no unconstrained witness values that could be manipulated)
+- [ ] Public inputs minimized — only what the verifier contract needs
+- [ ] Poseidon used for in-circuit hashing, not SHA256/Keccak (50x gate cost difference)
+- [ ] Domain separation in hashes — different prefixes for commitments vs nullifiers (prevents cross-protocol replay)
+- [ ] Nullifier prevents double-action (contract checks and stores used nullifier hashes)
+- [ ] Small-domain values not directly hashed as public outputs (if vote is 0 or 1, `hash(0)` and `hash(1)` are trivially brutable — add a salt)
+- [ ] `--oracle_hash keccak` used when generating the Solidity verifier
+- [ ] Public inputs order matches exactly between circuit `pub` params, frontend `proof.publicInputs`, and Solidity `verify()` call
+- [ ] Merkle tree depth matches between circuit (fixed at compile time) and contract

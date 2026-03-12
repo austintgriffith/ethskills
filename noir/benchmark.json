@@ -1,0 +1,196 @@
+{
+  "skill": "noir/SKILL.md",
+  "description": "Benchmark evals for the Noir ZK Privacy skill. Run each prompt against Claude WITHOUT the skill loaded, grade pass/fail using the rubric. Any eval that passes baseline = that content may be redundant in the skill.",
+  "instructions": {
+    "step_1": "For each eval, send the prompt to Claude in a fresh conversation with NO skill loaded.",
+    "step_2": "Grade the response pass/fail using the rubric. Be strict — partial credit is a fail.",
+    "step_3": "Record results in the 'baseline' column.",
+    "step_4": "Repeat with the skill loaded (paste noir/SKILL.md into context first). Record in 'with_skill' column.",
+    "step_5": "Compare. Baseline pass + skill pass = content is redundant. Baseline fail + skill pass = content is valuable. Baseline fail + skill fail = content needs improvement."
+  },
+  "evals": [
+    {
+      "id": "toolchain-workflow",
+      "section": "Toolchain",
+      "claim": "nargo prove/verify were removed; must use bb CLI directly",
+      "prompt": "Show me the step-by-step commands to compile a Noir circuit, generate a proof, and verify it. Start from a project that already has src/main.nr written.",
+      "rubric": {
+        "pass_criteria": [
+          "Uses 'nargo compile' for compilation",
+          "Uses 'nargo execute' (NOT 'nargo prove') for witness generation",
+          "Uses 'bb prove' (NOT 'nargo prove') for proof generation",
+          "Uses 'bb verify' (NOT 'nargo verify') for verification",
+          "Includes correct flags (-b, -w, -o for bb commands)"
+        ],
+        "fail_signals": [
+          "Uses 'nargo prove' or 'nargo verify'",
+          "Omits the nargo execute step",
+          "Uses snarkjs or other non-Barretenberg backend commands"
+        ]
+      },
+      "baseline": "FAIL — used nargo prove, nargo verify, nargo codegen-verifier (all removed)",
+      "with_skill": null
+    },
+    {
+      "id": "hash-function-choice",
+      "section": "Noir API Reference",
+      "claim": "Poseidon ~600 gates vs SHA256 ~30,000 gates; correct import is std::hash::poseidon::bn254::hash_2",
+      "prompt": "I'm building a ZK circuit in Noir that needs to hash values for a commitment scheme. Which hash function should I use and why? Show me the Noir code.",
+      "rubric": {
+        "pass_criteria": [
+          "Recommends Poseidon (not SHA256 or Keccak) for in-circuit hashing",
+          "Mentions gate cost difference or circuit efficiency as the reason",
+          "Uses std::hash::poseidon::bn254 module path (not a made-up import)",
+          "Uses hash_1 or hash_2 function (not a generic 'poseidon()' call)"
+        ],
+        "fail_signals": [
+          "Recommends SHA256 or Keccak for in-circuit use",
+          "Uses incorrect import path (e.g., std::hash::poseidon2::Poseidon2)",
+          "Calls a nonexistent function like Poseidon2::hash([...], 2)",
+          "No mention of why Poseidon over SHA256"
+        ]
+      },
+      "baseline": "FAIL — right concept (Poseidon), wrong API (Poseidon2::hash instead of hash_2, wrong import path)",
+      "with_skill": null
+    },
+    {
+      "id": "solidity-verifier-generation",
+      "section": "Toolchain",
+      "claim": "--oracle_hash keccak flag is required for EVM-compatible Solidity verifier",
+      "prompt": "How do I generate a Solidity verifier contract from my compiled Noir circuit so I can verify proofs onchain?",
+      "rubric": {
+        "pass_criteria": [
+          "Uses 'bb write_vk' to generate verification key",
+          "Uses 'bb write_solidity_verifier' (not 'bb contract', not nargo, not snarkjs)",
+          "Includes '--oracle_hash keccak' flag on write_vk",
+          "Explains that keccak is needed for EVM compatibility"
+        ],
+        "fail_signals": [
+          "Uses nargo to generate verifier",
+          "Uses snarkjs exportSolidityVerifier",
+          "Uses 'bb contract' (wrong subcommand)",
+          "Omits --oracle_hash keccak flag"
+        ]
+      },
+      "baseline": "FAIL — used 'bb contract' (wrong), missing --oracle_hash keccak entirely",
+      "with_skill": null
+    },
+    {
+      "id": "noir-circuit-implementation",
+      "section": "Circuit Implementation",
+      "claim": "LLMs can't write correct Noir circuit code for the commitment-nullifier pattern",
+      "prompt": "Write a complete Noir circuit (main.nr) for an anonymous voting system. The circuit should prove: the voter knows a secret that corresponds to a registered commitment in a Merkle tree, and output a nullifier hash to prevent double voting. Include the Merkle proof verification.",
+      "rubric": {
+        "pass_criteria": [
+          "fn main() with correct private inputs (nullifier, secret, merkle_path, merkle_indices)",
+          "Public inputs marked with 'pub' (merkle_root, nullifier_hash)",
+          "Uses std::hash::poseidon::bn254::hash_2 for hashing",
+          "Recomputes commitment from nullifier + secret",
+          "Verifies Merkle proof against public root",
+          "Computes and asserts nullifier_hash",
+          "Merkle tree traversal logic is correct (left/right based on index bits)"
+        ],
+        "fail_signals": [
+          "Uses Circom syntax (signal, template, component)",
+          "Uses pedersen_hash instead of poseidon",
+          "Uses nonexistent methods like .lt() on Field",
+          "Missing assert statements (unconstrained values)"
+        ]
+      },
+      "baseline": "PARTIAL FAIL — good structure, but uses pedersen_hash (wrong), fake .lt() method on Field",
+      "with_skill": null
+    },
+    {
+      "id": "noirjs-frontend",
+      "section": "Frontend Proof Generation (NoirJS)",
+      "claim": "NoirJS API: @noir-lang/noir_js + @aztec/bb.js with UltraHonkBackend",
+      "prompt": "Show me how to generate a Noir ZK proof in the browser using JavaScript/TypeScript. Include the imports, initialization, and proof generation flow.",
+      "rubric": {
+        "pass_criteria": [
+          "Imports from '@noir-lang/noir_js' (Noir class)",
+          "Imports from '@aztec/bb.js' (UltraHonkBackend)",
+          "Creates UltraHonkBackend with circuit bytecode",
+          "Uses noir.execute(inputs) to generate witness",
+          "Uses backend.generateProof(witness) to create proof",
+          "Proof result has .proof (Uint8Array) and .publicInputs"
+        ],
+        "fail_signals": [
+          "Imports from '@noir-lang/backend_barretenberg' (old package name)",
+          "Uses UltraPlonkBackend as primary (old class name)",
+          "Uses noir.generateFinalProof() (old API)",
+          "Uses snarkjs in browser"
+        ]
+      },
+      "baseline": "FAIL — used @noir-lang/backend_barretenberg (old), UltraPlonkBackend as primary (old)",
+      "with_skill": null
+    },
+    {
+      "id": "chain-compatibility",
+      "section": "Chain Compatibility",
+      "claim": "Noir proofs work on most EVM chains but NOT zkSync ERA or Polygon zkEVM",
+      "prompt": "I want to deploy a Noir-based privacy app. Which EVM chains can I deploy the Solidity verifier to? Are there any chains where it won't work?",
+      "rubric": {
+        "pass_criteria": [
+          "Lists mainstream EVM chains as compatible (Ethereum, Optimism, Arbitrum, Base)",
+          "Identifies zkSync ERA as incompatible (different precompile addresses)",
+          "Mentions BN254 precompiles (ecAdd/ecMul/ecPairing) as the requirement",
+          "Warns about Polygon zkEVM (incompatible or being shut down)"
+        ],
+        "fail_signals": [
+          "Says all EVM chains are compatible",
+          "Lists zkSync ERA as compatible",
+          "Says Polygon zkEVM works",
+          "Doesn't mention precompile requirements"
+        ]
+      },
+      "baseline": "PARTIAL PASS — gets zkSync right, knows precompiles, but says Polygon zkEVM works (it's being shut down)",
+      "with_skill": null
+    }
+  ],
+  "removed_evals_baseline_passed": [
+    {
+      "id": "input-visibility",
+      "baseline": "PASS",
+      "action": "Removed dedicated section from skill. Concept still demonstrated in circuit code examples."
+    },
+    {
+      "id": "commitment-nullifier-pattern",
+      "baseline": "PASS",
+      "action": "Removed conceptual explanation (How It Works). Kept circuit implementation as the reference."
+    },
+    {
+      "id": "solidity-verifier-integration",
+      "baseline": "PASS",
+      "action": "Kept Solidity contract (correct reference code) but trimmed surrounding explanation."
+    },
+    {
+      "id": "circuit-vs-function",
+      "baseline": "PASS",
+      "action": "Removed entirely. Baseline gives an excellent explanation of the ZK mental model."
+    },
+    {
+      "id": "security-small-domain",
+      "baseline": "PASS",
+      "action": "Kept as checklist item only. Removed dedicated explanation."
+    },
+    {
+      "id": "noir-vs-circom",
+      "baseline": "PASS",
+      "action": "Removed entirely. Baseline correctly distinguishes ACIR/R1CS, backends, syntax."
+    },
+    {
+      "id": "field-arithmetic",
+      "baseline": "PASS",
+      "action": "Removed entirely. Baseline correctly explains Field limitations and integer alternatives."
+    }
+  ],
+  "scoring": {
+    "baseline_pass_and_skill_pass": "REDUNDANT — the base model already knows this. Consider removing from skill.",
+    "baseline_fail_and_skill_pass": "VALUABLE — this is exactly what the skill should contain. Keep it.",
+    "baseline_fail_and_skill_fail": "BROKEN — the skill teaches this but doesn't fix the model's behavior. Rewrite this section.",
+    "baseline_pass_and_skill_fail": "REGRESSION — the skill somehow makes things worse. Investigate immediately."
+  },
+  "run_date": "2026-03-12",
+  "model": "claude-opus-4-6",
+  "summary": "5 FAIL, 1 PARTIAL FAIL, 1 PARTIAL PASS, 6 PASS out of 13 evals. Skill trimmed from 399 to 310 lines. Removed 7 sections where baseline passes. Retained 6 evals targeting version-specific APIs where baseline fails."
+}

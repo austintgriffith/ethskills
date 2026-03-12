@@ -94,6 +94,13 @@ Solidity security patterns, common vulnerabilities, pre-deploy checklist.
 - MEV: sandwich attacks steal value from swaps. Use Flashbots Protect or slippage limits.
 - Proxies: use UUPS, not Transparent. Never change storage layout.
 
+### [Noir (ZK Privacy)](https://ethskills.com/noir/SKILL.md)
+Building privacy apps with Noir zero-knowledge circuits.
+- Noir inputs are private by default. `pub` marks public. Getting this backwards leaks secrets.
+- `nargo prove`/`nargo verify` are gone. Use `bb` (Barretenberg CLI) directly.
+- In-circuit hashing: Poseidon (~600 gates), not SHA256 (~30,000 gates).
+- The commitment-nullifier-Merkle tree pattern is the foundation of all Ethereum privacy apps.
+
 ### [Testing](https://ethskills.com/testing/SKILL.md)
 Foundry testing — unit, fuzz, fork, invariant.
 - Don't test getters and OpenZeppelin internals. Test edge cases and failure modes.
@@ -138,6 +145,7 @@ Pre-ship audit checklist for a reviewer agent.
 | Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
 | Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
 | Reviewing a finished dApp | `qa/` |
+| Building a privacy/ZK app | `noir/`, `security/`, `testing/` |
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |
 | Choosing a chain | `l2s/`, `gas/` |
