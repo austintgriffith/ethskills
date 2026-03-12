@@ -1,6 +1,6 @@
 {
   "name": "ethskills",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Ethereum development skills — corrects LLM blind spots on gas costs, L2s, DeFi protocols, security, and the current tool landscape.",
   "author": {
     "name": "Austin Griffith",
@@ -27,6 +27,9 @@
     "./indexing",
     "./frontend-ux",
     "./frontend-playbook",
-    "./qa"
+    "./qa",
+    "./audit",
+    "./contracts",
+    "./defi"
   ]
 }
