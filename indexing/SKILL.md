@@ -202,7 +202,7 @@ graph deploy --studio my-subgraph
 | **Etherscan/Blockscout APIs** | Simple event log queries | Rate-limited, not for high-volume |
 | **Ponder** | TypeScript-first indexing | Local-first, simpler than The Graph for single-app use |
 | **Direct RPC** | Real-time current state only | Only for current state reads, not historical |
-| **beaconcha.in API** | Validator data, staking rewards, beacon chain stats | Consensus-layer only, requires API key |
+| **beaconcha.in API** | Validator data, staking rewards, beacon chain stats | Consensus-layer and execution layer, requires API key |
 
 ### Dune Analytics
 
@@ -248,24 +248,24 @@ Execution-layer indexers (The Graph, Dune, Etherscan) have zero consensus-layer 
 **V1 API** (GET, simpler):
 
 ```typescript
-const BEACONCHA_BASE = "https://beaconcha.in/api/v1";
+const beaconchain_base = "https://beaconcha.in/api/v1";
 const headers = { Authorization: `Bearer ${BEACONCHA_API_KEY}` };
 
 // Validator summary
 const validator = await fetch(
-  `${BEACONCHA_BASE}/validator/1234`, { headers }
+  `${beaconchain_base}/validator/1234`, { headers }
 ).then(r => r.json());
 // → { data: { validatorindex, balance, status, activationepoch, ... } }
 
 // Balance history over epochs
 const history = await fetch(
-  `${BEACONCHA_BASE}/validator/1234/balancehistory`, { headers }
+  `${beaconchain_base}/validator/1234/balancehistory`, { headers }
 ).then(r => r.json());
 // → { data: [{ epoch, balance, effectivebalance }, ...] }
 
 // Withdrawals
 const withdrawals = await fetch(
-  `${BEACONCHA_BASE}/validator/1234/withdrawals`, { headers }
+  `${beaconchain_base}/validator/1234/withdrawals`, { headers }
 ).then(r => r.json());
 ```
 
@@ -366,4 +366,4 @@ const unwatch = client.watchContractEvent({
 | Historical transaction list | The Graph or Alchemy `getAssetTransfers` |
 | Dashboard / analytics | Dune Analytics (SQL + charts) |
 | Protocol TVL tracking | DeFiLlama API or custom subgraph |
-| Validator performance / staking rewards | beaconcha.in API (V1 or V2) |
+| Validator performance / staking rewards | beaconcha.in API (V2) |
