@@ -7,7 +7,7 @@ description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart
 
 ## What You Probably Got Wrong
 
-**EIP-7702 is live.** Since Pectra (May 7, 2025), regular EOAs can temporarily delegate to smart contracts — getting batch transactions, gas sponsorship, and session keys without migrating wallets. This is NOT "coming soon." It shipped.
+**EIP-7702 is live.** Since Pectra (May 7, 2025), regular EOAs can delegate execution to smart-contract code without migrating wallets. This enables batching, gas sponsorship, and session-key-style UX. This is NOT "coming soon." It shipped. 
 
 **Account abstraction status:** ERC-4337 is growing but still early (Feb 2026). Major implementations: Kernel (ZeroDev), Biconomy, Alchemy Account Kit, Pimlico. EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`.
 
@@ -15,13 +15,14 @@ description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart
 
 ## EIP-7702: Smart EOAs (Live Since May 2025)
 
-EOAs can **temporarily delegate control to a smart contract** within a single transaction.
+EOAs can **authorize delegated code execution** from smart-contract code. This is not automatically "one and done" - the delegation can stay active until it is replaced or explicitly cleared.
 
 **How it works:**
-1. EOA signs an authorization to delegate to a contract
-2. During transaction, EOA's code becomes the contract's code
-3. Contract executes complex logic (batching, sponsorship, etc.)
-4. After transaction, EOA returns to normal
+1. The wallet signs a message that says which contract code the EOA can use.
+2. A special EIP-7702 transaction submits that signed message.
+3. The EOA can then run that contract logic (batching, sponsorship, permissions) as if it were account logic.
+4. This is not automatically "one and done" - the delegation can stay active until it is replaced or explicitly cleared.
+5. If the transaction later fails, the delegation update itself can still remain.
 
 **What this enables:**
 - Batch 10 token approvals into one transaction

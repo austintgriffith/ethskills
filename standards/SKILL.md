@@ -293,11 +293,11 @@ Client → Resource Server → Facilitator → Blockchain
 
 ## EIP-7702: Smart EOAs (Live Since May 2025)
 
-EOAs temporarily delegate to smart contracts within a transaction. Best of both worlds: EOA simplicity + smart contract features.
+EOAs can authorize delegated smart-contract code execution without migrating to a new account type.
 
-**Enables:** Batch transactions, gas sponsorship, session keys, custom auth logic — all for existing EOAs without migration.
+**Enables:** Batch transactions, gas sponsorship, session-key-style UX, and custom auth logic for existing EOAs.
 
-**Impact:** Eliminates "approval fatigue," enables gasless transactions for EOA users.
+**Important nuance:** Delegation is not automatically "single transaction only" by spec. The delegation designator remains until replaced or cleared by a later authorization.
 
 ## Quick Standard Reference
 
