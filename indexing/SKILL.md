@@ -17,6 +17,8 @@ description: How to read and query onchain data — events, The Graph, indexing 
 
 **You treat events as optional.** Events are THE primary way to read historical onchain activity. If your contract doesn't emit events, nobody can build a frontend, dashboard, or analytics on top of it. Design contracts event-first.
 
+**You use execution-layer tools for consensus-layer data.** Validator balances, attestations, epoch rewards, and withdrawals live on the beacon chain — The Graph and Etherscan don't have this data. Use a beacon chain indexer like beaconcha.in.
+
 ---
 
 ## Events Are Your API
@@ -200,6 +202,7 @@ graph deploy --studio my-subgraph
 | **Etherscan/Blockscout APIs** | Simple event log queries | Rate-limited, not for high-volume |
 | **Ponder** | TypeScript-first indexing | Local-first, simpler than The Graph for single-app use |
 | **Direct RPC** | Real-time current state only | Only for current state reads, not historical |
+| **beaconcha.in API** | Validator data, staking rewards, beacon chain stats | Consensus-layer only, requires API key |
 
 ### Dune Analytics
 
@@ -234,6 +237,53 @@ const transfers = await alchemy.core.getAssetTransfers({
   fromAddress: address,
   category: ['erc20', 'erc721'],
 });
+```
+
+### Beacon Chain Data (beaconcha.in)
+
+Execution-layer indexers (The Graph, Dune, Etherscan) have zero consensus-layer data. For validator balances, attestation performance, staking rewards, and withdrawals, use the beaconcha.in API.
+
+**API key required** — get one at beaconcha.in/pricing. Free tier: 1 req/sec, 1,000 req/month.
+
+**V1 API** (GET, simpler):
+
+```typescript
+const BEACONCHA_BASE = "https://beaconcha.in/api/v1";
+const headers = { Authorization: `Bearer ${BEACONCHA_API_KEY}` };
+
+// Validator summary
+const validator = await fetch(
+  `${BEACONCHA_BASE}/validator/1234`, { headers }
+).then(r => r.json());
+// → { data: { validatorindex, balance, status, activationepoch, ... } }
+
+// Balance history over epochs
+const history = await fetch(
+  `${BEACONCHA_BASE}/validator/1234/balancehistory`, { headers }
+).then(r => r.json());
+// → { data: [{ epoch, balance, effectivebalance }, ...] }
+
+// Withdrawals
+const withdrawals = await fetch(
+  `${BEACONCHA_BASE}/validator/1234/withdrawals`, { headers }
+).then(r => r.json());
+```
+
+**V2 API** (POST, richer data — recommended for new integrations):
+
+```typescript
+const res = await fetch("https://beaconcha.in/api/v2/ethereum/validators/rewards-list", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${BEACONCHA_API_KEY}`,
+  },
+  body: JSON.stringify({
+    chain: "mainnet",
+    validator_identifiers: ["1234", "5678"],
+  }),
+});
+const rewards = await res.json();
 ```
 
 ---
@@ -316,3 +366,4 @@ const unwatch = client.watchContractEvent({
 | Historical transaction list | The Graph or Alchemy `getAssetTransfers` |
 | Dashboard / analytics | Dune Analytics (SQL + charts) |
 | Protocol TVL tracking | DeFiLlama API or custom subgraph |
+| Validator performance / staking rewards | beaconcha.in API (V1 or V2) |

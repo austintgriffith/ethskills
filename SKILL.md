@@ -113,6 +113,7 @@ Events, The Graph, Dune, reading onchain data.
 - Events are THE primary way to read historical onchain activity. Design contracts event-first.
 - The Graph turns events into a queryable GraphQL API.
 - Multicall3 (`0xcA11bde05977b3631167028862bE2a173976CA11`) — batch reads in one RPC call.
+- Validator data (balances, attestations, rewards) lives on the beacon chain — use beaconcha.in, not execution-layer indexers.
 
 ### [Frontend UX](https://ethskills.com/frontend-ux/SKILL.md)
 Frontend UX patterns for Ethereum dApps.
