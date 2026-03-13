@@ -241,49 +241,48 @@ const transfers = await alchemy.core.getAssetTransfers({
 
 ### Beacon Chain Data (beaconcha.in)
 
-Execution-layer indexers (The Graph, Dune, Etherscan) have zero consensus-layer data. For validator balances, attestation performance, staking rewards, and withdrawals, use the beaconcha.in API.
+Execution-layer indexers (The Graph, Dune, Etherscan) have zero consensus-layer data. For validator balances, attestation performance, staking rewards, and withdrawals, use the beaconcha.in V2 API.
 
 **API key required** — get one at beaconcha.in/api/key-management. Free tier: 1 req/sec, 1,000 req/month.
 
-**V1 API** (GET, simpler):
+All V2 endpoints use POST with JSON bodies. Pass a `validator` selector (up to 100 indices or pubkeys).
 
 ```typescript
-const beaconchain_base = "https://beaconcha.in/api/v1";
-const headers = { Authorization: `Bearer ${BEACONCHA_API_KEY}` };
+const BEACONCHA_V2 = "https://beaconcha.in/api/v2/ethereum";
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${BEACONCHA_API_KEY}`,
+};
 
-// Validator summary
-const validator = await fetch(
-  `${beaconchain_base}/validator/1234`, { headers }
-).then(r => r.json());
-// → { data: { validatorindex, balance, status, activationepoch, ... } }
+const validator = { validator_identifiers: ["1234", "5678"] };
 
-// Balance history over epochs
-const history = await fetch(
-  `${beaconchain_base}/validator/1234/balancehistory`, { headers }
-).then(r => r.json());
-// → { data: [{ epoch, balance, effectivebalance }, ...] }
+// Validator status, balances, withdrawal credentials, lifecycle epochs
+const validators = await fetch(`${BEACONCHA_V2}/validators`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", validator }),
+}).then(r => r.json());
+// → { data: [{ validator: { index, public_key }, status, balances, withdrawal_credentials }] }
 
-// Withdrawals
-const withdrawals = await fetch(
-  `${beaconchain_base}/validator/1234/withdrawals`, { headers }
-).then(r => r.json());
-```
+// Balances at a specific epoch
+const balances = await fetch(`${BEACONCHA_V2}/validators/balances`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", epoch: 350000, validator }),
+}).then(r => r.json());
+// → { data: [{ validator: { index, public_key }, balance: { current, effective } }] }
 
-**V2 API** (POST, richer data — recommended for new integrations):
+// Rewards breakdown (attestation, sync committee, proposals)
+const rewards = await fetch(`${BEACONCHA_V2}/validators/rewards-list`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", epoch: 350000, validator }),
+}).then(r => r.json());
+// → { data: [{ validator, total_reward, attestation, sync_committee, proposal }] }
 
-```typescript
-const res = await fetch("https://beaconcha.in/api/v2/ethereum/validators/rewards-list", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${BEACONCHA_API_KEY}`,
-  },
-  body: JSON.stringify({
-    chain: "mainnet",
-    validator_identifiers: ["1234", "5678"],
-  }),
-});
-const rewards = await res.json();
+// Performance & BeaconScore
+const performance = await fetch(`${BEACONCHA_V2}/validators/performance-list`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", epoch: 350000, validator }),
+}).then(r => r.json());
+// → { data: [{ validator, beaconscore: { total, attestation, proposal }, duties }] }
 ```
 
 ---
