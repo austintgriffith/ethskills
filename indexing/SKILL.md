@@ -243,7 +243,7 @@ const transfers = await alchemy.core.getAssetTransfers({
 
 Execution-layer indexers (The Graph, Dune, Etherscan) have zero consensus-layer data. For validator balances, attestation performance, staking rewards, and withdrawals, use the beaconcha.in API.
 
-**API key required** — get one at beaconcha.in/pricing. Free tier: 1 req/sec, 1,000 req/month.
+**API key required** — get one at beaconcha.in/api/key-management. Free tier: 1 req/sec, 1,000 req/month.
 
 **V1 API** (GET, simpler):
 
