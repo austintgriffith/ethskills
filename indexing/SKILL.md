@@ -366,4 +366,4 @@ const unwatch = client.watchContractEvent({
 | Historical transaction list | The Graph or Alchemy `getAssetTransfers` |
 | Dashboard / analytics | Dune Analytics (SQL + charts) |
 | Protocol TVL tracking | DeFiLlama API or custom subgraph |
-| Validator performance / staking rewards | beaconcha.in API (V2) |
+| Validator performance / staking rewards / validator queue | beaconcha.in API (V2) |
