@@ -245,7 +245,7 @@ Execution-layer indexers (The Graph, Dune, Etherscan) have zero consensus-layer 
 
 **API key required** — get one at beaconcha.in/api/key-management. Free tier: 1 req/sec, 1,000 req/month.
 
-All V2 endpoints use POST with JSON bodies. Pass a `validator` selector (up to 100 indices or pubkeys).
+All V2 endpoints use POST with JSON bodies. Pass a `validator` selector (up to 20 indices/pubkeys on free tier, 100 on paid plans).
 
 ```typescript
 const BEACONCHA_V2 = "https://beaconcha.in/api/v2/ethereum";
