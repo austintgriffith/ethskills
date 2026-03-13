@@ -283,6 +283,48 @@ const performance = await fetch(`${BEACONCHA_V2}/validators/performance-list`, {
   body: JSON.stringify({ chain: "mainnet", epoch: 350000, validator }),
 }).then(r => r.json());
 // → { data: [{ validator, beaconscore: { total, attestation, proposal }, duties }] }
+
+// APY/ROI over a time window (24h, 7d, 30d, 90d, all_time)
+const apyRoi = await fetch(`${BEACONCHA_V2}/validators/apy-roi`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", validator, range: { evaluation_window: "30d" } }),
+}).then(r => r.json());
+// → { data: { consensus_layer, execution_layer, combined } } — each with ROI + APY
+
+// Validator metadata (entity, sub-entity, deposit address) — Scale/Enterprise plan
+const metadata = await fetch(`${BEACONCHA_V2}/validators/metadata`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", validator }),
+}).then(r => r.json());
+// → { data: [{ validator, withdrawal_credentials, deposit_address, entity, sub_entity }] }
+
+// Slot info (block status, proposer, sync/attestation participation)
+const slot = await fetch(`${BEACONCHA_V2}/slot`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", slot: { view: "latest" } }),
+}).then(r => r.json());
+// → { data: { slot, epoch, status, proposer, sync_participation, attestation_participation } }
+
+// Validator queue (deposit queue, exit queue, withdrawal sweep)
+const queues = await fetch(`${BEACONCHA_V2}/queues`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet" }),
+}).then(r => r.json());
+// → { data: { deposit_queue, exit_queue, withdrawal_sweep } }
+
+// Network-wide performance aggregate
+const networkPerf = await fetch(`${BEACONCHA_V2}/performance-aggregate`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", range: { evaluation_window: "7d" } }),
+}).then(r => r.json());
+// → { data: { beaconscore, duties: { attestation, sync_committee, proposal } } }
+
+// Staking entities overview (sorted by network share) — Scale/Enterprise plan
+const entities = await fetch(`${BEACONCHA_V2}/entities`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", range: { evaluation_window: "30d" }, sort_by: "net_share" }),
+}).then(r => r.json());
+// → { data: [{ entity, validator_count, beaconscore, net_share }] }
 ```
 
 ---
