@@ -532,6 +532,20 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 - **Token Lists:** https://tokenlists.org/
 - **DeFi Llama:** https://defillama.com (TVL rankings by chain)
 
+## MegaETH Key Addresses
+
+> MegaETH (Chain ID 4326) — addresses verified on https://mega.etherscan.io
+
+| Contract | Address | Notes |
+|----------|---------|-------|
+| Multicall3 | `0xcA11bde05977b3631167028862bE2a173976CA11` | Standard Multicall3 |
+| Kumbaya SwapRouter02 | `0xE5BbEF8De2DB447a7432A47EBa58924d94eE470e` | UniV3 fork — primary DEX |
+| Kumbaya QuoterV2 | `0x1F1a8dC7E138C34b503Ca080962aC10B75384a27` | Price quotes |
+| Kumbaya UniversalRouter | `0xAAB1C664CeaD881AfBB58555e6A3a79523D3e4C0` | Swap routing |
+| ERC-8004 IdentityRegistry | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` | Same address cross-chain |
+
+---
+
 ## Multi-Chain Notes
 
 - **CREATE2 deployments** (same address cross-chain): Uniswap V3, Safe, Seaport, ERC-4337 EntryPoint, ERC-8004, Permit2, 1inch v6, Yearn V3, Arachnid Deployer

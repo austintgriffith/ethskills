@@ -226,7 +226,12 @@ Pendle splits yield-bearing assets into principal and yield components:
 - **Stylus:** Write smart contracts in Rust/C++/WASM alongside EVM (10-100x gas savings for compute-heavy operations)
 - **Orbit:** Launch custom L3 chains (47 live on mainnet)
 
-See `addresses/SKILL.md` for all verified protocol addresses (GMX, Pendle, Camelot, Aerodrome, Velodrome, SyncSwap, Morpho).
+### MegaETH DeFi
+- **Dominant DEX: Kumbaya** (Uniswap V3 fork) — most liquid DEX on MegaETH. SwapRouter02: `0xE5BbEF8De2DB447a7432A47EBa58924d94eE470e`.
+- **10ms mini blocks** enable real-time order book DEXes and HFT strategies that aren't viable on other L2s.
+- **Sub-cent swap costs** — base fee is fixed at 0.001 gwei.
+
+See `addresses/SKILL.md` for all verified protocol addresses (GMX, Pendle, Camelot, Aerodrome, Velodrome, SyncSwap, Kumbaya, Morpho).
 
 ## Discovery Resources
 

@@ -35,6 +35,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | **Linea** | ZK | $0.003-0.006 | 2s | 30-60min | 59144 |
 | **zkSync Era** | ZK | $0.003-0.008 | 1s | 15-60min | 324 |
 | **Scroll** | ZK | $0.002-0.005 | 3s | 30-120min | 534352 |
+| **MegaETH** | Optimistic (EigenDA) | <$0.001 | 10ms (mini) / 1s (EVM) | TBD | 4326 |
 | ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | ~~1101~~ |
 
 ⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
@@ -70,6 +71,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | Maximum EVM compatibility | **Scroll or Arbitrum** | Bytecode-identical |
 | Mobile / real-world payments | **Celo** | MiniPay, sub-cent fees, Africa/LatAm focus |
 | MEV protection | **Unichain** | TEE-based priority ordering, private mempool |
+| Real-time apps / HFT / gaming | **MegaETH** | 10ms mini blocks, 10B gas/block, real-time streaming API |
 | Rust smart contracts | **Arbitrum** | Stylus (WASM VM alongside EVM, 10-100x gas savings) |
 | Stablecoins / payments / RWA | **Polygon PoS** | $500M+ monthly payment volume, 410M+ wallets |
 
@@ -83,6 +85,17 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
   - Private encrypted mempool reduces MEV extraction
   - Do NOT use gas-price bidding strategies on Unichain — they're pointless
 - **Flashblocks:** Currently 1s blocks, roadmap to 250ms sub-blocks
+
+### MegaETH
+- **Launched:** March 2025 (Frontier mainnet, developer access). Chain ID 4326.
+- **Type:** Real-time L2 with EigenDA for data availability.
+- **Key innovation: 10ms mini blocks.** MegaETH produces mini blocks every ~10ms and standard EVM blocks every ~1s. This is 100x faster than any other L2 and enables real-time onchain applications (order books, games, streaming).
+- **Realtime API:** Custom JSON-RPC extensions beyond standard Ethereum. `realtime_sendRawTransaction` returns receipts instantly. WebSocket subscriptions for mini blocks enable sub-second event streaming.
+- **Capacity:** 10 billion gas per EVM block (vs Ethereum's 60M). Max contract size 512 KB (vs Ethereum's 24 KB).
+- **MegaEVM differences:** Multidimensional gas model (compute gas + storage gas). Base intrinsic gas is 60,000 (not 21,000). Base fee is 0.001 gwei (effectively fixed — EIP-1559 adjustment is disabled).
+- **EIP-7702:** Live on MegaETH.
+- **Primary DEX:** Kumbaya (Uniswap V3 fork) — most liquid DEX on MegaETH.
+- **Testnet:** Chain ID 6343, RPC `https://carrot.megaeth.com/rpc`, faucet at https://megaeth.com/faucet.
 
 ### Celo
 - **Was:** Independent L1 blockchain (2020-2025)
@@ -117,6 +130,16 @@ Members contribute **15% of sequencer revenue** to the Optimism Collective. Cros
 - Arbitrum's `block.number` returns L1 block number, not L2.
 - **Unichain:** Transactions are priority-ordered by time, not gas. Don't waste gas on priority fees.
 
+### MegaETH
+✅ EVM-compatible — standard Solidity contracts deploy without changes.
+
+**Gotchas:**
+- **Multidimensional gas:** Transactions consume both compute gas and storage gas. Base intrinsic gas is 60,000 (not 21,000). Gas estimation tools may underestimate.
+- **Base fee is 0.001 gwei** — effectively fixed, EIP-1559 adjustment is disabled. Don't hardcode gas assumptions from other chains.
+- **Max contract size is 512 KB** (vs 24 KB on Ethereum) — large contracts that don't fit on mainnet can deploy here.
+- **Mini blocks (10ms):** Use the Realtime API (`realtime_sendRawTransaction`, WebSocket mini block subscriptions) to take advantage of sub-second latency. Standard `eth_*` RPCs work normally but don't expose mini block granularity.
+- **`SELFDESTRUCT` is disabled** (not just deprecated like on Ethereum).
+
 ### ZK Rollups
 - **zkSync Era:** Must use `zksolc` compiler. No `EXTCODECOPY` (compile-time error). 65K instruction limit. Non-inlinable libraries must be pre-deployed. Native account abstraction (all accounts are smart contracts).
 - **Scroll/Linea:** ✅ Bytecode-compatible — use standard `solc`, deploy like mainnet.
@@ -134,6 +157,7 @@ Members contribute **15% of sequencer revenue** to the Optimism Collective. Cros
 | Optimism | `https://mainnet.optimism.io` | https://optimistic.etherscan.io |
 | Unichain | `https://mainnet.unichain.org` | https://uniscan.xyz |
 | Celo | `https://forno.celo.org` | https://celoscan.io |
+| MegaETH | `https://mainnet.megaeth.com/rpc` | https://mega.etherscan.io |
 | zkSync | `https://mainnet.era.zksync.io` | https://explorer.zksync.io |
 | Scroll | `https://rpc.scroll.io` | https://scrollscan.com |
 | Linea | `https://rpc.linea.build` | https://lineascan.build |
@@ -181,6 +205,7 @@ forge create src/MyContract.sol:MyContract \
 | Base | Sepolia | 84532 | https://faucet.quicknode.com/base/sepolia |
 | Optimism | Sepolia | 11155420 | https://faucet.optimism.io |
 | Unichain | Sepolia | 1301 | https://faucet.unichain.org |
+| MegaETH | Testnet | 6343 | https://megaeth.com/faucet |
 
 ## Further Reading
 
@@ -191,6 +216,7 @@ forge create src/MyContract.sol:MyContract \
 - **Optimism:** https://docs.optimism.io
 - **Unichain:** https://docs.unichain.org
 - **Celo:** https://docs.celo.org
+- **MegaETH:** https://docs.megaeth.com
 - **zkSync:** https://docs.zksync.io
 - **Scroll:** https://docs.scroll.io
 - **Polygon:** https://docs.polygon.technology
