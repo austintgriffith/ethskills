@@ -30,6 +30,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 | Arbitrum | `0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9` | ✅ Verified |
 | Optimism | `0x94b008aA00579c1307B0EF2c499aD98a8ce58e58` | ✅ Verified |
 | Base | `0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2` | ✅ Verified |
+| MegaETH | `0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb` | ✅ Verified |
 
 ### DAI (MakerDAO)
 | Network | Address | Status |
@@ -49,6 +50,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 | Arbitrum | `0x82aF49447D8a07e3bd95BD0d56f35241523fBab1` | ✅ Verified |
 | Optimism | `0x4200000000000000000000000000000000000006` | ✅ Verified |
 | Base | `0x4200000000000000000000000000000000000006` | ✅ Verified |
+| MegaETH | `0x4200000000000000000000000000000000000006` | ✅ Verified |
 
 ---
 
@@ -61,6 +63,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 | Arbitrum | `0x5979D7b546E38E414F7E9822514be443A4800529` | ✅ Verified |
 | Optimism | `0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb` | ✅ Verified |
 | Base | `0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452` | ✅ Verified |
+| MegaETH | `0x601aC63637933D88285A025C685AC4e9a92a98dA` | ✅ Verified |
 
 ### Lido — Staking & Withdrawal
 | Contract | Address | Status |
@@ -457,6 +460,18 @@ The leading native DEX on zkSync Era. Multiple router and factory versions.
 
 Source: [docs.syncswap.xyz](https://docs.syncswap.xyz/syncswap/smart-contracts/smart-contracts)
 
+### Kumbaya (MegaETH) — Dominant DEX
+
+Uniswap V3 fork — the most liquid DEX on MegaETH. Sub-cent swap costs with 10ms mini block latency.
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| SwapRouter02 | `0xE5BbEF8De2DB447a7432A47EBa58924d94eE470e` | ✅ Verified |
+| QuoterV2 | `0x1F1a8dC7E138C34b503Ca080962aC10B75384a27` | ✅ Verified |
+| UniversalRouter | `0xAAB1C664CeaD881AfBB58555e6A3a79523D3e4C0` | ✅ Verified |
+
+Pool init code hash: `0x851d77a45b8b9a205fb9f44cb829cceba85282714d2603d601840640628a3da7`
+
 ### Morpho Blue (Base)
 
 Permissionless lending protocol. Deployed on Base and Ethereum, but **NOT on Arbitrum** as of February 2026 (despite the vanity CREATE2 address).
@@ -531,20 +546,6 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 - **CoinGecko:** https://www.coingecko.com (token addresses)
 - **Token Lists:** https://tokenlists.org/
 - **DeFi Llama:** https://defillama.com (TVL rankings by chain)
-
-## MegaETH Key Addresses
-
-> MegaETH (Chain ID 4326) — addresses verified on https://mega.etherscan.io
-
-| Contract | Address | Notes |
-|----------|---------|-------|
-| Multicall3 | `0xcA11bde05977b3631167028862bE2a173976CA11` | Standard Multicall3 |
-| Kumbaya SwapRouter02 | `0xE5BbEF8De2DB447a7432A47EBa58924d94eE470e` | UniV3 fork — primary DEX |
-| Kumbaya QuoterV2 | `0x1F1a8dC7E138C34b503Ca080962aC10B75384a27` | Price quotes |
-| Kumbaya UniversalRouter | `0xAAB1C664CeaD881AfBB58555e6A3a79523D3e4C0` | Swap routing |
-| ERC-8004 IdentityRegistry | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` | Same address cross-chain |
-
----
 
 ## Multi-Chain Notes
 
