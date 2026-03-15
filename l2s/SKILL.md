@@ -35,7 +35,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | **Linea** | ZK | $0.003-0.006 | 2s | 30-60min | 59144 |
 | **zkSync Era** | ZK | $0.003-0.008 | 1s | 15-60min | 324 |
 | **Scroll** | ZK | $0.002-0.005 | 3s | 30-120min | 534352 |
-| **MegaETH** | Optimistic (EigenDA) | <$0.001 | 10ms (mini) / 1s (EVM) | TBD | 4326 |
+| **MegaETH** | Optimistic (EigenDA) | $0.001 | 10ms (mini) / 1s (EVM) | 7 days | 4326 |
 | ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | ~~1101~~ |
 
 ⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
@@ -87,9 +87,9 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 - **Flashblocks:** Currently 1s blocks, roadmap to 250ms sub-blocks
 
 ### MegaETH
-- **Launched:** March 2025 (Frontier mainnet, developer access). Chain ID 4326.
+- **Launched:** March 2025. Chain ID 4326.
 - **Type:** Real-time L2 with EigenDA for data availability.
-- **Key innovation: 10ms mini blocks.** MegaETH produces mini blocks every ~10ms and standard EVM blocks every ~1s. This is 100x faster than any other L2 and enables real-time onchain applications (order books, games, streaming).
+- **Key innovation: 10ms mini blocks.** MegaETH produces mini blocks every ~10ms and standard EVM blocks every ~1s. The fastest block production of any L2, enabling real-time onchain applications (order books, games, streaming).
 - **Realtime API:** Custom JSON-RPC extensions beyond standard Ethereum. `realtime_sendRawTransaction` returns receipts instantly. WebSocket subscriptions for mini blocks enable sub-second event streaming.
 - **Capacity:** 10 billion gas per EVM block (vs Ethereum's 60M). Max contract size 512 KB (vs Ethereum's 24 KB).
 - **MegaEVM differences:** Multidimensional gas model (compute gas + storage gas). Base intrinsic gas is 60,000 (not 21,000). Base fee is 0.001 gwei (effectively fixed — EIP-1559 adjustment is disabled).
@@ -139,6 +139,8 @@ Members contribute **15% of sequencer revenue** to the Optimism Collective. Cros
 - **Max contract size is 512 KB** (vs 24 KB on Ethereum) — large contracts that don't fit on mainnet can deploy here.
 - **Mini blocks (10ms):** Use the Realtime API (`realtime_sendRawTransaction`, WebSocket mini block subscriptions) to take advantage of sub-second latency. Standard `eth_*` RPCs work normally but don't expose mini block granularity.
 - **`SELFDESTRUCT` is disabled** (not just deprecated like on Ethereum).
+
+For Foundry configuration, MegaEVM-specific testing patterns, and comprehensive development guides, see the [MegaETH developer skill](https://github.com/0xBreadguy/megaeth-ai-developer-skills) and [awesome-megaeth-ai](https://github.com/0xBreadguy/awesome-megaeth-ai).
 
 ### ZK Rollups
 - **zkSync Era:** Must use `zksolc` compiler. No `EXTCODECOPY` (compile-time error). 65K instruction limit. Non-inlinable libraries must be pre-deployed. Native account abstraction (all accounts are smart contracts).
