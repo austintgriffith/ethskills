@@ -233,6 +233,53 @@ See `addresses/SKILL.md` for all verified protocol addresses (GMX, Pendle, Camel
 - **10ms mini blocks** enable real-time order book DEXes and HFT strategies that aren't viable on other L2s.
 - **Sub-cent swap costs** — base fee is fixed at 0.001 gwei.
 
+### MegaETH-Specific Patterns
+
+MegaETH's 10ms mini blocks and multidimensional gas model require different patterns than other L2s.
+
+**Instant receipts — skip polling:**
+```javascript
+// eth_sendRawTransactionSync (EIP-7966) returns receipt in <10ms
+// No need for eth_getTransactionReceipt polling loops
+const receipt = await client.request({
+  method: 'realtime_sendRawTransaction',
+  params: [signedTx]
+});
+// receipt is already confirmed — no waiting
+```
+
+**WebSocket mini block streaming:**
+```javascript
+// Subscribe to mini blocks for real-time event processing
+// 100 mini blocks per EVM block — 10ms granularity
+const ws = new WebSocket('wss://mainnet.megaeth.com/ws');
+ws.send(JSON.stringify({
+  jsonrpc: '2.0', method: 'eth_subscribe',
+  params: ['miniBlocks'], id: 1
+}));
+// CRITICAL: send eth_chainId keepalive every 30 seconds
+```
+
+**Gas patterns:**
+- Base fee is fixed at 0.001 gwei — no EIP-1559 spikes. Skip `eth_maxPriorityFeePerGas` (returns 0).
+- Hardcode gas limits when possible to save an `eth_estimateGas` round-trip.
+- But always use remote `eth_estimateGas` for new contracts — MegaEVM gas costs differ from standard EVM (multidimensional: compute gas + storage gas).
+- SSTORE 0→non-zero is expensive (2M gas × multiplier). Design for storage slot reuse, not constant allocation.
+
+**Storage optimization:**
+- Max contract size is **512 KB** (vs 24 KB on Ethereum) — room for larger contracts.
+- Use Solady's `RedBlackTreeLib` instead of Solidity mappings for slot reuse.
+- Transient storage (`TSTORE`/`TLOAD`) is available and cheap.
+
+**Multicall batching:**
+- Use `Multicall3.aggregate3()` to batch read calls — 4-5x faster than sequential `eth_call`.
+- Multicall3 is at the standard address: `0xcA11bde05977b3631167028862bE2a173976CA11`.
+
+**Debugging:**
+- [mega-evme](https://github.com/megaeth-labs/mega-evm) — replay transactions with full traces, profile gas by opcode.
+
+**Deep dive:** For comprehensive MegaETH development patterns (Foundry config, Privy headless signing, ERC-7710 delegations, MegaNames, USDm, and more), see the [awesome-megaeth-ai](https://github.com/0xBreadguy/awesome-megaeth-ai) repo and the [MegaETH developer skill](https://github.com/0xBreadguy/megaeth-ai-developer-skills).
+
 ## Discovery Resources
 
 - **DeFi Llama:** https://defillama.com — TVL rankings, yield rankings, all chains
