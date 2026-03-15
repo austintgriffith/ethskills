@@ -227,7 +227,7 @@ Pendle splits yield-bearing assets into principal and yield components:
 - **Orbit:** Launch custom L3 chains (47 live on mainnet)
 
 ### MegaETH DeFi
-- **Dominant DEX: Kumbaya** (Uniswap V3 fork) — most liquid DEX on MegaETH. SwapRouter02: `0xE5BbEF8De2DB447a7432A47EBa58924d94eE470e`.
+- **Dominant DEX: Kumbaya** — most liquid DEX on MegaETH with an integrated launchpad. SwapRouter02: `0xE5BbEF8De2DB447a7432A47EBa58924d94eE470e`.
 - **10ms mini blocks** enable real-time order book DEXes and HFT strategies that aren't viable on other L2s.
 - **Sub-cent swap costs** — base fee is fixed at 0.001 gwei.
 

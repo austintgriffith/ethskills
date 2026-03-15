@@ -462,7 +462,7 @@ Source: [docs.syncswap.xyz](https://docs.syncswap.xyz/syncswap/smart-contracts/s
 
 ### Kumbaya (MegaETH) — Dominant DEX
 
-Uniswap V3 fork — the most liquid DEX on MegaETH. Sub-cent swap costs with 10ms mini block latency.
+The most liquid DEX on MegaETH with an integrated launchpad. Sub-cent swap costs with 10ms mini block latency.
 
 | Contract | Address | Status |
 |----------|---------|--------|

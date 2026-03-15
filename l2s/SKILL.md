@@ -94,7 +94,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 - **Capacity:** 10 billion gas per EVM block (vs Ethereum's 60M). Max contract size 512 KB (vs Ethereum's 24 KB).
 - **MegaEVM differences:** Multidimensional gas model (compute gas + storage gas). Base intrinsic gas is 60,000 (not 21,000). Base fee is 0.001 gwei (effectively fixed — EIP-1559 adjustment is disabled).
 - **EIP-7702:** Live on MegaETH.
-- **Primary DEX:** Kumbaya (Uniswap V3 fork) — most liquid DEX on MegaETH.
+- **Primary DEX:** Kumbaya — most liquid DEX on MegaETH with an integrated launchpad.
 - **Testnet:** Chain ID 6343, RPC `https://carrot.megaeth.com/rpc`, faucet at https://megaeth.com/faucet.
 
 ### Celo
