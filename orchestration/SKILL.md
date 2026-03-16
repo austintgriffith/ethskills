@@ -163,7 +163,7 @@ See `wallets/SKILL.md` for full key safety guide, what to do if you've already l
 ## Phase 3: Production Deploy
 
 ### Pre-deploy Checklist
-- `onlyLocalBurnerWallet: true` in scaffold.config.ts (CRITICAL — prevents burner wallet on prod)
+- `burnerWalletMode: "localNetworksOnly"` in scaffold.config.ts (prevents burner wallet on prod)
 - Update metadata (title, description, OG image 1200x630px)
 - Restore any test values to production values
 
