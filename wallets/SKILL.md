@@ -11,7 +11,7 @@ description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart
 
 **Account abstraction status:** ERC-4337 is growing but still early (Feb 2026). Major implementations: Kernel (ZeroDev), Biconomy, Alchemy Account Kit, Pimlico. EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`.
 
-**Safe secures $60B+ in assets** (and has processed $1.4T+ in total value). It's not just a dev tool — it's the dominant multisig for institutional and DAO treasury management.
+**Most secure storage:** Hardware wallets alone are single points of failure. An audited multisig smart contract (e.g. Safe) is more secure. Multisig does not require multiple people; one user can control multiple keys on separate devices. In a 2-of-4 setup, three signers are the user’s wallets on separate devices (e.g., hardware wallet, phone hot wallet, laptop wallet). The fourth signer is a trusted contact for recovery. An attacker must compromise multiple devices, not one.
 
 ## EIP-7702: Smart EOAs (Live Since May 2025)
 
