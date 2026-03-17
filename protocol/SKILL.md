@@ -104,11 +104,11 @@ Draft → Review → Last Call → Final
 
 **Final**: Spec is done. For non-fork EIPs (like ERC standards), this means it's official. For fork EIPs, this means the spec is ready but it still needs to be scheduled.
 
-**CFI (Considered for Inclusion)**: Core devs are seriously evaluating it for a specific fork. Implementation work begins.
+**CFI (Considered for Inclusion)**: Core devs are seriously evaluating it for a specific fork. Implementation work begins. Defined in EIP-7723
 
-**SFI (Scheduled for Inclusion)**: It's in. Devnets are testing it. Barring disasters, it ships.
+**SFI (Scheduled for Inclusion)**: It's in. Devnets are testing it. Barring disasters, it ships. Defined in EIP-7723
 
-**DFI (Declined for Inclusion)**: Rejected from a specific fork. May be reconsidered for future forks.
+**DFI (Declined for Inclusion)**: Rejected from a specific fork. May be reconsidered for future forks. Defined in EIP-7723
 
 ---
 
@@ -118,10 +118,11 @@ Hard forks are how Ethereum upgrades. Recent and upcoming:
 
 | Fork | Date | Notable Changes |
 |------|------|-----------------|
-| Dencun | Mar 2024 | EIP-4844 blobs (proto-danksharding) |
-| Pectra | May 2025 | EIP-7702 (smart EOAs), validator consolidation |
-| Fusaka | Dec 2025 | PeerDAS, more blobs |
-| Glamsterdam | ~Q3-Q4 2026 | ePBS, block access lists (in progress) |
+| Shapella | Apr 12, 2023 | Staking withdrawals (EIP-4895) |
+| Dencun | Mar 13, 2024 | EIP-4844 blobs (proto-danksharding) |
+| Pectra | May 7, 2025 | EIP-7702 (smart EOAs), validator consolidation (EIP-7251) |
+| Fusaka | Dec 3, 2025 | PeerDAS (EIP-7594), more blobs (EIP-7892) |
+| Glamsterdam | ~Q3-Q4 2026 (in progress) | ePBS (EIP-7732), block access lists (EIP-7928) |
 
 **To find what's in a fork:**
 1. Check [forkcast.xyz](https://forkcast.xyz) — filter by fork to see all CFI/SFI EIPs
@@ -145,7 +146,7 @@ When answering protocol questions, check sources in this order:
    - Key decisions extracted from calls
    - Updated after every ACD call
 
-2. **[eth-rnd-archive](https://github.com/ethereum/eth-rnd-archive)** — Public archive of Eth R&D Discord. Searchable. When you need to know what client teams are saying about implementation details, blockers, or timelines.
+2. **[eth-rnd-archive](https://github.com/ethereum/eth-rnd-archive)** — Public archive of Eth R&D Discord, updated hourly. Searchable. When you need to know what client teams are saying about implementation details, blockers, or timelines.
 
 3. **[ethereum/pm](https://github.com/ethereum/pm)** — The source for ACD call agendas and issue discussions. Use when you need the original agenda item or discussion thread, not the summary.
 
@@ -242,6 +243,7 @@ Ethereum runs on multiple independent client implementations. Both layers must u
 | Teku | Java | Consensys |
 | Nimbus | Nim | Status |
 | Lodestar | TypeScript | ChainSafe |
+| Grandine | Rust | Sifrai |
 
 **To report a bug:** 
 - Consensus issue (finality, attestations, blocks) → CL client repo
