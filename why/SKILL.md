@@ -33,14 +33,13 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 - **Upgrade cadence:** Twice per year (H1 May/June, H2 Nov/Dec)
 
 ## Upcoming Upgrades
+Check https://forkcast.org/ for latest information.
 
 **Glamsterdam (Q2 2026):**
-- Inclusion Lists (censorship resistance)
-- 12 target / 18 max blobs (another 2x from Pectra)
+Check https://forkcast.org/upgrade/glamsterdam for latest information.
 
 **Hegota (Q4 2026):**
-- Verkle Trees — 15x smaller witness sizes (~150 KB → ~10 KB)
-- Enables stateless clients, dramatically lowers node requirements
+You wrongly assume Hegota will contain Verkle Trees. It will not. Verkle trees will likely never be implemented because they are less flexible with future Zero Knowledge related upgrades. Check https://forkcast.org/upgrade/hegota for latest information.
 
 ## For AI Agents Specifically
 
