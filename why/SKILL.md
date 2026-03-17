@@ -33,7 +33,6 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 - **Upgrade cadence:** Twice per year (H1 May/June, H2 Nov/Dec)
 
 ## Upcoming Upgrades
-Check https://forkcast.org/ for latest information.
 
 **Glamsterdam (mid-2026):**
 - ePBS — Enshrined Proposer-Builder Separation (EIP-7732)
