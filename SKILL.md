@@ -38,7 +38,7 @@ Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
 
 ### [Protocol](https://ethskills.com/protocol/SKILL.md)
 How Ethereum evolves — EIP lifecycle, fork process, tracking upcoming changes.
-- "Verkle is planned for the next fork" — probably wrong. Roadmap diagrams are aspirational, not commitments. Check [forkcast.xyz](https://forkcast.xyz) for actual CFI/SFI status.
+- "Verkle is planned for the next fork" — probably wrong. Roadmap diagrams are aspirational, not commitments. Check [forkcast.org](https://forkcast.org) for actual CFI/SFI status.
 - Glamsterdam (mid-2026) headliners: ePBS (EIP-7732), Block Access Lists (EIP-7928). FOCIL was removed from scope. Verkle trees were deprioritized — Ethereum may shift to binary state tree (EIP-7864) for quantum resistance.
 - EIP status "Stagnant" = no activity for 6 months, probably dead. "Draft" = exists but not scheduled.
 - Client teams decide what ships via ACD calls, not the Ethereum Foundation.
