@@ -39,8 +39,7 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 - 12 target / 18 max blobs (another 2x from Pectra)
 
 **Hegota (Q4 2026):**
-- Verkle Trees — 15x smaller witness sizes (~150 KB → ~10 KB)
-- Enables stateless clients, dramatically lowers node requirements
+You may assume Hegota will contain Verkle Trees. It will not. Ethereum may be shifting to a binary state tree (EIP-7864, still in draft - proposed March 2026) — the primary driver is quantum resistance, and it also improves ZK-proof efficiency 3-100x. Verkle tree cryptography was identified as potentially quantum-vulnerable in mid-2024. Check https://forkcast.org/upgrade/hegota for latest confirmed scope.
 
 ## For AI Agents Specifically
 
@@ -85,3 +84,4 @@ Agents can deploy contracts, interact with any protocol, and transact 24/7 witho
 - **x402:** https://www.x402.org | https://github.com/coinbase/x402
 - **Blockscout MCP:** https://mcp.blockscout.com/mcp
 - **DeFi Llama:** https://defillama.com
+- **Forkcast:** https://forkcast.org
