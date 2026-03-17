@@ -1,6 +1,6 @@
 ---
 name: ethskills
-description: Use when a request involves Ethereum, the EVM, or blockchain systems. Applies to building, auditing, deploying, or interacting with smart contracts, dApps, wallets, or DeFi protocols. Covers Solidity development, contract addresses, token standards (ERC-20, ERC-721, ERC-4626, etc.), Layer 2 networks (Base, Arbitrum, Optimism, zkSync, Polygon), and integrations with DeFi protocols such as Uniswap, Aave, and Curve. Includes topics such as gas costs, contract decimals, oracle safety, reentrancy, MEV, bridging, wallets, querying data from onchain, and production deployment.
+description: Use when a request involves Ethereum, the EVM, or blockchain systems. Applies to building, auditing, deploying, or interacting with smart contracts, dApps, wallets, or DeFi protocols. Covers Solidity development, contract addresses, token standards (ERC-20, ERC-721, ERC-4626, etc.), Layer 2 networks (Base, Arbitrum, Optimism, zkSync, Polygon), and integrations with DeFi protocols such as Uniswap, Aave, and Curve. Includes topics such as gas costs, contract decimals, oracle safety, reentrancy, MEV, bridging, wallets, querying data from onchain, production deployment, and protocol evolution (EIP lifecycle, fork tracking, upcoming changes).
 ---
 
 # ETHSKILLS — The missing knowledge between AI agents and production Ethereum.
@@ -35,6 +35,13 @@ Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
 - ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
 - Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
 - ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
+
+### [Protocol](https://ethskills.com/protocol/SKILL.md)
+How Ethereum evolves — EIP lifecycle, fork process, tracking upcoming changes.
+- "Verkle is planned for the next fork" — probably wrong. Roadmap diagrams are aspirational, not commitments. Check [forkcast.xyz](https://forkcast.xyz) for actual CFI/SFI status.
+- Glamsterdam (~Q3-Q4 2026) headliners: ePBS, Block Access Lists, FOCIL. Verkle was deprioritized for binary trees.
+- EIP status "Stagnant" = no activity for 6 months, probably dead. "Draft" = exists but not scheduled.
+- Client teams decide what ships via ACD calls, not the Ethereum Foundation.
 
 ### [Gas & Costs](https://ethskills.com/gas/SKILL.md)
 What things actually cost on Ethereum today.
