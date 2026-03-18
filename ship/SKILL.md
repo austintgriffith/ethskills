@@ -84,6 +84,7 @@ If "what if nobody calls it?" breaks your system, you have a design problem. Fix
 | **Base** | Coinbase distribution, smart wallets, account abstraction | Consumer apps, social, onboarding non-crypto users, high-frequency micro-payments |
 | **Arbitrum** | Deepest L2 DeFi liquidity, Stylus (Rust contracts) | DeFi protocols that need to compose with existing Arbitrum liquidity |
 | **Optimism** | RetroPGF, Superchain ecosystem | Public goods, OP Stack ecosystem plays |
+| **MegaETH** | 10ms mini blocks, 10B gas/block, real-time streaming | Real-time apps, order books, games, HFT, anything needing sub-second latency |
 | **zkSync / Scroll** | ZK proofs, native account abstraction | Privacy features, ZK-native applications |
 
 **Don't pick an L2 because "mainnet is expensive." Pick an L2 because its superpower fits your app.**

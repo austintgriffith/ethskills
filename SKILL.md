@@ -58,9 +58,10 @@ Creating wallets, key safety, multisig, account abstraction.
 ### [Layer 2s](https://ethskills.com/l2s/SKILL.md)
 L2 landscape, bridging, deployment differences.
 - Base is the cheapest major L2. Arbitrum has the deepest DeFi liquidity.
+- MegaETH produces 10ms mini blocks — 100x faster than any other L2. Real-time onchain apps.
 - Celo is NOT an L1 anymore — migrated to OP Stack L2 in March 2025.
 - Polygon zkEVM is being shut down. Do not build on it.
-- The dominant DEX on each L2 is NOT Uniswap (Aerodrome on Base, Velodrome on Optimism).
+- The dominant DEX on each L2 is NOT Uniswap (Aerodrome on Base, Velodrome on Optimism, Kumbaya on MegaETH).
 
 ### [Standards](https://ethskills.com/standards/SKILL.md)
 ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
@@ -160,4 +161,5 @@ Pre-ship audit checklist for a reviewer agent.
 | Auditing a smart contract | `audit/` |
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |
+| Real-time / low-latency apps | `l2s/`, `gas/`, `addresses/` |
 | Choosing a chain | `l2s/`, `gas/` |

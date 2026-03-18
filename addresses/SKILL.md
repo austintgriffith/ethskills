@@ -30,6 +30,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 | Arbitrum | `0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9` | ✅ Verified |
 | Optimism | `0x94b008aA00579c1307B0EF2c499aD98a8ce58e58` | ✅ Verified |
 | Base | `0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2` | ✅ Verified |
+| MegaETH | `0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb` | ✅ Verified |
 
 ### DAI (MakerDAO)
 | Network | Address | Status |
@@ -49,6 +50,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 | Arbitrum | `0x82aF49447D8a07e3bd95BD0d56f35241523fBab1` | ✅ Verified |
 | Optimism | `0x4200000000000000000000000000000000000006` | ✅ Verified |
 | Base | `0x4200000000000000000000000000000000000006` | ✅ Verified |
+| MegaETH | `0x4200000000000000000000000000000000000006` | ✅ Verified |
 
 ---
 
@@ -61,6 +63,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 | Arbitrum | `0x5979D7b546E38E414F7E9822514be443A4800529` | ✅ Verified |
 | Optimism | `0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb` | ✅ Verified |
 | Base | `0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452` | ✅ Verified |
+| MegaETH | `0x601aC63637933D88285A025C685AC4e9a92a98dA` | ✅ Verified |
 
 ### Lido — Staking & Withdrawal
 | Contract | Address | Status |
@@ -456,6 +459,18 @@ The leading native DEX on zkSync Era. Multiple router and factory versions.
 **Note:** SYNC token is not yet deployed.
 
 Source: [docs.syncswap.xyz](https://docs.syncswap.xyz/syncswap/smart-contracts/smart-contracts)
+
+### Kumbaya (MegaETH) — Dominant DEX
+
+The most liquid DEX on MegaETH with an integrated launchpad. Sub-cent swap costs with 10ms mini block latency.
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| SwapRouter02 | `0xE5BbEF8De2DB447a7432A47EBa58924d94eE470e` | ✅ Verified |
+| QuoterV2 | `0x1F1a8dC7E138C34b503Ca080962aC10B75384a27` | ✅ Verified |
+| UniversalRouter | `0xAAB1C664CeaD881AfBB58555e6A3a79523D3e4C0` | ✅ Verified |
+
+Pool init code hash: `0x851d77a45b8b9a205fb9f44cb829cceba85282714d2603d601840640628a3da7`
 
 ### Morpho Blue (Base)
 

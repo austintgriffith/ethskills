@@ -30,13 +30,13 @@ description: Current Ethereum gas prices, transaction costs, and the real econom
 
 ## Mainnet vs L2 Costs (Early 2026)
 
-| Action | Mainnet (0.1 gwei) | Arbitrum | Base | zkSync | Scroll |
-|--------|---------------------|----------|------|--------|--------|
-| ETH transfer | $0.004 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
-| ERC-20 transfer | $0.013 | $0.001 | $0.001 | $0.002 | $0.001 |
-| Swap | $0.036 | $0.003 | $0.002 | $0.005 | $0.004 |
-| NFT mint | $0.030 | $0.002 | $0.002 | $0.004 | $0.003 |
-| ERC-20 deploy | $0.240 | $0.020 | $0.018 | $0.040 | $0.030 |
+| Action | Mainnet (0.1 gwei) | Arbitrum | Base | MegaETH | zkSync | Scroll |
+|--------|---------------------|----------|------|---------|--------|--------|
+| ETH transfer | $0.004 | $0.0003 | $0.0003 | $0.0001 | $0.0005 | $0.0004 |
+| ERC-20 transfer | $0.013 | $0.001 | $0.001 | $0.001 | $0.002 | $0.001 |
+| Swap | $0.036 | $0.003 | $0.002 | $0.001 | $0.005 | $0.004 |
+| NFT mint | $0.030 | $0.002 | $0.002 | $0.001 | $0.004 | $0.003 |
+| ERC-20 deploy | $0.240 | $0.020 | $0.018 | $0.01 | $0.040 | $0.030 |
 
 **Key insight:** Mainnet is now cheap enough for most use cases. L2s are 5-10x cheaper still.
 
