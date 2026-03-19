@@ -113,7 +113,8 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 using SafeERC20 for IERC20;
 
 token.safeTransfer(to, amount);
-token.safeApprove(spender, amount);
+// OpenZeppelin v4: token.safeApprove(spender, amount);  ← deprecated, removed in v5
+token.forceApprove(spender, amount); // OpenZeppelin v5+ — handles USDT's non-zero allowance revert
 ```
 
 **Other token quirks to watch for:**
@@ -247,6 +248,7 @@ Run through this for EVERY contract before deploying to production. No exception
 - [ ] **No infinite approvals** — approve exact amounts or small bounded multiples
 - [ ] **Fee-on-transfer safe** — if accepting arbitrary tokens, measure actual received amount
 - [ ] **Tested edge cases** — zero values, max values, unauthorized callers, reentrancy attempts
+- [ ] **SafeCast for downcasts** — prefer `SafeCast.toUint128()` over hand-rolled bounds checks when packing storage; Solidity 0.8 protects arithmetic but not explicit casts
 - [ ] **Source verified on block explorer** — `yarn verify` or `forge verify-contract` after every deploy. Unverified contracts can't be audited by users and look indistinguishable from scams
 
 ## MEV & Sandwich Attacks
