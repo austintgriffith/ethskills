@@ -157,3 +157,16 @@ anvil --fork-url https://eth.llamarpc.com
 ```
 
 **Primary testnet:** Sepolia (Chain ID: 11155111). Goerli and Rinkeby are deprecated.
+
+### Testnet ETH Faucets
+
+| Network | Faucet |
+|---------|--------|
+| Sepolia | https://sepolia-faucet.pk910.de/ |
+| Sepolia | https://www.infura.io/faucet/sepolia |
+| Multiple | https://www.alchemy.com/faucets |
+| Multiple | https://cloud.google.com/application/web3/faucet/ethereum |
+| Multiple | https://faucet.quicknode.com/drip |
+| Multiple | https://getblock.io/faucet/ |
+
+Once you have Sepolia ETH you can bridge it to any L2 using each L2's testnet bridge then you will have ETH on that L2 testnet.

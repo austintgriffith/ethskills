@@ -1,11 +1,21 @@
 ---
 name: qa
-description: Pre-ship audit checklist for Ethereum dApps built with Scaffold-ETH 2. Give this to a separate reviewer agent (or fresh context) AFTER the build is complete. Covers only the bugs AI agents actually ship — validated by baseline testing against stock LLMs.
+description: Pre-ship audit checklist for Ethereum dApps built with Scaffold-ETH 2. Give this to a separate reviewer agent (or fresh context) AFTER the build is complete. Use this skill whenever you are finalizing a dApp built with Scaffold-ETH 2.
 ---
 
-# dApp QA — Pre-Ship Audit
+# dApp QA — Pre-Ship Audit For Scaffold-ETH 2 Builds
 
-This skill is for **review, not building.** Give it to a fresh agent after the dApp is built. The reviewer should:
+## What You Probably Got Wrong
+
+**"The app deployed, so we are done."** For SE2 builds, shipping includes UX correctness, metadata, RPC reliability, contract verification, and branding cleanup.
+
+**"The flow is obvious."** If Connect, Network, Approve, and Action are not strictly one-at-a-time with proper pending states, users will make duplicate or failing transactions.
+
+**"SE2 defaults are fine in production."** Default README/footer/title/favicon and default RPC fallbacks are template scaffolding, not production decisions.
+
+**"Pass means no console errors."** QA pass/fail here is behavioral and user-facing: real wallet flow, mobile deep-link behavior, readable errors, and trust signals must be validated.
+
+Give this to a fresh agent after the dApp is built. The reviewer should:
 
 1. Read the source code (`app/`, `components/`, `contracts/`)
 2. Open the app in a browser and click through every flow
@@ -152,11 +162,37 @@ Open `packages/nextjs/scaffold.config.ts`:
 - ❌ **FAIL:** Using default Alchemy API key that ships with SE2
 - ❌ **FAIL:** Code references `process.env.NEXT_PUBLIC_*` but the variable isn't actually set in the deployment environment (Vercel/hosting). Falls back to public RPC like `mainnet.base.org` which is rate-limited
 - ✅ **PASS:** `rpcOverrides` uses `process.env.NEXT_PUBLIC_*` variables AND the env var is confirmed set on the hosting platform
+- ❌ **FAIL:** `services/web3/wagmiConfig.tsx` still includes bare `http()` fallback transport (silently hits public RPCs in parallel, causing rate limits)
+- ✅ **PASS:** Bare `http()` fallback removed; only intended configured transports remain
 
 **Verify the env var is set, not just referenced.** AI agents will change the code to use `process.env`, see the pattern matches PASS, and move on — without ever setting the actual variable on Vercel/hosting. Check:
 ```bash
 vercel env ls | grep RPC
 ```
+
+---
+
+## Important: SE2 `externalContracts.ts` Registration
+
+Scaffold hooks only work with contracts registered in `deployedContracts.ts` (auto-generated) or `externalContracts.ts` (manual). If external contracts are not registered, frontend reads/writes silently fail.
+
+- ❌ **FAIL:** Frontend code references token/protocol contracts that are missing from `packages/nextjs/contracts/externalContracts.ts`
+- ❌ **FAIL:** `deployedContracts.ts` manually edited to add external contracts
+- ✅ **PASS:** All external contracts are defined in `externalContracts.ts` with correct chain, address, and ABI
+
+Example:
+```typescript
+export default {
+  8453: {
+    USDC: {
+      address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      abi: [...],
+    },
+  },
+} as const;
+```
+
+Never edit `deployedContracts.ts` directly. It is regenerated on deploy.
 
 ---
 
@@ -333,6 +369,31 @@ Any `"loading"` string in a button's className → **FAIL**.
 
 - ❌ **FAIL:** `className={... isPending ? "loading" : ""}` on a button
 - ✅ **PASS:** `<span className="loading loading-spinner loading-sm" />` inside the button
+
+---
+
+## Important: SE2 Pill-Shaped Inputs (`--radius-field`)
+
+SE2 DaisyUI theme defaults to `--radius-field: 9999rem`, which creates pill-shaped textareas/selects and often clips content.
+
+- ❌ **FAIL:** `--radius-field: 9999rem` remains in `packages/nextjs/styles/globals.css`
+- ✅ **PASS:** `--radius-field` is changed to `0.5rem` (or similar) in both light and dark theme blocks
+
+Fix in theme (not per component):
+```css
+/* In BOTH @plugin "daisyui/theme" blocks */
+--radius-field: 0.5rem;
+```
+
+Do not patch this by sprinkling `rounded-*` utility classes per input; fix it once at theme level.
+
+---
+
+## SE2 References
+
+- Docs: https://docs.scaffoldeth.io/
+- UI Components: https://ui.scaffoldeth.io/
+- SpeedRun Ethereum: https://speedrunethereum.com/
 
 ---
 

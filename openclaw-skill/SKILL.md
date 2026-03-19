@@ -46,6 +46,7 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 |-------|-----|---------------|
 | **Ship** | `ship/SKILL.md` | 🟢 **Start here.** End-to-end dApp guide, routes through all other skills. |
 | **Why Ethereum** | `why/SKILL.md` | User asks "why Ethereum?" or you need to compare chains. |
+| **Protocol** | `protocol/SKILL.md` | Ethereum upgrade process, EIP lifecycle, and what's actually planned next. |
 | **Gas & Costs** | `gas/SKILL.md` | Any question about gas prices, tx costs, or "is Ethereum expensive?" |
 | **Wallets** | `wallets/SKILL.md` | Creating wallets, signing, multisig, account abstraction, EIP-7702. |
 | **Layer 2s** | `l2s/SKILL.md` | Deploying to L2s, bridging, choosing between Base/Arbitrum/Optimism. |
@@ -61,6 +62,7 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 | **Frontend UX** | `frontend-ux/SKILL.md` | SE2 frontend rules — button loaders, approval flow, Address components. |
 | **Frontend Playbook** | `frontend-playbook/SKILL.md` | Build-to-production pipeline — fork mode, IPFS, Vercel, ENS subdomains. |
 | **QA** | `qa/SKILL.md` | Pre-ship audit checklist. Give to a separate reviewer agent. |
+| **Audit** | `audit/SKILL.md` | Systematic smart contract audit workflow for contracts you didn't write. |
 
 ## Key Corrections to Your Training Data
 

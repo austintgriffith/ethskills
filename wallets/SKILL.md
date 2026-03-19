@@ -1,6 +1,6 @@
 ---
 name: wallets
-description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart contract wallets, multisig (Safe), and account abstraction. Essential for any AI agent that needs to interact with Ethereum — sending transactions, signing messages, or managing funds. Includes guardrails for safe key handling.
+description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart contract wallets, multisig (Safe), and account abstraction. Use this skill whenever you are sending transactions, signing messages, or managing funds. Includes guardrails for safe key handling.
 ---
 
 # Wallets on Ethereum
@@ -47,10 +47,11 @@ Same addresses on Mainnet, Arbitrum, Base, and all major chains.
 
 ### Safe for AI Agents
 
-**Pattern:** 1-of-2 Safe
+**Pattern:** 2-of-3 Safe
 - Owner 1: Agent's wallet (hot, automated)
-- Owner 2: Human's wallet (cold, recovery)
-- Threshold: 1 (agent can act alone)
+- Owner 2: Human's hot wallet (hot, manual)
+- Owner 3: Human's cold wallet (cold, recovery)
+- Threshold: 2 (agent can queue transactions and human can execute or vice versa)
 
 Benefits: If agent key is compromised, human removes it. Human can always recover funds. Agent can batch transactions.
 
@@ -93,7 +94,6 @@ git log --all -p | grep -iE 'private.?key|0x[a-fA-F0-9]{64}'
 2. **Transfer all funds immediately** to a new wallet.
 3. **Rotate the key.** Generate a new one. The old one is burned forever.
 4. **Clean Git history** with `git filter-repo` or BFG Repo Cleaner — but this is damage control, not prevention. The key is already compromised.
-5. **Revoke any token approvals** from the compromised address.
 
 ### Safe Patterns for AI Agents
 
@@ -119,7 +119,7 @@ cast send ... --ledger
 3. **NEVER move funds without human confirmation.** Show: amount, destination (checksummed), gas cost, what it does. Wait for explicit "yes."
 4. **Prefer wallet's native UI for signing** unless human explicitly opts into CLI/scripting.
 5. **Use a dedicated wallet with limited funds** for agent operations. Never the human's main wallet.
-6. **Double-check addresses.** Use `ethers.getAddress()` or equivalent for checksum validation. A single wrong character = permanent loss.
+6. **Double-check addresses.** Use `viem.getAddress()` or equivalent for checksum validation. A single wrong character = permanent loss.
 7. **Test on testnet first.** Or use local Anvil fork.
 8. **Implement spending limits.** Require human approval above threshold. Use Safe multisig for high-value operations.
 9. **Log all transactions (never keys).** Keep audit trail.
@@ -137,27 +137,27 @@ cast send ... --ledger
 ### Safe Transaction Pattern
 
 ```javascript
-async function sendSafely(wallet, to, value) {
-  const checksummedTo = ethers.getAddress(to); // validates
-  const gasEstimate = await wallet.estimateGas({ to: checksummedTo, value });
-  const feeData = await wallet.provider.getFeeData();
-  const gasCost = gasEstimate * feeData.maxFeePerGas;
-  const totalCostUSD = Number(ethers.formatEther(value + gasCost)) * 2000; // ⚠️ Use a Chainlink feed for real price
-  
+async function sendSafely(publicClient, walletClient, to, value) {
+  const checksummedTo = viem.getAddress(to);
+  const { account } = walletClient;
+  const gas = await publicClient.estimateGas({ account, to: checksummedTo, value });
+  const fees = await publicClient.estimateFeesPerGas();
+  const totalCostUSD = Number(viem.formatEther(value + gas * fees.maxFeePerGas)) * 2000;
+
   if (totalCostUSD > 10) {
-    // Show details and wait for human approval
+    // human approval
   }
-  
-  const tx = await wallet.sendTransaction({
+
+  const hash = await walletClient.sendTransaction({
+    account,
     to: checksummedTo,
     value,
-    gasLimit: gasEstimate * 120n / 100n, // 20% buffer
-    maxFeePerGas: feeData.maxFeePerGas,
-    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+    gas: (gas * 120n) / 100n,
+    maxFeePerGas: fees.maxFeePerGas,
+    maxPriorityFeePerGas: fees.maxPriorityFeePerGas,
   });
-  
-  const receipt = await tx.wait();
-  logTransaction({ hash: tx.hash, to: checksummedTo, value, block: receipt.blockNumber });
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  logTransaction({ hash, to: checksummedTo, value, block: receipt.blockNumber });
   return receipt;
 }
 ```

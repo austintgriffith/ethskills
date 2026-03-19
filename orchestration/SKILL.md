@@ -169,13 +169,13 @@ See `wallets/SKILL.md` for full key safety guide, what to do if you've already l
 
 ### Deploy
 
-**IPFS (decentralized):**
+**IPFS (decentralized but only works with static content - no server-side rendering, api endpoints or functions):**
 ```bash
 yarn ipfs
 # → https://YOUR_CID.ipfs.cf-ipfs.com
 ```
 
-**Vercel (fast):**
+**Vercel:**
 ```bash
 cd packages/nextjs && vercel
 ```

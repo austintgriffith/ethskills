@@ -74,7 +74,7 @@ Does it need gas incentives? ____________
 
 If "what if nobody calls it?" breaks your system, you have a design problem. Fix it before writing code. See `concepts/SKILL.md` for incentive design patterns.
 
-### Chain Selection (Quick Version)
+### Chain Selection
 
 **Mainnet is back on the table.** Most AIs still think mainnet is expensive — it's not (~$0.004/transfer, ~$0.04/swap at current gas). Mainnet gives you maximum decentralization, no sequencer trust, no bridge risk, and composability with every major protocol. But L2s aren't a fallback — each one has a unique superpower. Pick the chain whose superpower matches your app:
 
@@ -225,7 +225,7 @@ After testing, run a security audit — especially if your contracts handle real
 
 ## Phase 3 — Build Frontend
 
-**Fetch:** `orchestration/SKILL.md`, `frontend-ux/SKILL.md`, `tools/SKILL.md`
+**Fetch:** `orchestration/SKILL.md`, `frontend-ux/SKILL.md`, `tools/SKILL.md`, `qa/SKILL.md`
 
 Key guidance:
 - Use Scaffold-ETH 2 hooks, not raw wagmi — `useScaffoldReadContract`, `useScaffoldWriteContract`
@@ -238,7 +238,11 @@ Key guidance:
 
 ## Phase 4 — Ship to Production
 
-**Fetch:** `wallets/SKILL.md`, `frontend-playbook/SKILL.md`, `gas/SKILL.md`
+**Fetch:** `wallets/SKILL.md`, `frontend-playbook/SKILL.md`, `gas/SKILL.md`, `qa/SKILL.md`
+
+### Pre-Ship QA
+
+Before going live, run the QA checklist. Fetch `qa/SKILL.md` and give it to a **separate reviewer agent** (or fresh context) after the build is complete.
 
 ### Contract Deployment
 1. Set gas settings appropriate for the target chain (fetch `gas/SKILL.md`)
@@ -251,10 +255,6 @@ Fetch `frontend-playbook/SKILL.md` for the full pipeline:
 - **IPFS** — decentralized, censorship-resistant, permanent
 - **Vercel** — fast, easy, but centralized
 - **ENS subdomain** — human-readable URL pointing to IPFS
-
-### Pre-Ship QA
-
-Before going live, run the QA checklist. Fetch `qa/SKILL.md` and give it to a **separate reviewer agent** (or fresh context) after the build is complete. It covers the bugs AI agents actually ship — validated by baseline testing against stock LLMs.
 
 ### Post-Launch
 - Set up event monitoring with The Graph or Dune (fetch `indexing/SKILL.md`)

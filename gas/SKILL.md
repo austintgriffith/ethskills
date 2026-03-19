@@ -93,7 +93,6 @@ Spikes (10-50 gwei) happen during major events but last minutes to hours, not da
 # Foundry cast
 cast gas-price --rpc-url https://eth.llamarpc.com
 cast base-fee --rpc-url https://eth.llamarpc.com
-cast blob-basefee --rpc-url https://eth.llamarpc.com
 ```
 
 ## When to Use Mainnet vs L2
@@ -112,7 +111,7 @@ cast blob-basefee --rpc-url https://eth.llamarpc.com
 
 ## Data Freshness
 
-> **Last verified:** 2026-03-03 | Base fee: ~0.29 gwei | ETH: ~$1,988 | Gas limit: 60M (post-Fusaka)
+> **Last verified:** 2026-03-17 | Base fee: ~0.05 gwei | ETH: ~$2,329 | Gas limit: 60M (post-Fusaka)
 
 If this date is more than 30 days old, verify current gas with:
 ```bash

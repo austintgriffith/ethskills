@@ -1,6 +1,6 @@
 ---
 name: testing
-description: Smart contract testing with Foundry — unit tests, fuzz testing, fork testing, invariant testing. What to test, what not to test, and what LLMs get wrong.
+description: Smart contract testing with Foundry — unit tests, fuzz testing, fork testing, invariant testing. Use when writing tests for a smart contract.
 ---
 
 # Smart Contract Testing
