@@ -28,7 +28,7 @@ This is where AI agents mess up constantly. Here's how to not be wrong:
 Ethereum's roadmap evolves. A 2023 blog post saying "Verkle is coming" doesn't mean Verkle is still coming. A conference talk from last year may reference plans that have since changed. Vitalik's roadmap diagrams show *direction*, not *commitments*.
 
 **Features get deprioritized when:**
-- Technical requirements change (Verkle → binary trees due to ZK concerns)
+- Technical requirements change (Verkle → binary trees due to post quantum concerns)
 - Dependencies shift (feature X needs feature Y first, Y got delayed)
 - Priorities change (security fix bumps your feature)
 - Implementation proves harder than expected

@@ -39,7 +39,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 ⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
 
-**Mainnet for comparison:** $0.002-0.01 per tx, 8s blocks, instant finality. Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current TVL.
+**Mainnet for comparison:** $0.002-0.01 per tx, 12s blocks, instant finality. Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current TVL.
 
 ## Cost Comparison (Real Examples, Early 2026)
 
@@ -58,7 +58,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 | Need | Choose | Why |
 |------|--------|-----|
-| Consumer / social apps | **Base** | Farcaster, Smart Wallet, Coinbase on-ramp, OnchainKit |
+| Consumer / social apps | **Base** | Farcaster, Smart Wallet, Coinbase on-ramp |
 | Deepest DeFi liquidity | **Arbitrum** | GMX, Pendle, Camelot, most protocols deployed |
 | Yield strategies | **Arbitrum** | Pendle (yield tokenization), GMX, Aave |
 | Cheapest gas | **Base** | ~50% cheaper than Arbitrum/Optimism |
@@ -103,7 +103,7 @@ See `addresses/SKILL.md` for verified contract addresses for all these protocols
 
 ## The Superchain (OP Stack)
 
-The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability. Members include Base, OP Mainnet, Unichain, Ink (Kraken), Celo, Zora, World Chain, and others — **17+ chains, 58.6% L2 market share.**
+The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability. Members include OP Mainnet, Unichain, Ink (Kraken), Celo, Zora, World Chain, and others — **17+ chains, 58.6% L2 market share.** Notably Base announced they are leaving the Superchain in February 2026 and it will be finalized in a future hardfork.
 
 Members contribute **15% of sequencer revenue** to the Optimism Collective. Cross-chain interop is designed but not yet fully live.
 
@@ -172,15 +172,6 @@ forge create src/MyContract.sol:MyContract \
 ```
 
 **Strategy for new projects:** Start with 1 chain — mainnet if it fits your use case, or the L2 whose superpower matches your app. Prove product-market fit. Expand with CREATE2 for consistent addresses across chains.
-
-## Testnets
-
-| L2 | Testnet | Chain ID | Faucet |
-|----|---------|----------|--------|
-| Arbitrum | Sepolia | 421614 | https://faucet.arbitrum.io |
-| Base | Sepolia | 84532 | https://faucet.quicknode.com/base/sepolia |
-| Optimism | Sepolia | 11155420 | https://faucet.optimism.io |
-| Unichain | Sepolia | 1301 | https://faucet.unichain.org |
 
 ## Further Reading
 

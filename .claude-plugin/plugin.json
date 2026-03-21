@@ -13,6 +13,7 @@
   "skills": [
     "./ship",
     "./why",
+    "./protocol",
     "./gas",
     "./wallets",
     "./l2s",

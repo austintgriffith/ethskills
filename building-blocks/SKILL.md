@@ -196,7 +196,6 @@ function swapExactTokensForTokens(
 
 ### Base-Specific Patterns
 - **Coinbase Smart Wallet** — ERC-4337 wallet, passkey auth, gasless txs via Coinbase paymaster
-- **OnchainKit** — `npm create onchain` to bootstrap a Base app with React components
 - **Farcaster Frames v2** — mini-apps embedded in social posts that trigger onchain actions
 - **AgentKit** — Coinbase's framework for AI agents to interact onchain
 
