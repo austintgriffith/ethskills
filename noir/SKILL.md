@@ -23,13 +23,9 @@ description: Building privacy-preserving EVM apps with Noir — toolchain, patte
 
 ## Quick Reference
 
-If you read nothing else, get these right:
+Beyond the corrections above:
 
-- **Poseidon is external** — add `poseidon = { git = "https://github.com/noir-lang/poseidon", tag = "v0.2.6" }` to `Nargo.toml`. Import: `use poseidon::poseidon::bn254::hash_2`
-- **Proving uses `bb`, not `nargo`** — `bb prove --oracle_hash keccak -b target/circuit.json -w target/circuit.gz -o target/`
-- **Public input syntax** — `merkle_root: pub Field` (pub after colon, not before name)
-- **Solidity verifier = separate deploy** — generate with `--oracle_hash keccak`, deploy the contract, pass its address to your app contract
-- **Same wallet = no privacy** — the wallet that calls `act()` must be different from the wallet that committed. Use burner wallet + relayer or ERC-4337 paymaster
+- **Solidity verifier = separate deploy** — deploy the generated `HonkVerifier.sol`, pass its address to your app contract constructor
 - **Input order must match everywhere** — circuit `pub` params, `proof.publicInputs`, and Solidity `verify()` call must be in the same order
 - **Poseidon ≠ Poseidon2** — different algorithms, different outputs. Don't mix them across circuit, offchain tree, and contract
 
@@ -79,7 +75,7 @@ cd my_circuit
 
 ### Build Pipeline
 
-The required steps to go from circuit to deployable verifier. Proving happens in the browser via NoirJS in production — you don't need `bb prove` in the build.
+The production build pipeline stops at circuit artifact, VK, and Solidity verifier. If asked for the minimal production build, say explicitly that `bb prove` / `bb verify` below are optional local smoke tests only.
 
 ```bash
 # 1. Compile circuit to ACIR
@@ -95,16 +91,16 @@ bb write_vk --oracle_hash keccak -b target/my_circuit.json -o target/
 bb write_solidity_verifier -k target/vk -o target/Verifier.sol
 ```
 
-**Optional: local proof test** — useful for verifying the circuit works before wiring up the frontend. All commands must use `--oracle_hash keccak` consistently, or you get serialization mismatches.
+**Local-only proof smoke test** — useful before wiring up the frontend. All commands must use `--oracle_hash keccak` consistently, or you get serialization mismatches.
 
 ```bash
 bb prove --oracle_hash keccak -b target/my_circuit.json -w target/my_circuit.gz -o target/
 bb verify --oracle_hash keccak -p target/proof -k target/vk -i target/public_inputs
 ```
 
-The command is `bb write_solidity_verifier` — not `bb contract`, not `nargo codegen-verifier`. The `--oracle_hash keccak` flag tells Barretenberg to use Keccak256 (which the EVM supports natively) instead of the default hash. All `bb` commands in a project must use the same `--oracle_hash` setting — mixing keccak and default causes proof/VK serialization mismatches.
+The command is `bb write_solidity_verifier` — not `bb contract`, not `nargo codegen-verifier`.
 
-**Contract size warning:** The generated HonkVerifier.sol can exceed the 24KB EVM contract size limit (EIP-170). Enable the Solidity optimizer — this usually brings the bytecode under the limit:
+**Contract size warning:** Call this failure by name: the generated `HonkVerifier.sol` can exceed the 24KB EIP-170 contract size limit. For real deployments, enable the Solidity optimizer first:
 
 ```toml
 # foundry.toml
@@ -113,7 +109,7 @@ optimizer = true
 optimizer_runs = 200
 ```
 
-If you still hit the limit during local testing, start Anvil with `anvil --code-size-limit 40960` and pass the same flag to Forge deploy scripts. All chains (mainnet, Base, Optimism, Arbitrum) enforce the same 24KB limit.
+If you still hit the limit locally, run `anvil --code-size-limit 40960` and `forge script ... --code-size-limit 40960`. That flag is for local testing only — mainnet and major L2s still enforce the 24KB limit.
 
 ### Build Artifacts and Hand-off
 
@@ -275,9 +271,9 @@ fn compute_merkle_root(
 
 ### Production Hardening: Domain Separation and Action Binding
 
-The circuit above is the minimal pattern. Production apps should domain-separate hashes and bind the proof to a specific action.
+The circuit above is the minimal pattern. Production apps should domain-separate hashes and bind the proof to a specific action. Commitments and nullifiers must use different domains.
 
-Use different hash domains for commitments and nullifiers. For action-scoped apps such as voting, bind nullifier usage to an `external_nullifier` (for example `pollId`):
+For action-scoped apps such as voting, bind nullifier usage to an `external_nullifier` (for example `pollId`):
 
 ```noir
 use poseidon::poseidon::bn254::hash_2;
@@ -297,13 +293,12 @@ fn main(
     let computed_root = compute_merkle_root(commitment, merkle_path, merkle_indices);
     assert(computed_root == merkle_root, "Merkle proof invalid");
 
-    // Prevent replay across polls/actions by binding the nullifier to the action domain
-    let computed_nullifier_hash = hash_2([external_nullifier, nullifier]);
+    // 2 = nullifier domain; external_nullifier scopes usage to a poll/action
+    let nullifier_domain = hash_2([2, external_nullifier]);
+    let computed_nullifier_hash = hash_2([nullifier_domain, nullifier]);
     assert(computed_nullifier_hash == nullifier_hash, "Nullifier hash mismatch");
 }
 ```
-
-Without this binding, a model often produces a reusable nullifier that works across multiple polls or actions.
 
 ### Solidity Contract Integration
 
@@ -327,10 +322,8 @@ contract PrivacyPool {
         verifier = IVerifier(_verifier);
     }
 
-    // IMPORTANT: msg.sender here MUST be a different wallet than the one that
-    // deposited the commitment. If the same wallet commits and acts, the two
-    // transactions are trivially linkable onchain and the privacy is broken.
-    // Use a burner wallet + relayer or ERC-4337 paymaster to pay gas anonymously.
+    // msg.sender is public — see "same wallet" warning above.
+    // Only mutate state after verify() succeeds.
     function act(bytes calldata _proof, bytes32 _merkleRoot, bytes32 _nullifierHash) external {
         require(!usedNullifiers[_nullifierHash], "Already acted");
         require(_merkleRoot == merkleRoot, "Invalid root");
@@ -341,6 +334,7 @@ contract PrivacyPool {
         publicInputs[1] = _nullifierHash;    // pub nullifier_hash
         require(verifier.verify(_proof, publicInputs), "Invalid proof");
 
+        // Only mutate state after proof verification succeeds
         usedNullifiers[_nullifierHash] = true;
     }
 }
@@ -350,10 +344,10 @@ contract PrivacyPool {
 
 For a real app, the contract needs more than `merkleRoot` + `usedNullifiers`:
 
-- Emit an insert event containing the commitment, leaf index, and resulting root
+- Emit an insert event with the commitment, leaf index, and resulting root
 - Store used nullifiers
-- Make the accepted-root policy explicit
-- Verify proofs before mutating state or executing side effects
+- Make the root-acceptance policy explicit: recent `knownRoots` or `currentRoot`-only
+- Verify proofs before success events, transfers/votes, or nullifier writes
 
 Good default:
 
@@ -365,13 +359,13 @@ mapping(bytes32 => bool) public knownRoots; // keep recent roots by default
 bytes32 public currentRoot;
 ```
 
-**Root policy:** if proofs are generated client-side, default to keeping recent root history. Otherwise a new insert can stale an in-flight proof. If you intentionally accept only `currentRoot`, document that and force users to prove immediately against the latest root.
+**Root policy:** default to recent `knownRoots`. If you intentionally accept only `currentRoot`, say so explicitly and require clients to prove against the latest root.
 
-The frontend tree mirror should rebuild from `CommitmentInserted` events. Do not rely on implicit local ordering or "whatever the contract returns right now" when generating siblings.
+Clients derive siblings by replaying `CommitmentInserted` into the offchain tree mirror; the contract never returns witness paths.
 
 ### Onchain Commitment Storage (LeanIMT)
 
-Most Noir ZK apps store commitments in an onchain Merkle tree. Use the audited `@zk-kit` libraries — don't build your own.
+Most Noir ZK apps store commitments in an onchain Merkle tree. If asked how commitments are stored onchain, name all three pieces: onchain `@zk-kit/lean-imt.sol` + deployed `PoseidonT3`; offchain `@zk-kit/lean-imt`; witness path from `tree.generateProof(leafIndex)`.
 
 **Solidity:**
 
@@ -383,36 +377,20 @@ npm install @zk-kit/lean-imt.sol
 import {LeanIMT, LeanIMTData} from "@zk-kit/lean-imt.sol/LeanIMT.sol";
 ```
 
-Requires deploying `PoseidonT3` alongside (used internally for hashing). The contract maintains the Merkle root automatically — users call `insert(commitment)`.
+Deploy `PoseidonT3` alongside; the tree contract uses it internally for hashing. The contract maintains the Merkle root automatically — users call `insert(commitment)`.
 
 **JavaScript (client-side tree mirror):**
 
 ```bash
 npm install @zk-kit/lean-imt
 ```
-
-Reconstruct the tree from onchain leaf events, then call `generateProof(leafIndex)` to get siblings for your circuit.
-
-Tree depth 16 (~65K entries) is standard. Only increase if you genuinely need more capacity.
-
+```typescript
+import { LeanIMT } from "@zk-kit/lean-imt";
+const { siblings, pathIndices } = tree.generateProof(leafIndex); // after replaying CommitmentInserted events
+```
 ---
 
-## Noir API Reference
-
-These are the correct imports and function signatures. LLMs frequently hallucinate wrong ones.
-
-### Poseidon Hashing
-
-Add the `poseidon` dependency to `Nargo.toml` (see Nargo.toml section above). Use `bn254` variants — they're optimized for the BN254 curve that Ethereum's precompiles support.
-
-```noir
-use poseidon::poseidon::bn254::hash_1;    // Hash one field element
-use poseidon::poseidon::bn254::hash_2;    // Hash two field elements
-```
-
-The old import path `std::hash::poseidon::bn254::hash_2` no longer exists — Poseidon was removed from the Noir standard library.
-
-### Merkle Proof with zk-kit
+## Merkle Proof with zk-kit
 
 For production Merkle trees, use the `@zk-kit.noir` library:
 
@@ -603,13 +581,10 @@ Noir/Barretenberg proofs verify on any EVM chain with BN254 precompiles (ecAdd, 
 
 - [ ] All private inputs are constrained (no unconstrained witness values that could be manipulated)
 - [ ] Public inputs minimized — only what the verifier contract needs
-- [ ] Poseidon used for in-circuit hashing, not SHA256/Keccak (50x gate cost difference)
 - [ ] Domain separation in hashes — different prefixes for commitments vs nullifiers (prevents cross-protocol replay)
 - [ ] Action-scoped apps bind nullifier usage to an `external_nullifier` / `pollId` / recipient / action id
 - [ ] Nullifier prevents double-action (contract checks and stores used nullifier hashes)
 - [ ] Small-domain values not directly hashed as public outputs (if vote is 0 or 1, `hash(0)` and `hash(1)` are trivially brutable — add a salt)
-- [ ] `--oracle_hash keccak` used on all `bb` commands (write_vk, prove, verify)
-- [ ] Public inputs order matches exactly between circuit `pub` params, frontend `proof.publicInputs`, and Solidity `verify()` call
 - [ ] Merkle tree depth matches between circuit (fixed at compile time) and contract
 - [ ] Merkle indices use `u1` type (enforces binary at compile time) — if using `Field`, manually constrain to 0/1
 - [ ] Poseidon hash compatibility verified between Noir circuit, offchain tree mirror, and any onchain Poseidon library
@@ -617,8 +592,7 @@ Noir/Barretenberg proofs verify on any EVM chain with BN254 precompiles (ecAdd, 
 - [ ] The contract emits insert events with `leafIndex` and root so the client can rebuild the tree
 - [ ] The accepted-root policy is explicit (recent root history vs current-root-only)
 - [ ] The generated verifier ABI was inspected and mirrored exactly
-- [ ] Deploy the real `HonkVerifier` in deploy scripts — `MockVerifier` is for tests only
-- [ ] If sender privacy matters (voting, whistleblowing), use burner wallets + ERC-4337 paymaster — ZK proofs hide data, not `msg.sender`
+- [ ] Never deploy `MockVerifier`, even locally — deploy scripts and dev/testnet wiring use the real `HonkVerifier`; `MockVerifier` is only for narrow unit tests
 
 ---
 
@@ -628,11 +602,11 @@ Do not stop at "the circuit compiles." A working zk app needs tests at every bou
 
 1. **Circuit witness test** — fixed inputs should produce the expected public inputs and root checks.
 2. **Hash parity test** — the same leaf and parent inputs must hash identically in the circuit, offchain tree mirror, and onchain tree library.
-3. **Contract verification test** — verify one real proof against the real generated verifier, not a mock.
+3. **Real-verifier integration test** — deploy the generated verifier and verify one real proof against it.
 4. **End-to-end app test** — insert a commitment, rebuild the tree from events, generate a browser/backend proof, submit `act()`, and assert success.
 5. **Failure-path tests** — reused nullifier, wrong root, wrong sibling ordering, stale root, and mismatched public input order must all fail.
 
-If a model cannot describe these tests, it probably has not built the app core correctly.
+`MockVerifier` is only for narrow unit tests. Deploy scripts, local dev wiring, and integration tests use the real generated `HonkVerifier`.
 
 ---
 

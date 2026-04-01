@@ -12,7 +12,7 @@
     "step_8": "Do not compare totals across benchmark revisions unless the eval set and rubrics are identical.",
     "step_9": "If an eval asks for a concrete command, import path, config snippet, formula, or interface shape, a vague conceptual answer is a fail."
   },
-  "status": "RUN 2026-04-01 - 34 evals on gpt-5.4. Baseline: 7 PASS / 27 FAIL. With skill: 28 PASS / 6 FAIL. Critical-only: baseline 2/17, with skill 13/17.",
+  "status": "RUN 2026-04-01 - 34 evals on gpt-5.4. Baseline: 9 PASS / 25 FAIL. With skill: 30 PASS / 4 FAIL. Critical-only: baseline 3/17, with skill 13/17.",
   "last_full_run_date": "2026-04-01",
   "model_used_for_last_full_run": "gpt-5.4",
   "reporting": {
@@ -54,7 +54,7 @@
           "Uses snarkjs or a non-Barretenberg backend"
         ]
       },
-      "baseline": "FAIL",
+      "baseline": "PASS",
       "with_skill": "PASS"
     },
     {
@@ -130,7 +130,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "FAIL"
+      "with_skill": "PASS"
     },
     {
       "id": "hash-function-choice",
@@ -309,7 +309,7 @@
           "Omits either the verifier source or the frontend-consumed circuit artifact"
         ]
       },
-      "baseline": "FAIL",
+      "baseline": "PASS",
       "with_skill": "PASS"
     },
     {
@@ -457,7 +457,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "FAIL"
+      "with_skill": "PASS"
     },
     {
       "id": "note-lifecycle",
@@ -481,7 +481,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "PASS"
+      "with_skill": "FAIL"
     },
     {
       "id": "contract-state-model",
@@ -507,7 +507,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "FAIL"
+      "with_skill": "PASS"
     },
     {
       "id": "onchain-merkle-tree",
@@ -531,7 +531,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "FAIL"
+      "with_skill": "PASS"
     },
     {
       "id": "hash-parity",
@@ -649,7 +649,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "PASS"
+      "with_skill": "FAIL"
     },
     {
       "id": "noirjs-frontend",
@@ -722,7 +722,7 @@
           "Imports the circuit artifact directly from another package with no warning"
         ]
       },
-      "baseline": "FAIL",
+      "baseline": "PASS",
       "with_skill": "PASS"
     },
     {
@@ -747,7 +747,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "PASS"
+      "with_skill": "FAIL"
     },
     {
       "id": "small-domain-bruting",
@@ -792,7 +792,7 @@
           "Omits either nullifier, Merkle-path/root, or serialization-order failures"
         ]
       },
-      "baseline": "PASS",
+      "baseline": "FAIL",
       "with_skill": "PASS"
     },
     {
@@ -815,7 +815,7 @@
         ]
       },
       "baseline": "FAIL",
-      "with_skill": "FAIL"
+      "with_skill": "PASS"
     },
     {
       "id": "ai-agent-tooling",
@@ -861,5 +861,5 @@
     "baseline_fail_and_skill_fail": "BROKEN - the skill discusses this topic but still does not fix the model behavior.",
     "baseline_pass_and_skill_fail": "REGRESSION - the skill made the model worse. Investigate immediately."
   },
-  "summary": "2026-04-01 exhaustive run on gpt-5.4, judged strictly with gpt-5.4: baseline 7/34 PASS, with skill 28/34 PASS. Critical-only: baseline 2/17, with skill 13/17. Coverage: fundamentals 1/7 -> 6/7; architecture 2/6 -> 6/6; app_core 3/12 -> 9/12; frontend 0/4 -> 4/4; ops 1/5 -> 3/5. Raw outputs: /tmp/noir-benchmark-gpt54-exhaustive-2026-04-01."
+  "summary": "2026-04-01 exhaustive run on gpt-5.4, judged strictly with gpt-5.4: baseline 9/34 PASS, with skill 30/34 PASS. Critical-only: baseline 3/17, with skill 13/17. Coverage: fundamentals 2/7 -> 6/7; architecture 3/6 -> 6/6; app_core 2/12 -> 10/12; frontend 1/4 -> 3/4; ops 1/5 -> 5/5. Raw outputs: /tmp/noir-benchmark-gpt54-exhaustive-2026-04-01-postfix."
 }
