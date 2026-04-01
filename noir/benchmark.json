@@ -1,21 +1,43 @@
 {
   "skill": "noir/SKILL.md",
-  "description": "Benchmark evals for the Noir privacy-app skill. Covers toolchain, pattern selection, Merkle/state wiring, verifier boundaries, and frontend proof integration.",
+  "description": "Exhaustive benchmark evals for the Noir privacy-app skill. Covers fundamentals, architecture, app-core wiring, frontend proof integration, testing, and ops/tooling.",
   "instructions": {
     "step_1": "For each eval, send the prompt to the model in a fresh conversation with NO skill loaded.",
-    "step_2": "Grade the response pass/fail using the rubric. Be strict — partial credit is a fail.",
+    "step_2": "Grade the response pass/fail using the rubric. Be strict - partial credit is a fail.",
     "step_3": "Record results in the 'baseline' column.",
     "step_4": "Repeat with the skill loaded (paste noir/SKILL.md into context first). Record in 'with_skill' column.",
     "step_5": "Compare. Baseline pass + skill pass = content may be redundant. Baseline fail + skill pass = content is valuable. Baseline fail + skill fail = skill still needs work.",
-    "step_6": "If noir/SKILL.md changes or any rubric changes, clear stale scores and rerun the full suite."
+    "step_6": "If noir/SKILL.md changes or any rubric changes, clear stale scores and rerun the full suite.",
+    "step_7": "Report three views for every run: full-suite total, critical-only subtotal (importance = critical), and pass counts by coverage_area.",
+    "step_8": "Do not compare totals across benchmark revisions unless the eval set and rubrics are identical.",
+    "step_9": "If an eval asks for a concrete command, import path, config snippet, formula, or interface shape, a vague conceptual answer is a fail."
   },
-  "status": "UPDATED 2026-03-31 — expanded benchmark for current skill scope; rerun required",
-  "last_full_run_date": "2026-03-12",
-  "model_used_for_last_full_run": "claude-opus-4-6",
+  "status": "RUN 2026-04-01 - 34 evals on gpt-5.4. Baseline: 7 PASS / 27 FAIL. With skill: 28 PASS / 6 FAIL. Critical-only: baseline 2/17, with skill 13/17.",
+  "last_full_run_date": "2026-04-01",
+  "model_used_for_last_full_run": "gpt-5.4",
+  "reporting": {
+    "full_total": "Use all evals for the main exhaustive comparison.",
+    "critical_only": "Also report the subtotal for evals where importance = critical.",
+    "coverage_area_breakdown": "Also report pass counts grouped by coverage_area.",
+    "coverage_area_values": [
+      "fundamentals",
+      "architecture",
+      "app_core",
+      "frontend",
+      "ops"
+    ],
+    "importance_values": [
+      "critical",
+      "important",
+      "auxiliary"
+    ]
+  },
   "evals": [
     {
       "id": "toolchain-workflow",
       "section": "Toolchain",
+      "coverage_area": "fundamentals",
+      "importance": "critical",
       "claim": "nargo compiles/executes; bb handles proving, verification-key generation, and proof verification",
       "prompt": "Show me the step-by-step commands to compile a Noir circuit, generate a proof, and verify it. Start from a project that already has src/main.nr written.",
       "rubric": {
@@ -32,34 +54,176 @@
           "Uses snarkjs or a non-Barretenberg backend"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "install-order-version-check",
+      "section": "Toolchain",
+      "coverage_area": "ops",
+      "importance": "important",
+      "claim": "Check installed versions first, then install nargo before bb so bbup can match the installed nargo version",
+      "prompt": "I'm on a fresh machine and not sure what's already installed. How do I install Noir and bb safely?",
+      "rubric": {
+        "pass_criteria": [
+          "Checks existing versions first, such as 'nargo --version && bb --version'",
+          "Uses noirup to install nargo",
+          "Uses bbup to install bb",
+          "Installs nargo before bb",
+          "Explains that bbup reads the installed nargo version and installs a compatible bb"
+        ],
+        "fail_signals": [
+          "Blindly reinstalls without checking existing versions first",
+          "Installs bb before nargo",
+          "Uses made-up installers or package managers as the primary path",
+          "Does not explain why the install order matters"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "production-build-pipeline",
+      "section": "Toolchain",
+      "coverage_area": "fundamentals",
+      "importance": "critical",
+      "claim": "The production build pipeline stops at circuit artifact, VK, and Solidity verifier; browser proving happens later with NoirJS",
+      "prompt": "My app generates proofs in the browser. What is the minimal build pipeline from Noir source to a deployable Solidity verifier?",
+      "rubric": {
+        "pass_criteria": [
+          "Uses 'nargo compile'",
+          "Uses 'nargo execute'",
+          "Uses 'bb write_vk --oracle_hash keccak'",
+          "Uses 'bb write_solidity_verifier'",
+          "Explains that 'bb prove' is optional local smoke testing rather than the production proving path"
+        ],
+        "fail_signals": [
+          "Treats 'bb prove' as a required production build step",
+          "Omits 'nargo execute' or VK generation",
+          "Omits '--oracle_hash keccak'",
+          "Treats browser proof generation as part of verifier generation"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "FAIL"
+    },
+    {
+      "id": "contract-size-limit",
+      "section": "Toolchain",
+      "coverage_area": "ops",
+      "importance": "important",
+      "claim": "Generated HonkVerifier contracts can hit the 24KB EIP-170 limit; local and real deployment handling differ",
+      "prompt": "My generated HonkVerifier is too large to deploy. What should I do locally, and what should I do for real deployments?",
+      "rubric": {
+        "pass_criteria": [
+          "Mentions the 24KB EIP-170 contract size limit",
+          "Uses a local override such as 'anvil --code-size-limit 40960'",
+          "Mentions using a matching code-size-limit override in local Forge deployment/testing flow",
+          "Recommends enabling the Solidity optimizer for real deployments",
+          "Includes optimizer settings such as 'optimizer = true' and 'optimizer_runs = 200'"
+        ],
+        "fail_signals": [
+          "Says to deploy as-is with no size discussion",
+          "Only gives generic optimization advice with no contract-size-limit handling",
+          "Uses the local size-limit override as the real deployment answer",
+          "Never distinguishes local testing from real deployment"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "FAIL"
     },
     {
       "id": "hash-function-choice",
       "section": "Noir API Reference",
-      "claim": "Use the external Poseidon dependency and `poseidon::bn254::hash_1/hash_2`, not removed stdlib imports",
+      "coverage_area": "fundamentals",
+      "importance": "critical",
+      "claim": "Use the external Poseidon dependency and 'poseidon::poseidon::bn254::hash_1/hash_2', not removed stdlib imports",
       "prompt": "I'm building a ZK circuit in Noir that needs to hash values for a commitment scheme. Which hash function should I use and why? Show me the Noir code.",
       "rubric": {
         "pass_criteria": [
           "Recommends Poseidon (not SHA256 or Keccak) for in-circuit hashing",
           "Mentions circuit efficiency or gate-cost difference as the reason",
           "Says Poseidon is no longer in the Noir standard library and must be added as an external dependency, or shows that dependency explicitly",
-          "Uses `use poseidon::bn254::hash_1` or `use poseidon::bn254::hash_2`"
+          "Uses 'use poseidon::poseidon::bn254::hash_1' or 'use poseidon::poseidon::bn254::hash_2'"
         ],
         "fail_signals": [
           "Recommends SHA256 or Keccak for in-circuit use",
-          "Uses `std::hash::poseidon::bn254::*`",
+          "Uses 'std::hash::poseidon::bn254::*'",
           "Uses Poseidon2 or Pedersen as if they were drop-in replacements for the circuit hash",
           "No explanation for why Poseidon is preferred"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "pub-syntax",
+      "section": "What You Probably Got Wrong",
+      "coverage_area": "fundamentals",
+      "importance": "important",
+      "claim": "Noir 1.0 changed public input syntax from 'pub name: Field' to 'name: pub Field'",
+      "prompt": "Write the Noir function signature for a circuit that takes a private secret, a private nullifier, and a public merkle_root. Just the fn main() line with the parameters.",
+      "rubric": {
+        "pass_criteria": [
+          "Uses current Noir 1.0 syntax: 'merkle_root: pub Field' (pub after the colon)",
+          "secret and nullifier are plain 'Field' (no pub keyword)"
+        ],
+        "fail_signals": [
+          "Uses old syntax: 'pub merkle_root: Field' (pub before the parameter name)",
+          "Marks secret or nullifier as public"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "compiler-version-gotcha",
+      "section": "What You Probably Got Wrong",
+      "coverage_area": "fundamentals",
+      "importance": "important",
+      "claim": "compiler_version in Nargo.toml rejects beta strings like >=1.0.0-beta.3",
+      "prompt": "I'm setting up a new Noir project for Noir 1.0. What should I put in my Nargo.toml? Show me the full file.",
+      "rubric": {
+        "pass_criteria": [
+          "Does NOT include a compiler_version with a beta string like >=1.0.0-beta.3",
+          "Either omits compiler_version entirely or uses a stable version like >=0.36.0",
+          "Includes a [dependencies] section (or explains when to add one)"
+        ],
+        "fail_signals": [
+          "Sets compiler_version to a beta string (>=1.0.0-beta.3 or similar)",
+          "Uses a compiler_version format that would fail Nargo validation"
+        ]
+      },
+      "baseline": "PASS",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "verifier-solidity-compat",
+      "section": "What You Probably Got Wrong",
+      "coverage_area": "fundamentals",
+      "importance": "important",
+      "claim": "Generated HonkVerifier.sol requires pragma solidity >=0.8.21 and EVM version cancun",
+      "prompt": "I generated a Solidity verifier from my Noir circuit using bb write_solidity_verifier, but forge build fails with errors. My foundry.toml has solc_version = '0.8.17'. What's wrong?",
+      "rubric": {
+        "pass_criteria": [
+          "Identifies that the generated verifier requires pragma solidity >=0.8.21",
+          "Says to update solc_version to 0.8.21 or higher (for example 0.8.27)",
+          "Mentions the cancun EVM version requirement (evm_version = 'cancun' in foundry.toml)"
+        ],
+        "fail_signals": [
+          "Suggests only generic Solidity compilation troubleshooting",
+          "Does not mention the specific pragma or EVM version requirements",
+          "Says 0.8.17 should work fine"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     },
     {
       "id": "pattern-selection",
       "section": "Choosing the Right Pattern",
+      "coverage_area": "architecture",
+      "importance": "critical",
       "claim": "Do not overbuild: use a simple private proof unless you actually need anonymous membership from a shared set",
       "prompt": "I'm building a Noir app that proves a user's salary is over $100k without revealing the exact amount. Do I need a Merkle tree and a nullifier scheme?",
       "rubric": {
@@ -74,13 +238,86 @@
           "Does not distinguish private proofs from anonymous membership proofs"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "PASS",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "pattern-selection-anonymous-membership",
+      "section": "Choosing the Right Pattern",
+      "coverage_area": "architecture",
+      "importance": "critical",
+      "claim": "Anonymous shared-set actions require the commitment-nullifier pattern rather than a simple private proof",
+      "prompt": "I'm building anonymous voting where registered users should vote once per poll. Can I just use a simple private proof?",
+      "rubric": {
+        "pass_criteria": [
+          "Chooses the commitment-nullifier pattern rather than a simple private proof",
+          "Explains that the Merkle tree is the shared anonymity set",
+          "Explains that a nullifier or external_nullifier-scoped nullifier is needed to prevent double voting",
+          "Makes the poll-scoped nature explicit (for example pollId or external_nullifier)"
+        ],
+        "fail_signals": [
+          "Chooses a simple proof with no Merkle tree for this use case",
+          "Omits the nullifier or anti-replay mechanism",
+          "Does not explain the shared-set anonymity requirement"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "architecture-components",
+      "section": "App Architecture (Commitment-Nullifier Apps)",
+      "coverage_area": "architecture",
+      "importance": "critical",
+      "claim": "A working privacy app requires a circuit, app contract, generated verifier, offchain tree mirror, and frontend prover with distinct responsibilities",
+      "prompt": "What are the minimum subsystems of a Noir anonymous membership app, and what does each one do?",
+      "rubric": {
+        "pass_criteria": [
+          "Names the circuit and explains it proves note knowledge plus Merkle membership",
+          "Names the onchain app contract and explains it accepts inserts, checks roots/nullifiers, and executes the action",
+          "Names the generated verifier as a distinct deployed contract or interface boundary",
+          "Names the offchain tree mirror and explains it rebuilds the tree from events and produces leafIndex/siblings/root",
+          "Names the frontend prover and explains it creates or persists notes, executes Noir, generates proofs, serializes calldata, and submits the action"
+        ],
+        "fail_signals": [
+          "Treats the circuit and contract as the whole system",
+          "Omits the offchain tree mirror",
+          "Omits the generated verifier as a separate subsystem",
+          "Does not distinguish responsibilities across layers"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "artifact-handoff-layout",
+      "section": "Build Artifacts and Hand-off",
+      "coverage_area": "architecture",
+      "importance": "important",
+      "claim": "The circuit artifact, generated verifier, and frontend-consumed JSON should live in a stable explicit layout rather than ad hoc copying",
+      "prompt": "How should I organize Noir artifacts across circuits, contracts, and frontend in a monorepo?",
+      "rubric": {
+        "pass_criteria": [
+          "Gives a stable layout or equivalent for the compiled circuit artifact consumed by NoirJS",
+          "Places the generated verifier source in the contracts area",
+          "Places the frontend-consumed circuit JSON in a frontend-visible path such as public/",
+          "Warns against hand-copying artifacts ad hoc"
+        ],
+        "fail_signals": [
+          "Gives no artifact hand-off plan",
+          "Treats artifacts as one-off copied blobs with no stable location",
+          "Omits either the verifier source or the frontend-consumed circuit artifact"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     },
     {
       "id": "solidity-verifier-generation",
       "section": "Toolchain",
-      "claim": "`bb write_solidity_verifier` plus `--oracle_hash keccak` is required for an EVM-compatible verifier",
+      "coverage_area": "fundamentals",
+      "importance": "critical",
+      "claim": "'bb write_solidity_verifier' plus '--oracle_hash keccak' is required for an EVM-compatible verifier",
       "prompt": "How do I generate a Solidity verifier contract from my compiled Noir circuit so I can verify proofs onchain?",
       "rubric": {
         "pass_criteria": [
@@ -96,80 +333,161 @@
           "Omits '--oracle_hash keccak'"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "verifier-separate-deploy",
+      "section": "Build Artifacts and Hand-off",
+      "coverage_area": "ops",
+      "importance": "important",
+      "claim": "The generated verifier is a standalone contract - deploy it separately, pass the address to the app contract via constructor",
+      "prompt": "I have my generated HonkVerifier.sol from the Noir toolchain. How do I wire it into my privacy app contract? Show me the Foundry deploy script.",
+      "rubric": {
+        "pass_criteria": [
+          "Deploys the verifier as a standalone contract first",
+          "Passes the deployed verifier address to the app contract (via constructor or setter)",
+          "The app contract stores the verifier as an immutable or state variable and calls it for proof verification"
+        ],
+        "fail_signals": [
+          "Imports the verifier and inherits from it instead of deploying separately",
+          "Hardcodes the verifier logic inside the app contract",
+          "Does not deploy the verifier at all"
+        ]
+      },
+      "baseline": "PASS",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "verifier-abi-adapter",
+      "section": "Build Artifacts and Hand-off",
+      "coverage_area": "architecture",
+      "importance": "critical",
+      "claim": "The generated verifier ABI is the source of truth; if the app wants a stable interface, it needs a dedicated adapter or exact ABI mirroring",
+      "prompt": "My generated HonkVerifier ABI doesn't match a generic 'verify(bytes, bytes32[])' interface. How should I integrate it into my app contract?",
+      "rubric": {
+        "pass_criteria": [
+          "Says the generated verifier ABI is the source of truth",
+          "Explains that the app should either mirror that ABI exactly or wrap it in a dedicated adapter contract",
+          "Avoids assuming every verifier exposes a generic 'verify(bytes, bytes32[])' signature",
+          "Treats the adapter or wrapper as an interface boundary rather than rewriting verifier logic"
+        ],
+        "fail_signals": [
+          "Assumes the verifier always exposes 'verify(bytes, bytes32[])'",
+          "Suggests guessing the verifier signature from memory",
+          "Inlines or rewrites the verifier logic instead of adapting to the generated ABI"
+        ]
+      },
+      "baseline": "PASS",
+      "with_skill": "PASS"
     },
     {
       "id": "noir-circuit-implementation",
       "section": "Circuit Implementation",
+      "coverage_area": "app_core",
+      "importance": "critical",
       "claim": "A correct commitment-nullifier circuit needs proper inputs, Poseidon hashing, Merkle verification, and constrained indices",
       "prompt": "Write a complete Noir circuit (main.nr) for an anonymous voting system. The circuit should prove: the voter knows a secret that corresponds to a registered commitment in a Merkle tree, and output a nullifier hash to prevent double voting. Include the Merkle proof verification.",
       "rubric": {
         "pass_criteria": [
-          "Defines `fn main()` with private inputs for `nullifier`, `secret`, Merkle siblings/path, and position information",
-          "Marks public inputs using current Noir syntax (`name: pub Field`)",
-          "Uses `poseidon::bn254::hash_1` or `hash_2` from the external Poseidon dependency",
+          "Defines 'fn main()' with private inputs for nullifier, secret, Merkle siblings/path, and position information",
+          "Marks public inputs using current Noir syntax ('name: pub Field')",
+          "Uses 'poseidon::poseidon::bn254::hash_1' or 'hash_2' from the external Poseidon dependency",
           "Recomputes the commitment from private inputs",
           "Verifies the Merkle proof against the public root",
           "Computes and constrains the nullifier hash",
-          "Constrains Merkle indices or position bits to binary values"
+          "Either uses '[u1; depth]' for path indices or otherwise constrains indices/bits to binary values"
         ],
         "fail_signals": [
-          "Uses Circom syntax (`signal`, `template`, `component`)",
+          "Uses Circom syntax ('signal', 'template', 'component')",
           "Uses removed stdlib Poseidon imports, Pedersen, or made-up Field helpers",
           "Skips assert constraints so witness values can float",
           "Omits Merkle traversal logic"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "zk-kit-noir-merkle-helper",
+      "section": "Noir API Reference",
+      "coverage_area": "app_core",
+      "importance": "important",
+      "claim": "The recommended helper path for production Merkle verification is zk-kit.noir's binary_merkle_root with u1 indices",
+      "prompt": "Show me the recommended Noir code to verify a Poseidon Merkle proof using zk-kit.noir instead of writing the loop by hand.",
+      "rubric": {
+        "pass_criteria": [
+          "Adds or references the 'binary_merkle_root' dependency from zk-kit.noir",
+          "Imports 'binary_merkle_root::binary_merkle_root'",
+          "Uses 'use poseidon::poseidon::bn254::hash_2'",
+          "Calls 'binary_merkle_root' with the 5-argument shape: hasher, leaf, depth, indices, siblings",
+          "Uses '[u1; TREE_DEPTH]' or equivalent typed binary indices"
+        ],
+        "fail_signals": [
+          "Only writes a manual Merkle loop with no zk-kit.noir helper",
+          "Uses the wrong helper name or wrong argument order",
+          "Uses unconstrained Field indices with no binary enforcement",
+          "Uses removed stdlib Poseidon imports"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     },
     {
       "id": "action-binding",
       "section": "Production Hardening: Domain Separation and Action Binding",
-      "claim": "Action-scoped apps need domain separation and an action-specific nullifier binding such as `external_nullifier` / `pollId`",
-      "prompt": "I have an anonymous voting app with multiple polls. How should I compute nullifier hashes so one proof can't be reused across polls?",
+      "coverage_area": "app_core",
+      "importance": "critical",
+      "claim": "Action-scoped apps need domain separation and an action-specific nullifier binding such as external_nullifier or pollId",
+      "prompt": "I have an anonymous voting app with multiple polls. Show the Noir-side formula or code for computing the nullifier hash so a proof cannot be reused across polls, and explain which inputs are public vs private.",
       "rubric": {
         "pass_criteria": [
-          "Introduces an action-specific binding such as `external_nullifier`, `pollId`, recipient, or action id",
-          "Binds nullifier usage to that action-specific value",
+          "Introduces an action-specific binding such as 'external_nullifier' or 'pollId'",
+          "Gives a concrete in-circuit formula or code shape, such as 'hash_2([external_nullifier, nullifier])'",
+          "Explains that the action-specific value is public and the nullifier remains private",
           "Explains that this prevents replay across polls or actions",
           "Mentions domain separation between commitment hashing and nullifier hashing"
         ],
         "fail_signals": [
-          "Uses only `hash(nullifier)` with no action binding",
+          "Uses only 'hash(nullifier)' with no action binding",
           "Claims a nullifier alone prevents cross-poll replay",
+          "Says only 'include the poll ID somehow' with no formula or code shape",
+          "Binds the action only offchain or in app prose instead of in-circuit",
           "Does not mention domain separation or action scoping"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "FAIL"
     },
     {
       "id": "note-lifecycle",
       "section": "Note Lifecycle",
+      "coverage_area": "app_core",
+      "importance": "critical",
       "claim": "A working app must persist the privacy note and enough metadata to reconstruct proof inputs later",
       "prompt": "What exactly must my frontend save when a user deposits a Noir privacy note so it can later generate a proof?",
       "rubric": {
         "pass_criteria": [
-          "Saves `nullifier`, `secret`, and `commitment`",
+          "Saves 'nullifier', 'secret', and 'commitment'",
           "Saves chain/contract metadata and tree depth, or the equivalent proving context",
-          "Persists `leafIndex` or explicitly says it must be recovered from the insert event",
+          "Persists 'leafIndex' or explicitly says it must be recovered from the insert event",
           "Says the tree/proof path is later reconstructed from events or an offchain tree mirror",
           "Explains that losing the note means the user cannot later prove or act"
         ],
         "fail_signals": [
           "Says to save only the commitment",
-          "Ignores `leafIndex` and event replay entirely",
+          "Ignores 'leafIndex' and event replay entirely",
           "Assumes the contract alone can reconstruct the full witness"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     },
     {
       "id": "contract-state-model",
       "section": "Contract State Model",
+      "coverage_area": "app_core",
+      "importance": "critical",
       "claim": "The contract needs explicit insert events, nullifier storage, and an accepted-root policy the client can build against",
       "prompt": "What state and events should my Solidity app contract expose for a Noir membership app?",
       "rubric": {
@@ -178,66 +496,48 @@
           "Includes an insert event with commitment, leaf index, and resulting root",
           "Makes the accepted-root policy explicit (recent root history, or current-root-only with an explicit warning)",
           "Says the client rebuilds the tree from events",
-          "Verifies proofs before performing side effects"
+          "Says proofs are verified before performing side effects or state mutations"
         ],
         "fail_signals": [
           "Only stores a single Merkle root with no policy discussion",
           "Omits the insert event or leaf index",
           "Omits nullifier storage/checks",
-          "Never explains how the client gets Merkle siblings"
+          "Never explains how the client gets Merkle siblings",
+          "Does not say proof verification gates side effects"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "FAIL"
     },
     {
-      "id": "noirjs-frontend",
-      "section": "Frontend Proof Generation (NoirJS)",
-      "claim": "Browser proving uses `@noir-lang/noir_js` plus `@aztec/bb.js` with `UltraHonkBackend`",
-      "prompt": "Show me how to generate a Noir ZK proof in the browser using JavaScript/TypeScript. Include the imports, initialization, and proof generation flow.",
+      "id": "onchain-merkle-tree",
+      "section": "Onchain Commitment Storage (LeanIMT)",
+      "coverage_area": "app_core",
+      "importance": "critical",
+      "claim": "Use audited LeanIMT tooling plus a matching client mirror instead of hand-rolling the commitment tree",
+      "prompt": "Build a Noir ZK membership proof app on Ethereum. How do you store commitments onchain?",
       "rubric": {
         "pass_criteria": [
-          "Imports from '@noir-lang/noir_js'",
-          "Imports `UltraHonkBackend` from '@aztec/bb.js'",
-          "Creates `UltraHonkBackend` using the circuit bytecode",
-          "Uses `noir.execute(inputs)` to generate the witness",
-          "Uses `backend.generateProof(witness)` to create the proof",
-          "Identifies the proof payload as `Uint8Array` plus public inputs"
+          "Uses LeanIMT from '@zk-kit/lean-imt.sol' rather than a custom Merkle implementation",
+          "Mentions the PoseidonT3 dependency",
+          "Uses '@zk-kit/lean-imt' client-side to mirror the tree",
+          "Mentions generating Merkle siblings from the mirrored tree using 'generateProof(leafIndex)' or the equivalent leaf-indexed proof path"
         ],
         "fail_signals": [
-          "Imports from '@noir-lang/backend_barretenberg'",
-          "Uses `UltraPlonkBackend` as the primary path",
-          "Uses `noir.generateFinalProof()`",
-          "Uses snarkjs in the browser path"
+          "Implements a custom Merkle tree contract from scratch",
+          "Uses an unaudited or made-up library",
+          "Does not connect the onchain tree to an offchain mirror/proof generator",
+          "Omits PoseidonT3 or the client mirror entirely"
         ]
       },
-      "baseline": null,
-      "with_skill": null
-    },
-    {
-      "id": "serialization-boundary",
-      "section": "Serialization Boundary",
-      "claim": "The proof boundary must normalize bytes and field values before calling Solidity, and the generated verifier ABI is the source of truth",
-      "prompt": "Show me how to safely send a NoirJS proof from the browser to Solidity.",
-      "rubric": {
-        "pass_criteria": [
-          "Converts `Uint8Array` proof bytes to `0x...` hex before RPC submission",
-          "Normalizes public inputs to 32-byte hex / `bytes32` values",
-          "Preserves the exact circuit/verifier public-input order",
-          "Says the generated verifier ABI is the source of truth"
-        ],
-        "fail_signals": [
-          "Passes raw `Uint8Array` directly as if it were already RPC-safe",
-          "Assumes any verifier exposes a generic `verify(bytes, bytes32[])` signature",
-          "Ignores public-input normalization or ordering"
-        ]
-      },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "FAIL"
     },
     {
       "id": "hash-parity",
       "section": "Hash Parity Across Circuit, Tree, and Contract",
+      "coverage_area": "app_core",
+      "importance": "critical",
       "claim": "Circuit, offchain tree mirror, and onchain tree must use the same hash algorithm and input ordering",
       "prompt": "How do I keep my Noir circuit, offchain Merkle tree, and onchain tree contract compatible?",
       "rubric": {
@@ -252,19 +552,21 @@
           "Does not recommend parity testing"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     },
     {
       "id": "chain-compatibility",
       "section": "Chain Compatibility",
+      "coverage_area": "app_core",
+      "importance": "important",
       "claim": "Noir/Barretenberg verifiers work on mainstream EVM chains with BN254 precompiles, including zkSync ERA with caveats",
       "prompt": "I want to deploy a Noir-based privacy app. Which EVM chains can I deploy the Solidity verifier to? Are there any chains where it won't work?",
       "rubric": {
         "pass_criteria": [
           "Lists mainstream EVM chains as compatible (Ethereum, Optimism, Arbitrum, Base)",
           "Identifies BN254 precompiles as the requirement",
-          "Treats zkSync ERA as compatible but notes caveats such as higher gas / smart-contract precompile implementation",
+          "Treats zkSync ERA as compatible but notes caveats such as higher gas or smart-contract precompile implementation",
           "Warns about Polygon zkEVM being shut down or otherwise not a target"
         ],
         "fail_signals": [
@@ -274,42 +576,70 @@
           "Does not mention precompile requirements"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     },
     {
-      "id": "onchain-merkle-tree",
-      "section": "Onchain Commitment Storage (LeanIMT)",
-      "claim": "Use audited LeanIMT tooling instead of hand-rolling the commitment tree",
-      "prompt": "Build a Noir ZK membership proof app on Ethereum. How do you store commitments onchain?",
+      "id": "sender-privacy",
+      "section": "What You Probably Got Wrong",
+      "coverage_area": "app_core",
+      "importance": "important",
+      "claim": "ZK proofs hide the link between commitment and nullifier, but msg.sender is public. Same wallet committing and acting is trivially linkable.",
+      "prompt": "I built a Noir anonymous voting app. Users commit to a Merkle tree from their wallet, then later submit a ZK proof to vote from the same wallet. Is this actually anonymous?",
       "rubric": {
         "pass_criteria": [
-          "Uses LeanIMT from '@zk-kit/lean-imt.sol' rather than a custom Merkle implementation",
-          "Mentions the PoseidonT3 dependency",
-          "Uses '@zk-kit/lean-imt' client-side to mirror the tree and generate proofs from leaf indices"
+          "Identifies that msg.sender is public and links the committing wallet to the voting wallet",
+          "Explains that using the same wallet for both commit and act breaks the anonymity the ZK proof provides",
+          "Recommends using a different wallet for voting (burner wallet, relayer, or ERC-4337 paymaster)"
         ],
         "fail_signals": [
-          "Implements a custom Merkle tree contract from scratch",
-          "Uses an unaudited or made-up library",
-          "Does not connect the onchain tree to an offchain mirror/proof generator"
+          "Says the ZK proof makes the vote anonymous without qualification",
+          "Does not mention msg.sender or wallet linkability",
+          "Treats the app as fully private because the circuit hides the secret"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "PASS",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "simple-proof-end-to-end",
+      "section": "Choosing the Right Pattern",
+      "coverage_area": "architecture",
+      "importance": "important",
+      "claim": "A simple private proof flow should stay simple: no Merkle tree, no nullifier, but still include verifier generation, proof generation, serialization, and onchain verification",
+      "prompt": "Outline the minimal end-to-end flow for a simple Noir threshold-proof app that proves a private value exceeds a threshold and does NOT use an anonymity set.",
+      "rubric": {
+        "pass_criteria": [
+          "Does not introduce a Merkle tree or nullifier",
+          "Uses a circuit that proves the threshold condition over private data",
+          "Includes Solidity verifier generation with '--oracle_hash keccak'",
+          "Includes proof generation via NoirJS or backend proving",
+          "Includes proof/public-input serialization before onchain verification"
+        ],
+        "fail_signals": [
+          "Introduces the commitment-nullifier pattern for this use case",
+          "Stops at circuit code with no verifier/proof/onchain flow",
+          "Omits verifier generation or proof serialization"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     },
     {
       "id": "end-to-end-membership-flow",
       "section": "Testing the App Core",
+      "coverage_area": "app_core",
+      "importance": "critical",
       "claim": "A correct answer must connect note creation, insert events, tree reconstruction, proof generation, serialization, and nullifier-based replay protection",
-      "prompt": "Outline the minimal end-to-end flow for a Noir anonymous membership app from commitment insertion to a successful `act()` call.",
+      "prompt": "Outline the minimal end-to-end flow for a Noir anonymous membership app from commitment insertion to a successful 'act()' call.",
       "rubric": {
         "pass_criteria": [
-          "Generates and saves the note (`nullifier`, `secret`, `commitment`)",
-          "Inserts the commitment onchain and captures `leafIndex` / root from the insert event",
+          "Generates and saves the note ('nullifier', 'secret', 'commitment')",
+          "Inserts the commitment onchain and captures 'leafIndex' / root from the insert event",
           "Rebuilds the Merkle tree offchain and derives siblings for the stored leaf index",
           "Runs Noir execution plus proof generation",
           "Serializes the proof and public inputs correctly before contract submission",
-          "Submits the action and explains that the nullifier prevents replay / double action"
+          "Submits the action and explains that the nullifier prevents replay or double action"
         ],
         "fail_signals": [
           "Stops at circuit code or verifier deployment",
@@ -318,23 +648,218 @@
           "Omits nullifier replay protection"
         ]
       },
-      "baseline": null,
-      "with_skill": null
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "noirjs-frontend",
+      "section": "Frontend Proof Generation (NoirJS)",
+      "coverage_area": "frontend",
+      "importance": "critical",
+      "claim": "Browser proving uses '@noir-lang/noir_js' plus '@aztec/bb.js' with Barretenberg and UltraHonkBackend",
+      "prompt": "Show me how to generate a Noir ZK proof in the browser using JavaScript/TypeScript. Include the imports, initialization, and proof generation flow.",
+      "rubric": {
+        "pass_criteria": [
+          "Imports from '@noir-lang/noir_js'",
+          "Imports 'Barretenberg' and 'UltraHonkBackend' from '@aztec/bb.js'",
+          "Creates a Barretenberg instance before backend initialization",
+          "Creates 'UltraHonkBackend' using the circuit bytecode plus the Barretenberg instance",
+          "Uses 'noir.execute(inputs)' to generate the witness",
+          "Uses 'backend.generateProof(witness)' to create the proof",
+          "Identifies the proof payload as proof bytes ('Uint8Array') plus public inputs"
+        ],
+        "fail_signals": [
+          "Imports from '@noir-lang/backend_barretenberg'",
+          "Uses 'UltraPlonkBackend' as the primary path",
+          "Uses 'noir.generateFinalProof()'",
+          "Uses snarkjs in the browser path",
+          "Skips Barretenberg initialization entirely"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "wasm-frontend-config",
+      "section": "Frontend Proof Generation (NoirJS)",
+      "coverage_area": "frontend",
+      "importance": "important",
+      "claim": "NoirJS uses WASM and requires specific Vite configuration: node polyfills plus esnext target",
+      "prompt": "I'm building a React app with Vite that generates Noir proofs in the browser. When I import @noir-lang/noir_js, I get WASM-related build errors. How do I configure Vite to work with NoirJS?",
+      "rubric": {
+        "pass_criteria": [
+          "Adds vite-plugin-node-polyfills (or equivalent node polyfills plugin)",
+          "Sets build target and/or optimizeDeps target to 'esnext' for top-level await support",
+          "Mentions that NoirJS uses WASM which requires these specific configurations"
+        ],
+        "fail_signals": [
+          "Gives only generic WASM advice without Noir-specific configuration",
+          "Does not mention node polyfills",
+          "Does not address top-level await or esnext target"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "nextjs-wasm-config",
+      "section": "Frontend Proof Generation (NoirJS)",
+      "coverage_area": "frontend",
+      "importance": "important",
+      "claim": "Next.js and Scaffold-ETH 2 need asyncWebAssembly, client-only rendering, and circuit loading from public/ via fetch()",
+      "prompt": "I'm using Next.js or Scaffold-ETH 2 for browser-side Noir proving. What config and loading pattern do I need?",
+      "rubric": {
+        "pass_criteria": [
+          "Enables webpack asyncWebAssembly",
+          "Uses client-only rendering such as 'use client' and/or 'dynamic(..., { ssr: false })'",
+          "Loads the circuit JSON from 'public/' via 'fetch()'",
+          "Explains that SSR or cross-package JSON imports are the problem for this setup"
+        ],
+        "fail_signals": [
+          "Gives only generic Next.js advice",
+          "Does not mention asyncWebAssembly",
+          "Does not make the Noir component client-only",
+          "Imports the circuit artifact directly from another package with no warning"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "serialization-boundary",
+      "section": "Serialization Boundary",
+      "coverage_area": "frontend",
+      "importance": "critical",
+      "claim": "The proof boundary must normalize bytes and field values before calling Solidity, and the generated verifier ABI is the source of truth",
+      "prompt": "Show me how to safely send a NoirJS proof from the browser to Solidity.",
+      "rubric": {
+        "pass_criteria": [
+          "Converts 'Uint8Array' proof bytes to '0x...' hex before RPC submission",
+          "Normalizes public inputs to 32-byte hex / 'bytes32' values",
+          "Preserves the exact circuit/verifier public-input order",
+          "Says the generated verifier ABI is the source of truth"
+        ],
+        "fail_signals": [
+          "Passes raw 'Uint8Array' directly as if it were already RPC-safe",
+          "Assumes any verifier exposes a generic 'verify(bytes, bytes32[])' signature",
+          "Ignores public-input normalization or ordering",
+          "Uses 'Buffer' as the browser-side solution"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "small-domain-bruting",
+      "section": "Circuit Security Checklist",
+      "coverage_area": "app_core",
+      "importance": "important",
+      "claim": "If vote is 0 or 1, hash(0) and hash(1) are trivially brutable as public outputs - add a salt",
+      "prompt": "My anonymous voting circuit takes a private vote (0 or 1) and outputs hash(vote) as a public input so the contract can tally votes. A reviewer says there's a privacy issue. What is it?",
+      "rubric": {
+        "pass_criteria": [
+          "Identifies that hash(0) and hash(1) are only two possible values, so anyone can precompute both and determine the vote",
+          "Explains this is a small-domain brute force attack",
+          "Recommends adding a random salt or blinding factor to the hash input"
+        ],
+        "fail_signals": [
+          "Says the hash hides the vote sufficiently",
+          "Does not identify the brute-force risk for binary-domain values",
+          "Suggests the privacy issue is something else entirely"
+        ]
+      },
+      "baseline": "PASS",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "failure-path-tests",
+      "section": "Testing the App Core",
+      "coverage_area": "app_core",
+      "importance": "important",
+      "claim": "A real zk app test plan must include concrete negative-path tests across root handling, siblings, nullifiers, and serialization/order boundaries",
+      "prompt": "What negative tests should a Noir anonymous membership app have beyond the happy path?",
+      "rubric": {
+        "pass_criteria": [
+          "Includes reused nullifier failure",
+          "Includes wrong root failure",
+          "Includes wrong sibling ordering or wrong Merkle path failure",
+          "Includes stale-root failure or explicit root-policy failure",
+          "Includes mismatched public input order or serialization failure"
+        ],
+        "fail_signals": [
+          "Lists only happy-path tests",
+          "Gives only generic 'invalid proof should fail' with no concrete cases",
+          "Omits either nullifier, Merkle-path/root, or serialization-order failures"
+        ]
+      },
+      "baseline": "PASS",
+      "with_skill": "PASS"
+    },
+    {
+      "id": "real-verifier-vs-mock",
+      "section": "Testing the App Core",
+      "coverage_area": "ops",
+      "importance": "important",
+      "claim": "MockVerifier is for tests only; production deploy scripts and real verification tests must use the generated HonkVerifier",
+      "prompt": "In Foundry, can I use a MockVerifier in my deployment script for a Noir app?",
+      "rubric": {
+        "pass_criteria": [
+          "Says mock verifiers are test-only",
+          "Says deployment scripts and production wiring must use the real generated HonkVerifier",
+          "If tests are discussed, distinguishes mock-based unit tests from at least one real-verifier integration test"
+        ],
+        "fail_signals": [
+          "Says MockVerifier is fine for deployment or production-like wiring",
+          "Does not distinguish test-only use from real deployment",
+          "Never mentions the generated HonkVerifier"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "FAIL"
+    },
+    {
+      "id": "ai-agent-tooling",
+      "section": "AI Agent Tooling",
+      "coverage_area": "ops",
+      "importance": "auxiliary",
+      "claim": "Agents that need live Noir docs beyond the skill should use noir-mcp-server",
+      "prompt": "If an agent needs live Noir docs and examples beyond this skill, what should it use and how should it set it up?",
+      "rubric": {
+        "pass_criteria": [
+          "Names 'noir-mcp-server'",
+          "Gives the setup command 'claude mcp add noir-mcp -- npx @critesjosh/noir-mcp-server@latest'",
+          "Mentions '/reload-plugins'",
+          "Describes that it indexes Noir compiler/docs/examples or community libraries"
+        ],
+        "fail_signals": [
+          "Only suggests generic web search or browsing docs manually",
+          "Does not mention noir-mcp-server",
+          "Omits setup entirely"
+        ]
+      },
+      "baseline": "FAIL",
+      "with_skill": "PASS"
     }
   ],
   "historical_notes": [
     {
-      "note": "Earlier benchmark iterations focused mostly on syntax/toolchain drift. This revision adds app-core evals because a model can now write a plausible circuit yet still fail to build a working privacy app."
+      "note": "Earlier benchmark iterations focused mostly on syntax/toolchain drift. This revision keeps the app-core evals and adds the remaining skill sections so the suite covers the whole skill rather than only the highest-value failures."
     },
     {
-      "note": "Real-vs-mock verifier deployment and sender unlinkability were previously observed as relatively strong baseline behaviors, so they were removed from the main suite to make room for higher-value app-integration evals."
+      "note": "2026-03-31 scores were produced against the earlier 21-eval suite and are historical only. They are not directly comparable to the exhaustive 34-eval suite introduced on 2026-04-01."
+    },
+    {
+      "note": "The benchmark now tracks 'coverage_area' and 'importance' per eval so model comparisons can be reported as full-suite totals, critical-only subtotals, and coverage-area breakdowns."
+    },
+    {
+      "note": "The benchmark currently mirrors the import path taught by the skill ('poseidon::poseidon::bn254::*'). If the skill changes, update the benchmark and rerun the full suite in the same change."
     }
   ],
   "scoring": {
-    "baseline_pass_and_skill_pass": "REDUNDANT — the base model already knows this. Consider trimming the skill if this remains true over time.",
-    "baseline_fail_and_skill_pass": "VALUABLE — the skill is correcting a real failure mode.",
-    "baseline_fail_and_skill_fail": "BROKEN — the skill discusses this topic but still does not fix the model behavior.",
-    "baseline_pass_and_skill_fail": "REGRESSION — the skill made the model worse. Investigate immediately."
+    "baseline_pass_and_skill_pass": "REDUNDANT - the base model already knows this. Consider trimming the skill if this remains true over time.",
+    "baseline_fail_and_skill_pass": "VALUABLE - the skill is correcting a real failure mode.",
+    "baseline_fail_and_skill_fail": "BROKEN - the skill discusses this topic but still does not fix the model behavior.",
+    "baseline_pass_and_skill_fail": "REGRESSION - the skill made the model worse. Investigate immediately."
   },
-  "summary": "Benchmark expanded on 2026-03-31 with new evals for pattern selection, note lifecycle, contract state, action binding, serialization, hash parity, and end-to-end app flow. Scores are intentionally reset and should be rerun against the current skill."
+  "summary": "2026-04-01 exhaustive run on gpt-5.4, judged strictly with gpt-5.4: baseline 7/34 PASS, with skill 28/34 PASS. Critical-only: baseline 2/17, with skill 13/17. Coverage: fundamentals 1/7 -> 6/7; architecture 2/6 -> 6/6; app_core 3/12 -> 9/12; frontend 0/4 -> 4/4; ops 1/5 -> 3/5. Raw outputs: /tmp/noir-benchmark-gpt54-exhaustive-2026-04-01."
 }

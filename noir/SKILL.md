@@ -524,8 +524,8 @@ const inputs = {
 };
 const { witness } = await noir.execute(inputs);
 
-// 3. Generate proof
-const proof = await backend.generateProof(witness);
+// 3. Generate proof — { keccak: true } matches --oracle_hash keccak used for the verifier
+const proof = await backend.generateProof(witness, { keccak: true });
 // proof.proof is Uint8Array — the raw proof bytes
 // proof.publicInputs is string[] — the public inputs
 
@@ -548,7 +548,7 @@ const tx = await contract.act(
 
 - `proof.proof` is `Uint8Array` — serialize it to `0x...` before sending over RPC
 - `proof.publicInputs` are strings — normalize them to 32-byte hex before comparing or passing to Solidity
-- EVM compatibility is handled by `--oracle_hash keccak` when generating the verification key (see Build Pipeline above), not during proof generation
+- EVM compatibility requires `--oracle_hash keccak` on CLI commands (see Build Pipeline above) AND `{ keccak: true }` in `generateProof()` — both must be set or you get serialization mismatches
 - Proof generation takes 5-30 seconds in browser depending on circuit size
 - Cleanup: call `bb.destroy()` when done
 - The generated verifier ABI is the source of truth; if your app uses an adapter, make the adapter match that ABI, not a guessed interface
