@@ -1,0 +1,113 @@
+:root {
+  --bg: #1a1208;
+  --fg: #e8d5b0;
+  --dim: #8a7a5f;
+  --accent: #ffb000;
+  --border: #2e2410;
+  --hover: #251c0c;
+  --green: #ffb000;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.ascii {
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 1.15;
+  white-space: pre;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.5px;
+}
+.tagline {
+  color: var(--fg);
+  font-size: 16px;
+  margin-bottom: 1.5rem;
+}
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 15px;
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 2.5rem;
+}
+.hero-btn:hover { background: var(--hover); }
+h2 {
+  color: var(--accent);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 2.5rem 0 1.25rem 0;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+.skill {
+  margin-bottom: 1.25rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 3px;
+  transition: background 0.1s;
+}
+.skill:hover { background: var(--hover); }
+.skill-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.skill-desc {
+  color: var(--dim);
+  font-size: 13px;
+  margin: 0.3rem 0 0.5rem 0;
+}
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.copy-btn:hover { border-color: var(--green); background: rgba(158, 206, 106, 0.05); }
+.copy-btn.copied { border-color: var(--green); color: var(--green); }
+.copy-btn svg, .hero-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.section-text { color: var(--dim); font-size: 13px; }
+.footer {
+  color: var(--dim);
+  font-size: 12px;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
