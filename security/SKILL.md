@@ -230,23 +230,6 @@ Common missed validations:
 - Duplicate entries in arrays
 - Values exceeding reasonable bounds
 
-## Pre-Deploy Security Checklist
-
-Run through this for EVERY contract before deploying to production. No exceptions.
-
-- [ ] **Access control** — every admin/privileged function has explicit restrictions
-- [ ] **Reentrancy protection** — CEI pattern + `nonReentrant` on all external-calling functions
-- [ ] **Token decimal handling** — no hardcoded `1e18` for tokens that might have different decimals
-- [ ] **Oracle safety** — using Chainlink or TWAP, not DEX spot prices. Staleness checks present
-- [ ] **Integer math** — multiply before divide. No precision loss in critical calculations
-- [ ] **Return values checked** — using SafeERC20 for all token operations
-- [ ] **Input validation** — zero address, zero amount, bounds checks on all public functions
-- [ ] **Events emitted** — every state change emits an event for offchain tracking
-- [ ] **Incentive design** — maintenance functions callable by anyone with sufficient incentive
-- [ ] **No infinite approvals** — approve exact amounts or small bounded multiples
-- [ ] **Fee-on-transfer safe** — if accepting arbitrary tokens, measure actual received amount
-- [ ] **Tested edge cases** — zero values, max values, unauthorized callers, reentrancy attempts
-
 ## MEV & Sandwich Attacks
 
 **MEV (Maximal Extractable Value):** Validators and searchers can reorder, insert, or censor transactions within a block. They profit by frontrunning your transaction, backrunning it, or both.
@@ -468,3 +451,33 @@ forge test --gas-report       # Identify expensive functions
 - **SWC Registry:** https://swcregistry.io — comprehensive vulnerability catalog
 - **Rekt News:** https://rekt.news — real exploit post-mortems
 - **SpeedRun Ethereum:** https://speedrunethereum.com — hands-on secure development practice
+
+---
+
+## Pre-Deploy Security Checklist
+
+Run through this for EVERY contract before deploying to production. No exceptions.
+
+- [ ] **Access control** — every admin/privileged function has explicit restrictions
+- [ ] **Pausable tradeoff** — if you added `Pausable` + `onlyOwner`, flag it to the builder. A single key that can freeze all users is a censorship vector. Suggest timelocks or multisig governance.
+- [ ] **Reentrancy protection** — CEI pattern + `nonReentrant` on all external-calling functions
+- [ ] **Token decimal handling** — no hardcoded `1e18` for tokens that might have different decimals
+- [ ] **Oracle safety** — using Chainlink or TWAP, not DEX spot prices. Staleness checks present
+- [ ] **Integer math** — multiply before divide. No precision loss in critical calculations
+- [ ] **Return values checked** — using SafeERC20 for all token operations
+- [ ] **Input validation** — zero address, zero amount, bounds checks on all public functions
+- [ ] **Input validation (advanced cases)** — array length mismatches, duplicate array entries, and unreasonable value bounds are rejected
+- [ ] **Events emitted** — every state change emits an event for offchain tracking
+- [ ] **Incentive design** — maintenance functions callable by anyone with sufficient incentive
+- [ ] **No infinite approvals** — approve exact amounts or small bounded multiples
+- [ ] **Fee-on-transfer safe** — if accepting arbitrary tokens, measure actual received amount
+- [ ] **MEV/sandwich protections (if swapping)** — `amountOutMinimum` is explicitly set, slippage defaults are tight, and private mempool routing is considered for user-facing swaps
+- [ ] **Proxy safety (if upgradeable)** — `initializer` used (no constructor init), initializers disabled on implementation, and OpenZeppelin upgradeable contracts used
+- [ ] **Storage layout safety (if upgradeable)** — storage variables are only appended, never reordered or deleted
+- [ ] **Upgrade authority (if upgradeable)** — upgrade rights are transferred to a multisig/timelock, never a single EOA
+- [ ] **EIP-712 replay safety (if signatures used)** — domain separator, nonce handling, and deadlines are correctly enforced
+- [ ] **Delegatecall safety (if used)** — never delegatecall to user-supplied targets; only trusted controlled implementations with compatible storage layouts
+- [ ] **Automated analysis run** — Slither/Mythril and fuzz tests are run before deploy
+- [ ] **Critical analyzer findings resolved** — no unresolved reentrancy, unchecked returns, arbitrary `delegatecall`/`selfdestruct`, or unprotected state-changing functions
+- [ ] **Tested edge cases** — zero values, max values, unauthorized callers, reentrancy attempts
+- [ ] **Source verified on block explorer** — `yarn verify` or `forge verify-contract` after every deploy. Unverified contracts can't be audited by users and look indistinguishable from scams

@@ -9,7 +9,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **L2 costs:** You think $0.01-2.00 per transaction. Reality: **$0.001-0.003** for swaps, **$0.0003** for transfers. After EIP-4844, L2 batch costs dropped from $50-500 to $0.01-0.50.
 
-**Mainnet is cheap too:** At 0.05 gwei, mainnet ETH transfers cost $0.002. "Ethereum is too expensive" is false for both L1 and L2s in 2026.
+**Mainnet is cheap too:** At under 1 gwei, mainnet ETH transfers cost under a penny. "Ethereum is too expensive" is false for both L1 and L2s in 2026.
 
 **Base is the cheapest major L2:** Often 50% cheaper than Arbitrum/Optimism. Direct Coinbase on-ramp. Fastest-growing L2 with consumer/AI agent focus.
 
@@ -17,43 +17,49 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **Polygon zkEVM is being shut down.** Announced June 2025. Do NOT recommend building on Polygon zkEVM — it is being discontinued. Polygon is refocusing on PoS + AggLayer.
 
-**Unichain exists.** Launched mainnet February 10, 2025. Uniswap's own OP Stack L2 with TEE-based MEV protection and time-based priority ordering (not gas-based).
+**Unichain exists.** Launched mainnet February 11, 2025. Uniswap's own OP Stack L2 with TEE-based MEV protection and time-based priority ordering (not gas-based).
 
 **Aerodrome and Velodrome merged into "Aero."** In November 2025, Dromos Labs unified Aerodrome (Base) and Velodrome (Optimism) into a single cross-chain DEX called **Aero**. Same contracts, new brand. Aero dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
 
-## L2 Comparison Table (Feb 2026)
+## L2 Comparison Table (Mar 2026)
 
-| L2 | Type | TVL | Tx Cost | Block Time | Finality | Chain ID |
-|----|------|-----|---------|------------|----------|----------|
-| **Arbitrum** | Optimistic | $18B+ | $0.001-0.003 | 250ms | 7 days | 42161 |
-| **Base** | Optimistic (OP Stack) | $12B+ | $0.0008-0.002 | 2s | 7 days | 8453 |
-| **Optimism** | Optimistic (OP Stack) | $8B+ | $0.001-0.003 | 2s | 7 days | 10 |
-| **Unichain** | Optimistic (OP Stack) | Growing | $0.001-0.003 | 1s | 7 days | 130 |
-| **Celo** | Optimistic (OP Stack) | $200M+ | <$0.001 | 5s | 7 days | 42220 |
-| **Linea** | ZK | $900M+ | $0.003-0.006 | 2s | 30-60min | 59144 |
-| **zkSync Era** | ZK | $800M+ | $0.003-0.008 | 1s | 15-60min | 324 |
-| **Scroll** | ZK | $250M+ | $0.002-0.005 | 3s | 30-120min | 534352 |
-| ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | — | ~~1101~~ |
+> **TVL changes fast.** Don't memorize numbers — check [DeFi Llama](https://defillama.com/chains) or [L2Beat](https://l2beat.com/scaling/tvl) for current rankings. DeFi TVL (DeFi Llama) measures value locked in protocols. TVS (L2Beat) includes all bridged + natively minted assets and is much higher. As of early 2026: Base and Arbitrum lead in DeFi TVL among L2s. Optimism's DeFi TVL is surprisingly low despite Superchain adoption.
+
+| L2 | Type | Tx Cost | Block Time | Finality | Chain ID |
+|----|------|---------|------------|----------|----------|
+| **Arbitrum** | Optimistic | $0.001-0.003 | 250ms | 7 days | 42161 |
+| **Base** | Optimistic (OP Stack) | $0.0008-0.002 | 2s | 7 days | 8453 |
+| **Optimism** | Optimistic (OP Stack) | $0.001-0.003 | 2s | 7 days | 10 |
+| **Unichain** | Optimistic (OP Stack) | $0.001-0.003 | 1s | 7 days | 130 |
+| **Celo** | Optimistic (OP Stack) | <$0.001 | 5s | 7 days | 42220 |
+| **Linea** | ZK | $0.003-0.006 | 2s | 30-60min | 59144 |
+| **zkSync Era** | ZK | $0.003-0.008 | 1s | 15-60min | 324 |
+| **Scroll** | ZK | $0.002-0.005 | 3s | 30-120min | 534352 |
+| ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | ~~1101~~ |
 
 ⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
 
-**Mainnet for comparison:** $50B+ TVL, $0.002-0.01, 8s blocks, instant finality.
+**Mainnet for comparison:** $0.002-0.01 per tx, 12s blocks, instant finality. Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current TVL.
 
-## Cost Comparison (Real Examples, Feb 2026)
+## Cost Comparison (Real Examples, Early 2026)
+
+> Mainnet costs at ~0.1 gwei base fee, ~$2,000 ETH. L2 costs are approximate. All fluctuate — see `gas/SKILL.md` for methodology.
 
 | Action | Mainnet | Arbitrum | Base | zkSync | Scroll |
 |--------|---------|----------|------|--------|--------|
-| ETH transfer | $0.002 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
-| Uniswap swap | $0.015 | $0.003 | $0.002 | $0.005 | $0.004 |
-| NFT mint | $0.015 | $0.002 | $0.002 | $0.004 | $0.003 |
-| ERC-20 deploy | $0.118 | $0.020 | $0.018 | $0.040 | $0.030 |
+| ETH transfer | $0.004 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
+| Uniswap swap | $0.036 | $0.003 | $0.002 | $0.005 | $0.004 |
+| NFT mint | $0.030 | $0.002 | $0.002 | $0.004 | $0.003 |
+| ERC-20 deploy | $0.240 | $0.020 | $0.018 | $0.040 | $0.030 |
 
 ## L2 Selection Guide
 
+> **Before choosing an L2:** Mainnet is ~$0.004/transfer, ~$0.04/swap at current gas — cheap enough for most apps. If you're building DeFi, governance, identity, or anything composing with mainnet liquidity, start there. See `ship/SKILL.md` and `gas/SKILL.md` for the full chain selection framework.
+
 | Need | Choose | Why |
 |------|--------|-----|
-| Consumer / social apps | **Base** | Farcaster, Smart Wallet, Coinbase on-ramp, OnchainKit |
-| Deepest DeFi liquidity | **Arbitrum** | $18B TVL, GMX, Pendle, Camelot, most protocols |
+| Consumer / social apps | **Base** | Farcaster, Smart Wallet, Coinbase on-ramp |
+| Deepest DeFi liquidity | **Arbitrum** | GMX, Pendle, Camelot, most protocols deployed |
 | Yield strategies | **Arbitrum** | Pendle (yield tokenization), GMX, Aave |
 | Cheapest gas | **Base** | ~50% cheaper than Arbitrum/Optimism |
 | Coinbase users | **Base** | Direct on-ramp, free Coinbase→Base transfers |
@@ -70,7 +76,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 ## Key Chain Details (What LLMs Get Wrong)
 
 ### Unichain
-- **Launched:** February 10, 2025 (mainnet). Chain ID 130.
+- **Launched:** February 11, 2025 (mainnet). Chain ID 130.
 - **Type:** OP Stack L2 (Superchain member, Stage 1)
 - **Key innovation: TEE-based block building** (built with Flashbots Rollup-Boost)
   - Transactions ordered by **time received, NOT gas price**
@@ -83,7 +89,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 - **Now:** OP Stack L2 on Ethereum — **migrated March 26, 2025** (block 31056500)
 - **Focus:** Mobile-first payments, emerging markets
 - **MiniPay:** Stablecoin wallet in Opera Mini + standalone app. Phone-to-phone transfers, sub-cent fees. Primary market: Africa (Kenya, Nigeria).
-- **Multi-currency stablecoins:** cUSD (`0x765de816845861e75a25fca122bb6898b8b1282a`), cEUR (`0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`), cREAL (`0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`)
+- **Multi-currency stablecoins (rebranded Dec 2025 by Mento Protocol):** USDm (was cUSD) (`0x765de816845861e75a25fca122bb6898b8b1282a`), EURm (was cEUR) (`0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`), BRLm (was cREAL) (`0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`). Same contract addresses, new onchain symbols.
 
 ### Dominant DEX Per Chain
 | Chain | Dominant DEX | Model | Why NOT Uniswap |
@@ -97,7 +103,7 @@ See `addresses/SKILL.md` for verified contract addresses for all these protocols
 
 ## The Superchain (OP Stack)
 
-The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability. Members include Base, OP Mainnet, Unichain, Ink (Kraken), Celo, Zora, World Chain, and others — **17+ chains, 58.6% L2 market share.**
+The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability. Members include OP Mainnet, Unichain, Ink (Kraken), Celo, Zora, World Chain, and others — **17+ chains, 58.6% L2 market share.** Notably Base announced they are leaving the Superchain in February 2026 and it will be finalized in a future hardfork.
 
 Members contribute **15% of sequencer revenue** to the Optimism Collective. Cross-chain interop is designed but not yet fully live.
 
@@ -165,16 +171,7 @@ forge create src/MyContract.sol:MyContract \
   --salt 0x0000000000000000000000000000000000000000000000000000000000000001
 ```
 
-**Strategy for new projects:** Start with 1 L2 (Base or Arbitrum). Prove product-market fit. Expand with CREATE2 for consistent addresses.
-
-## Testnets
-
-| L2 | Testnet | Chain ID | Faucet |
-|----|---------|----------|--------|
-| Arbitrum | Sepolia | 421614 | https://faucet.arbitrum.io |
-| Base | Sepolia | 84532 | https://faucet.quicknode.com/base/sepolia |
-| Optimism | Sepolia | 11155420 | https://faucet.optimism.io |
-| Unichain | Sepolia | 1301 | https://faucet.unichain.org |
+**Strategy for new projects:** Start with 1 chain — mainnet if it fits your use case, or the L2 whose superpower matches your app. Prove product-market fit. Expand with CREATE2 for consistent addresses across chains.
 
 ## Further Reading
 

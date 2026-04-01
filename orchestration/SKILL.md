@@ -26,9 +26,11 @@ description: How an AI agent plans, builds, and deploys a complete Ethereum dApp
 ```bash
 npx create-eth@latest my-dapp
 cd my-dapp && yarn install
-yarn chain          # Terminal 1: local node
-yarn deploy         # Terminal 2: deploy contracts
+yarn fork --network base  # Terminal 1: fork of real chain (or mainnet, your target chain)
+yarn deploy               # Terminal 2: deploy contracts
 ```
+
+> **Always fork, never `yarn chain`.** `yarn fork` does everything `yarn chain` does AND gives you real protocol state — Uniswap, USDC, Aave, whale balances, everything already deployed. `yarn chain` gives you an empty chain that tempts you into writing mock contracts you don't need. Don't mock what already exists onchain — just fork it.
 
 **Critical steps:**
 1. Write contracts in `packages/foundry/contracts/` (or `packages/hardhat/contracts/`)
@@ -42,9 +44,9 @@ yarn deploy         # Terminal 2: deploy contracts
 ### 1.2 Frontend
 
 ```bash
-yarn chain           # Terminal 1
-yarn deploy --watch  # Terminal 2: auto-redeploy on changes
-yarn start           # Terminal 3: Next.js at localhost:3000
+yarn fork --network base  # Terminal 1: fork of real chain (has Uniswap, USDC, etc.)
+yarn deploy --watch       # Terminal 2: auto-redeploy on changes
+yarn start                # Terminal 3: Next.js at localhost:3000
 ```
 
 **USE SCAFFOLD HOOKS, NOT RAW WAGMI:**
@@ -161,19 +163,19 @@ See `wallets/SKILL.md` for full key safety guide, what to do if you've already l
 ## Phase 3: Production Deploy
 
 ### Pre-deploy Checklist
-- `onlyLocalBurnerWallet: true` in scaffold.config.ts (CRITICAL — prevents burner wallet on prod)
+- `burnerWalletMode: "localNetworksOnly"` in scaffold.config.ts (prevents burner wallet on prod)
 - Update metadata (title, description, OG image 1200x630px)
 - Restore any test values to production values
 
 ### Deploy
 
-**IPFS (decentralized):**
+**IPFS (decentralized but only works with static content - no server-side rendering, api endpoints or functions):**
 ```bash
 yarn ipfs
 # → https://YOUR_CID.ipfs.cf-ipfs.com
 ```
 
-**Vercel (fast):**
+**Vercel:**
 ```bash
 cd packages/nextjs && vercel
 ```
@@ -252,7 +254,7 @@ import { createWallet } from '@x402/evm';
 import { ethers } from 'ethers';
 
 const wallet = createWallet(process.env.AGENT_PRIVATE_KEY);
-const provider = new ethers.JsonRpcProvider('https://base-mainnet.g.alchemy.com/v2/YOUR_KEY');
+const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
 
 const IDENTITY_REGISTRY = '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432';
 const REPUTATION_REGISTRY = '0x8004BAa17C55a88189AE136b182e5fdA19dE9b63';

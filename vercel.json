@@ -1,0 +1,17 @@
+{
+  "rewrites": [
+    { "source": "/l2",      "destination": "/l2s/SKILL.md" },
+    { "source": "/layer2",  "destination": "/l2s/SKILL.md" },
+    { "source": "/defi",    "destination": "/building-blocks/SKILL.md" },
+    { "source": "/:skill",  "destination": "/:skill/SKILL.md" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)\\.md",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" }
+      ]
+    }
+  ]
+}

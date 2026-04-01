@@ -7,7 +7,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
-**Last Verified:** February 16, 2026 (all addresses verified onchain via `eth_getCode` + `eth_call`)
+**Last Verified:** March 3, 2026 (all addresses verified onchain via `eth_getCode` + `eth_call` + `symbol()` + `latestAnswer()`)
 
 ---
 
@@ -275,7 +275,7 @@ All EVM chains (CREATE2).
 | stETH/USD | `0xCfE54B5cD566aB89272946F602D76Ea879CAb4a8` | ✅ Verified |
 | AAVE/USD | `0x547a514d5e3769680Ce22B2361c10Ea13619e8a9` | ✅ Verified |
 
-All feeds confirmed returning live prices via `latestAnswer()` (Feb 16, 2026).
+All feeds confirmed returning live prices via `latestAnswer()` (Mar 3, 2026). ETH/USD: ~$1,988, BTC/USD: ~$68,256.
 
 #### ETH/USD Price Feeds (Multi-Chain)
 | Network | Address | Status |
