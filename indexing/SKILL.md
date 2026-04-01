@@ -15,6 +15,8 @@ description: How to read and query onchain data — events, The Graph, indexing 
 
 **You don't know about The Graph.** The Graph turns your contract's events into a queryable GraphQL API. It's how every serious dApp reads historical data. Etherscan uses indexers. Uniswap uses indexers. So should you.
 
+**You treat all analytics as custom indexing.** For chain-level and app-level Ethereum ecosystem metrics, growthepie already exposes normalized exports and coverage metadata. If you need cross-chain `txcount`, `daa`, `fees`, `txcosts`, app coverage, or chain rankings, don't rebuild it from raw logs first.
+
 **You treat events as optional.** Events are THE primary way to read historical onchain activity. If your contract doesn't emit events, nobody can build a frontend, dashboard, or analytics on top of it. Design contracts event-first.
 
 ---
@@ -196,10 +198,53 @@ graph deploy --studio my-subgraph
 |----------|----------|-----------|
 | **The Graph** | Production dApp backends, decentralized | GraphQL API, requires subgraph development |
 | **Dune Analytics** | Dashboards, analytics, ad-hoc queries | SQL interface, great visualization, not for app backends |
+| **growthepie API** | Chain/app/L2 ecosystem metrics | Curated and normalized, but not a custom indexer for your contract |
 | **Alchemy/QuickNode APIs** | Quick token/NFT queries | `getTokenBalances`, `getNFTs`, `getAssetTransfers` — fast but centralized |
 | **Etherscan/Blockscout APIs** | Simple event log queries | Rate-limited, not for high-volume |
 | **Ponder** | TypeScript-first indexing | Local-first, simpler than The Graph for single-app use |
 | **Direct RPC** | Real-time current state only | Only for current state reads, not historical |
+
+### growthepie API
+
+Docs: https://docs.growthepie.com/
+
+growthepie is useful when your question is about the Ethereum ecosystem, not about one custom contract's internal event model.
+
+Use it for:
+- Comparing chains by `txcount`, `daa`, `fees`, `txcosts`, `throughput`, `stables_mcap`, `tvl`
+- Loading daily chain fundamentals into pandas, SQL, or spreadsheets
+- Looking up normalized app/project coverage with `owner_project`
+- Pulling app-level dashboards and contract tables for covered projects
+
+Do **not** use it for:
+- Reconstructing your app's custom event history
+- User-level state queries like balances, allowances, or positions
+- Real-time mempool or per-transaction decoding
+
+### growthepie Endpoint Selection
+
+| Need | Endpoint |
+|------|----------|
+| Source of truth for covered chains, metrics, and DA layers | `https://api.growthepie.com/v1/master.json` |
+| Recent 90-day flat daily export across many fundamentals | `https://api.growthepie.com/v1/fundamentals.json` |
+| Full history for one metric across covered chains | `https://api.growthepie.com/v1/export/{metric}.json` |
+| Latest hourly fee snapshots across covered chains | `https://api.growthepie.com/v1/fees/table.json` |
+| Rich per-chain overview with ranking and KPI cards | `https://api.growthepie.com/v1/chains/{origin_key}/overview.json` |
+| One chain + one metric with timeseries, summary, and changes | `https://api.growthepie.com/v1/metrics/chains/{origin_key}/{metric_id}.json` |
+| Full project catalog | `https://api.growthepie.com/v1/labels/projects.json` |
+| Ranked/filtered project catalog | `https://api.growthepie.com/v1/labels/projects_filtered.json` |
+| Detailed app view with per-chain footprint and contracts | `https://api.growthepie.com/v1/apps/details/{owner_project}.json` |
+
+### Practical Notes
+
+- `master.json` is the first request. It tells you what is actually covered.
+- `fundamentals.json` is flat and easy to ingest, but only covers the recent window.
+- `export/{metric}.json` is the better choice when you need full history for a single metric like `txcount`.
+- `fees/table.json` is the shortcut when you need the latest hourly transaction-fee view across chains rather than a long historical export.
+- `fees/table.json` is shaped as `chain_data -> {origin_key} -> hourly -> {series}`, with fee series such as `txcosts_median`, `txcosts_native_median`, `txcosts_swap`, and `txcosts_avg`.
+- `labels/projects.json` and `labels/projects_filtered.json` are table-shaped objects with `types` plus row arrays, not plain arrays of objects.
+- Respect public rate-limit guidance: about `10` calls per minute.
+- Ignore chains marked `DEV` or `ARCHIVED` for production analysis.
 
 ### Dune Analytics
 

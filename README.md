@@ -43,7 +43,8 @@ Install directly from GitHub — no clone required:
 | [Wallets](wallets/SKILL.md) | EIP-7702 is live, Safe addresses, agent key safety |
 | [Layer 2s](l2s/SKILL.md) | Think L2 txs cost $0.01-2.00 — reality is <$0.001 |
 | [Standards](standards/SKILL.md) | Don't know ERC-8004, EIP-7702 status, EIP-3009 for x402 |
-| [Tools](tools/SKILL.md) | Don't know x402, Blockscout MCP, current tool landscape |
+| [Tools](tools/SKILL.md) | Don't know x402, Blockscout MCP, growthepie API, current tool landscape |
+| [Indexing](indexing/SKILL.md) | Don't know The Graph, growthepie, event design, indexing patterns |
 | [Money Legos](building-blocks/SKILL.md) | Stale on current DeFi state, Uniswap V4 status |
 | [Orchestration](orchestration/SKILL.md) | Don't know SE2 three-phase build system |
 | [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses — these are verified onchain |
