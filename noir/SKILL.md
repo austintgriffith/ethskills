@@ -100,7 +100,7 @@ Treat the generated files as interfaces between subsystems:
 
 - `target/my_circuit.json` — circuit artifact consumed by NoirJS
 - `target/vk` — verification key used by `bb verify` and Solidity verifier generation
-- `target/Verifier.sol` — generated verifier source; this is the source of truth for the verifier ABI
+- `target/Verifier.sol` — generated verifier source; this is the source of truth for the verifier ABI. **This is a standalone contract that must be deployed separately.** Your app contract receives the verifier's deployed address in its constructor. Do not just import it — deploy it first, then pass the address.
 
 Pick a stable layout and keep it consistent. A good default is:
 
@@ -123,6 +123,17 @@ Not every privacy app needs a Merkle tree. Pick the simplest approach that fits:
 **Commitment-nullifier pattern** — needed when multiple participants must act anonymously from a shared set. Participants commit secret hashes into a Merkle tree, then later prove membership and act from a different wallet. The Merkle tree is the anonymity set. The nullifier prevents double-action. Required for: anonymous voting, private withdrawals (Tornado Cash), anonymous airdrops, whistleblowing. This is harder to get right — see below.
 
 If you're unsure: start with a simple private proof. Only reach for the commitment-nullifier pattern when you need unlinkability between a prior action (committing) and a later action (withdrawing/voting).
+
+### Before writing any code, ask:
+
+1. **What needs to stay private?** A fact about data (age, balance, credential) → simple proof. *Which participant* performed an action → commitment-nullifier.
+2. **What happens after proof verification?** Withdraw funds, cast a vote, claim an airdrop, unlock access — this determines the contract's `act()` logic.
+3. **Can the same participant act more than once?** One vote per poll → nullifier scoped to `pollId`. One withdrawal per deposit → global nullifier. Unlimited access checks → no nullifier needed.
+4. **Does the caller's identity need to be hidden?** If yes, the user must act from a fresh wallet via a relayer or ERC-4337 paymaster. If no (e.g., private credential check), the same wallet is fine.
+5. **Which chain?** Check the compatibility table below. zkSync ERA works but has higher gas for BN254 precompiles.
+6. **What frontend?** Vite, Next.js / Scaffold-ETH 2, or backend-only — each has different WASM configuration (see NoirJS section).
+
+Get these answers before choosing a pattern or writing a circuit. The answers determine tree depth, nullifier design, contract structure, and wallet flow.
 
 ---
 
