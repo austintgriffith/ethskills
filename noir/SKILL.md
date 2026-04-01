@@ -1,6 +1,6 @@
 ---
 name: noir
-description: Building privacy apps with Noir ZK circuits — toolchain, commitment-nullifier pattern, Solidity verifiers, NoirJS. Use when building anything with zero-knowledge proofs on Ethereum.
+description: Building privacy-preserving EVM apps with Noir — toolchain, pattern selection, commitment-nullifier flows, Solidity verifiers, tree state, and NoirJS. Use when building a Noir-based privacy app on EVM.
 ---
 
 # Privacy Apps with Noir
@@ -94,6 +94,24 @@ bb write_solidity_verifier -k target/vk -o target/Verifier.sol
 
 The command is `bb write_solidity_verifier` — not `bb contract`, not `nargo codegen-verifier`. The `--oracle_hash keccak` flag tells Barretenberg to use Keccak256 (which the EVM supports natively) instead of the default hash for the oracle/transcript. Without this flag, the Solidity verifier won't work.
 
+### Build Artifacts and Hand-off
+
+Treat the generated files as interfaces between subsystems:
+
+- `target/my_circuit.json` — circuit artifact consumed by NoirJS
+- `target/vk` — verification key used by `bb verify` and Solidity verifier generation
+- `target/Verifier.sol` — generated verifier source; this is the source of truth for the verifier ABI
+
+Pick a stable layout and keep it consistent. A good default is:
+
+```text
+circuits/my_circuit/target/my_circuit.json
+contracts/src/verifiers/HonkVerifier.sol
+frontend/public/circuits/my_circuit.json
+```
+
+Do not hand-copy artifacts ad hoc in prompts or scripts. Models drift unless you make the hand-off explicit.
+
 ---
 
 ## Choosing the Right Pattern
@@ -105,6 +123,20 @@ Not every privacy app needs a Merkle tree. Pick the simplest approach that fits:
 **Commitment-nullifier pattern** — needed when multiple participants must act anonymously from a shared set. Participants commit secret hashes into a Merkle tree, then later prove membership and act from a different wallet. The Merkle tree is the anonymity set. The nullifier prevents double-action. Required for: anonymous voting, private withdrawals (Tornado Cash), anonymous airdrops, whistleblowing. This is harder to get right — see below.
 
 If you're unsure: start with a simple private proof. Only reach for the commitment-nullifier pattern when you need unlinkability between a prior action (committing) and a later action (withdrawing/voting).
+
+---
+
+## App Architecture (Commitment-Nullifier Apps)
+
+A working privacy app is not "just a circuit." The model must wire five pieces together correctly:
+
+- **Circuit** — proves knowledge of a note (`nullifier`, `secret`) and membership in the commitment tree
+- **Onchain app contract** — accepts commitment inserts, tracks accepted roots, blocks reused nullifiers, and executes the action after proof verification
+- **Generated verifier** — created by `bb write_solidity_verifier`; its ABI is the source of truth
+- **Offchain tree mirror** — rebuilds the Merkle tree from insert events and produces `leafIndex`, siblings, and the root used for proving
+- **Frontend prover** — creates/saves notes, loads the circuit artifact, executes Noir, generates the proof, serializes calldata, and submits the action transaction
+
+If any one of these layers uses different hashes, input ordering, tree depth, or serialization, the app breaks even if the circuit compiles.
 
 ---
 
@@ -128,6 +160,37 @@ type = "bin"
 [dependencies]
 poseidon = { git = "https://github.com/noir-lang/poseidon", tag = "v0.2.6" }
 ```
+
+### Note Lifecycle (What the User Must Save)
+
+At commitment time, generate two random private fields:
+
+- `nullifier`
+- `secret`
+
+Then compute the commitment and persist a note locally. If the note is lost, the user cannot later prove membership or spend/vote.
+
+```typescript
+type PrivacyNote = {
+  nullifier: string;
+  secret: string;
+  commitment: string;
+  chainId: number;
+  contract: `0x${string}`;
+  treeDepth: number;
+  leafIndex?: number;
+};
+```
+
+Default flow:
+
+1. Generate `nullifier` and `secret`.
+2. Compute `commitment`.
+3. Submit the commitment insertion transaction.
+4. Read the insert event and persist `leafIndex` plus the new root.
+5. Later, rebuild the tree from events, derive siblings for `leafIndex`, and prove against an accepted root.
+
+The app must make this lifecycle explicit. A model that only writes the circuit usually forgets note persistence, `leafIndex`, or event replay.
 
 ### Circuit Implementation
 
@@ -179,7 +242,41 @@ fn compute_merkle_root(
 }
 ```
 
+### Production Hardening: Domain Separation and Action Binding
+
+The circuit above is the minimal pattern. Production apps should domain-separate hashes and bind the proof to a specific action.
+
+Use different hash domains for commitments and nullifiers. For action-scoped apps such as voting, bind nullifier usage to an `external_nullifier` (for example `pollId`):
+
+```noir
+use poseidon::bn254::hash_2;
+
+fn main(
+    nullifier: Field,
+    secret: Field,
+    merkle_path: [Field; 20],
+    merkle_indices: [Field; 20],
+    merkle_root: pub Field,
+    external_nullifier: pub Field,
+    nullifier_hash: pub Field,
+) {
+    let note_secret = hash_2([nullifier, secret]);
+    let commitment = hash_2([1, note_secret]); // 1 = commitment domain
+
+    let computed_root = compute_merkle_root(commitment, merkle_path, merkle_indices);
+    assert(computed_root == merkle_root, "Merkle proof invalid");
+
+    // Prevent replay across polls/actions by binding the nullifier to the action domain
+    let computed_nullifier_hash = hash_2([external_nullifier, nullifier]);
+    assert(computed_nullifier_hash == nullifier_hash, "Nullifier hash mismatch");
+}
+```
+
+Without this binding, a model often produces a reusable nullifier that works across multiple polls or actions.
+
 ### Solidity Contract Integration
+
+The generated verifier contract is the source of truth. If you wrap it behind an interface like the one below, inspect the generated verifier ABI first and mirror it exactly, or add a dedicated adapter contract with a stable app-facing interface.
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -217,6 +314,29 @@ contract PrivacyPool {
     }
 }
 ```
+
+### Contract State Model
+
+For a real app, the contract needs more than `merkleRoot` + `usedNullifiers`:
+
+- Emit an insert event containing the commitment, leaf index, and resulting root
+- Store used nullifiers
+- Make the accepted-root policy explicit
+- Verify proofs before mutating state or executing side effects
+
+Good default:
+
+```solidity
+event CommitmentInserted(bytes32 indexed commitment, uint256 indexed leafIndex, bytes32 root);
+
+mapping(bytes32 => bool) public usedNullifiers;
+mapping(bytes32 => bool) public knownRoots; // keep recent roots by default
+bytes32 public currentRoot;
+```
+
+**Root policy:** if proofs are generated client-side, default to keeping recent root history. Otherwise a new insert can stale an in-flight proof. If you intentionally accept only `currentRoot`, document that and force users to prove immediately against the latest root.
+
+The frontend tree mirror should rebuild from `CommitmentInserted` events. Do not rely on implicit local ordering or "whatever the contract returns right now" when generating siblings.
 
 ---
 
@@ -358,34 +478,56 @@ const proof = await backend.generateProof(witness);
 // proof.proof is Uint8Array — the raw proof bytes
 // proof.publicInputs is string[] — the public inputs
 
+const bytesToHex = (bytes: Uint8Array) =>
+  `0x${Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+
+const toBytes32 = (field: string) =>
+  `0x${field.replace(/^0x/, "").padStart(64, "0")}` as `0x${string}`;
+
+const proofHex = bytesToHex(proof.proof);
+const publicInputs = proof.publicInputs.map(toBytes32);
+
 // 4. Send to contract
 const tx = await contract.act(
-  proof.proof,                              // bytes calldata
-  proof.publicInputs[0],                    // merkle_root
-  proof.publicInputs[1],                    // nullifier_hash
+  proofHex,                                 // bytes calldata
+  publicInputs[0],                          // merkle_root
+  publicInputs[1],                          // nullifier_hash
 );
 ```
 
-- `proof.proof` — `Uint8Array`, serialize with `Array.from()` for JSON/localStorage
-- `proof.publicInputs` — `string[]`, hex-encoded field elements, order matches circuit `pub` params
+- `proof.proof` is `Uint8Array` — serialize it to `0x...` before sending over RPC
+- `proof.publicInputs` are strings — normalize them to 32-byte hex before comparing or passing to Solidity
 - EVM compatibility is handled by `--oracle_hash keccak` when generating the verification key (see Generate Solidity Verifier above), not during proof generation
 - Proof generation takes 5-30 seconds in browser depending on circuit size
 - Cleanup: call `bb.destroy()` when done
-- **No `Buffer` in browser** — convert `Uint8Array` to hex with `Array.from(proof).map(b => b.toString(16).padStart(2, "0")).join("")`, not `Buffer.from().toString("hex")`
+- The generated verifier ABI is the source of truth; if your app uses an adapter, make the adapter match that ABI, not a guessed interface
+- **No `Buffer` in browser** — convert `Uint8Array` to hex directly
 
-### bb.js Hashing for Offchain Tree Building
+### Serialization Boundary
 
-When building Merkle trees offchain (e.g., to compute the root before submitting to a contract), use Barretenberg's hash functions from `@aztec/bb.js`:
+Most zk app failures happen here:
 
-```typescript
-import { Barretenberg } from "@aztec/bb.js";
+- Circuit `pub` parameter order
+- NoirJS `proof.publicInputs` order
+- Solidity verifier input order
+- App contract wrapper/adaptor order
 
-const bb = await Barretenberg.new();
-const result = bb.poseidon2Hash({ inputs: [leftBytes, rightBytes] });
-const hashBytes = result.hash;  // Uint8Array
-```
+These four must match exactly.
 
-**Critical: Poseidon ≠ Poseidon2.** These are different algorithms with different outputs. If your circuit uses `poseidon::bn254::hash_2` (Poseidon), your offchain tree must also use Poseidon — not `poseidon2Hash`. Mismatched hashes mean the offchain-computed root won't match the circuit's verification. Always test with known inputs to confirm the circuit and offchain hashes agree before building the full tree.
+Hard rule: inspect the generated verifier ABI and mirror it exactly. Do not assume every verifier exposes a generic `verify(bytes, bytes32[])` signature just because one example does.
+
+### Hash Parity Across Circuit, Tree, and Contract
+
+If your circuit uses `poseidon::bn254::hash_2`, then every other layer must use the same algorithm and input ordering:
+
+- commitment creation
+- Merkle parent hashing
+- offchain tree mirror
+- onchain tree contract
+
+Do not mix Poseidon, Poseidon2, and Keccak. `poseidon2Hash` is not a substitute for `poseidon::bn254::hash_2`.
+
+Before building the full app, test one leaf hash and one parent hash with known inputs across every layer and assert that the outputs match exactly.
 
 ---
 
@@ -412,13 +554,18 @@ Noir/Barretenberg proofs verify on any EVM chain with BN254 precompiles (ecAdd, 
 - [ ] Public inputs minimized — only what the verifier contract needs
 - [ ] Poseidon used for in-circuit hashing, not SHA256/Keccak (50x gate cost difference)
 - [ ] Domain separation in hashes — different prefixes for commitments vs nullifiers (prevents cross-protocol replay)
+- [ ] Action-scoped apps bind nullifier usage to an `external_nullifier` / `pollId` / recipient / action id
 - [ ] Nullifier prevents double-action (contract checks and stores used nullifier hashes)
 - [ ] Small-domain values not directly hashed as public outputs (if vote is 0 or 1, `hash(0)` and `hash(1)` are trivially brutable — add a salt)
 - [ ] `--oracle_hash keccak` used when generating the Solidity verifier
 - [ ] Public inputs order matches exactly between circuit `pub` params, frontend `proof.publicInputs`, and Solidity `verify()` call
 - [ ] Merkle tree depth matches between circuit (fixed at compile time) and contract
 - [ ] Merkle indices constrained to binary (0 or 1) — unconstrained indices break proof soundness
-- [ ] Poseidon hash compatibility verified between Noir circuit and any onchain Poseidon library — test with known inputs before building
+- [ ] Poseidon hash compatibility verified between Noir circuit, offchain tree mirror, and any onchain Poseidon library
+- [ ] The app persists notes (`nullifier`, `secret`, `commitment`, chain/contract metadata, `leafIndex`)
+- [ ] The contract emits insert events with `leafIndex` and root so the client can rebuild the tree
+- [ ] The accepted-root policy is explicit (recent root history vs current-root-only)
+- [ ] The generated verifier ABI was inspected and mirrored exactly
 - [ ] Deploy the real `HonkVerifier` in deploy scripts — `MockVerifier` is for tests only
 - [ ] If sender privacy matters (voting, whistleblowing), use burner wallets + ERC-4337 paymaster — ZK proofs hide data, not `msg.sender`
 
@@ -452,6 +599,20 @@ Tree depth 16 (~65K entries) is standard. Only increase if you genuinely need mo
 
 ---
 
+## Testing the App Core
+
+Do not stop at "the circuit compiles." A working zk app needs tests at every boundary:
+
+1. **Circuit witness test** — fixed inputs should produce the expected public inputs and root checks.
+2. **Hash parity test** — the same leaf and parent inputs must hash identically in the circuit, offchain tree mirror, and onchain tree library.
+3. **Contract verification test** — verify one real proof against the real generated verifier, not a mock.
+4. **End-to-end app test** — insert a commitment, rebuild the tree from events, generate a browser/backend proof, submit `act()`, and assert success.
+5. **Failure-path tests** — reused nullifier, wrong root, wrong sibling ordering, stale root, and mismatched public input order must all fail.
+
+If a model cannot describe these tests, it probably has not built the app core correctly.
+
+---
+
 ## AI Agent Tooling
 
 This skill corrects common mistakes. For live, searchable access to Noir documentation, stdlib, and example circuits, agents can use the [noir-mcp-server](https://github.com/critesjosh/noir-mcp-server):
@@ -463,4 +624,3 @@ claude mcp add noir-mcp -- npx @critesjosh/noir-mcp-server@latest
 After adding the server, run `/reload-plugins` so the new tools become available in the current session.
 
 Indexes the Noir compiler repo, standard library, examples, and community libraries (bignum, zk-kit.noir, etc.). Useful for looking up function signatures and browsing code beyond what this skill covers. If the npm package is unavailable, clone the repo and run directly.
-
