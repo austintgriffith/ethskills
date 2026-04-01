@@ -349,6 +349,32 @@ bytes32 public currentRoot;
 
 The frontend tree mirror should rebuild from `CommitmentInserted` events. Do not rely on implicit local ordering or "whatever the contract returns right now" when generating siblings.
 
+### Onchain Commitment Storage (LeanIMT)
+
+Most Noir ZK apps store commitments in an onchain Merkle tree. Use the audited `@zk-kit` libraries — don't build your own.
+
+**Solidity:**
+
+```bash
+npm install @zk-kit/lean-imt.sol
+```
+
+```solidity
+import {LeanIMT, LeanIMTData} from "@zk-kit/lean-imt.sol/LeanIMT.sol";
+```
+
+Requires deploying `PoseidonT3` alongside (used internally for hashing). The contract maintains the Merkle root automatically — users call `insert(commitment)`.
+
+**JavaScript (client-side tree mirror):**
+
+```bash
+npm install @zk-kit/lean-imt
+```
+
+Reconstruct the tree from onchain leaf events, then call `generateProof(leafIndex)` to get siblings for your circuit.
+
+Tree depth 16 (~65K entries) is standard. Only increase if you genuinely need more capacity.
+
 ---
 
 ## Noir API Reference
@@ -357,25 +383,14 @@ These are the correct imports and function signatures. LLMs frequently hallucina
 
 ### Poseidon Hashing
 
-Poseidon was removed from the Noir standard library. Add the external dependency:
-
-```toml
-# Nargo.toml
-[dependencies]
-poseidon = { git = "https://github.com/noir-lang/poseidon", tag = "v0.2.6" }
-```
+Add the `poseidon` dependency to `Nargo.toml` (see Nargo.toml section above). Use `bn254` variants — they're optimized for the BN254 curve that Ethereum's precompiles support.
 
 ```noir
-use poseidon::bn254::hash_1;
-use poseidon::bn254::hash_2;
-
-fn main(a: Field, b: Field) {
-    let single = hash_1([a]);          // Hash one field element
-    let pair = hash_2([a, b]);         // Hash two field elements
-}
+use poseidon::bn254::hash_1;    // Hash one field element
+use poseidon::bn254::hash_2;    // Hash two field elements
 ```
 
-Use `bn254` variants — they're optimized for the BN254 curve that Ethereum's precompiles support. The old import path `std::hash::poseidon::bn254::hash_2` no longer exists.
+The old import path `std::hash::poseidon::bn254::hash_2` no longer exists — Poseidon was removed from the Noir standard library.
 
 ### Merkle Proof with zk-kit
 
@@ -579,34 +594,6 @@ Noir/Barretenberg proofs verify on any EVM chain with BN254 precompiles (ecAdd, 
 - [ ] The generated verifier ABI was inspected and mirrored exactly
 - [ ] Deploy the real `HonkVerifier` in deploy scripts — `MockVerifier` is for tests only
 - [ ] If sender privacy matters (voting, whistleblowing), use burner wallets + ERC-4337 paymaster — ZK proofs hide data, not `msg.sender`
-
----
-
-## Onchain Commitment Storage (LeanIMT)
-
-Most Noir ZK apps store commitments in an onchain Merkle tree. Use the audited `@zk-kit` libraries — don't build your own.
-
-**Solidity:**
-
-```bash
-npm install @zk-kit/lean-imt.sol
-```
-
-```solidity
-import {LeanIMT, LeanIMTData} from "@zk-kit/lean-imt.sol/LeanIMT.sol";
-```
-
-Requires deploying `PoseidonT3` alongside (used internally for hashing). The contract maintains the Merkle root automatically — users call `insert(commitment)`.
-
-**JavaScript (client-side tree mirror):**
-
-```bash
-npm install @zk-kit/lean-imt
-```
-
-Reconstruct the tree from onchain leaf events, then call `generateProof(leafIndex)` to get siblings for your circuit.
-
-Tree depth 16 (~65K entries) is standard. Only increase if you genuinely need more capacity.
 
 ---
 
