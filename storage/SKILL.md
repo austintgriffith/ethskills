@@ -23,18 +23,15 @@ description: Decentralised file storage for Ethereum agents and dApps. Covers IP
 | IPFS | 12 months (pinned) | USDC via x402 | dApp assets, metadata |
 | Arweave | Permanent | USDC via x402 | NFT media, immutable records |
 
-## Content Addressing
+## Content Addressing (IPFS only)
 
-Both IPFS and Arweave use content hashes — the address IS the content. Same file always produces the same hash. This means:
+IPFS uses content hashes — the CID IS the content. Same file always produces the same CID. Deduplication is free, integrity is built in.
 
-- **Deduplication is free.** Upload the same file twice, get the same CID/txId.
-- **Integrity is built in.** If the hash matches, the content is correct.
-- **Links never break** (as long as someone stores the data).
+Arweave does NOT use content addressing. Transaction IDs are derived from the signature, not the content. Uploading the same file twice produces two different txIds.
 
 ```
 IPFS CID:    bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi
-Arweave ID:  BzIbGE9Nl6Wqly...
-EIP-1577:    0xe3010170... (hex-encoded contenthash for ENS)
+EIP-1577:    0xe3010170... (codec 0xe3 = ipfs, for ENS contenthash)
 ```
 
 ## IPFS Pinning
