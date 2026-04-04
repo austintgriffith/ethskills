@@ -49,7 +49,7 @@ curl -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
 
 ## Arweave
 
-One-time payment, stored forever. Arweave uses ANS-104 bundled transactions (via Irys/Turbo) for sub-second uploads. Cost fluctuates with AR price — always check before quoting.
+One-time payment, stored forever. Arweave uses ANS-104 bundled transactions (via Irys/Turbo) for sub-second uploads.
 
 ## x402 Payments for Storage
 
