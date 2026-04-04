@@ -139,7 +139,7 @@ cast send ... --ledger
 
 **URL:** https://openwallet.sh | `@open-wallet-standard/core` on npm
 
-Local encrypted wallet manager purpose-built for CLI and agent workflows. Keys are AES-256-GCM encrypted in `~/.ows/`, never exposed as plaintext. Supports EIP-712 typed data signing, message signing, and transaction signing via CLI commands — no browser, no extension, no RPC.
+Local encrypted wallet manager purpose-built for CLI and agent workflows. Uses the [Web3 Secret Storage](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/) keystore standard (scrypt + AES-128-CTR) — same format as `geth account new`. Keys are encrypted in `~/.ows/`, never exposed as plaintext. Supports EIP-712 typed data signing, message signing, and transaction signing via CLI commands — no browser, no extension, no RPC.
 
 **Why this matters for agents:** OWS solves the "where does the agent's key live?" problem without `.env` files or hardcoded keys. The agent calls `ows sign-typed-data <wallet> ethereum <payload>` and gets a signature back. The private key never appears in the agent's context window, logs, or process environment.
 
