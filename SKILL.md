@@ -74,6 +74,12 @@ Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
 
+### [Storage](https://ethskills.com/storage/SKILL.md)
+IPFS pinning, Arweave permanence, ENS contenthash hosting, x402 payments for storage.
+- IPFS does NOT store files permanently — you need a pinning service. Arweave is permanent.
+- ENS websites use onchain contenthash (EIP-1577), not URL text records.
+- Agents can pay for IPFS/Arweave uploads with USDC inline via x402 — no token approvals needed.
+
 ### [Building Blocks (DeFi)](https://ethskills.com/building-blocks/SKILL.md)
 Uniswap, Aave, flash loans, protocol composability.
 - Uniswap V4 hooks: custom logic attached to pools (dynamic fees, TWAMM, limit orders).
