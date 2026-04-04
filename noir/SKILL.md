@@ -428,7 +428,8 @@ The packages are `@noir-lang/noir_js` + `@aztec/bb.js`. NOT `@noir-lang/backend_
 ### Package Setup
 
 ```bash
-npm install @noir-lang/noir_js @aztec/bb.js
+npm install @noir-lang/noir_js "@aztec/bb.js@$(bb --version)"
+# ⚠ The @aztec/bb.js version must exactly match your bb CLI version (check with `bb --version`). A mismatch produces different proof serialization, causing onchain verification to fail.
 ```
 
 ### Vite Configuration
