@@ -163,8 +163,6 @@ ows sign-message my-agent-wallet ethereum "hello"
 ows address my-agent-wallet ethereum
 ```
 
-**Namespace:** OWS uses `ethereum` (not `evm`). This changed in v1.2.4 — agents using the old `evm` namespace will get errors.
-
 **Used by:** objekt.sh CLI for IPFS/Arweave uploads with EIP-712 signing and x402 payments.
 
 ### Safe Transaction Pattern
