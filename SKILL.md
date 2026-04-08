@@ -69,9 +69,10 @@ ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
 - EIP-3009: gasless token transfers — what makes x402 work. USDC implements it.
 
 ### [Tools](https://ethskills.com/tools/SKILL.md)
-Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
+Foundry, Scaffold-ETH 2, Blockscout MCP, growthepie, x402 SDKs.
 - Foundry is the default for new projects in 2026, not Hardhat.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
+- growthepie docs/API give agents current chain and app metrics across Ethereum + L2s.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
 
 ### [Building Blocks (DeFi)](https://ethskills.com/building-blocks/SKILL.md)
@@ -124,6 +125,7 @@ Events, The Graph, Dune, reading onchain data.
 - You can't query historical state via RPC cheaply. Use an indexer.
 - Events are THE primary way to read historical onchain activity. Design contracts event-first.
 - The Graph turns events into a queryable GraphQL API.
+- growthepie is the shortcut for chain/app ecosystem metrics like txcount, DAA, fees, and project coverage.
 - Multicall3 (`0xcA11bde05977b3631167028862bE2a173976CA11`) — batch reads in one RPC call.
 
 ### [Frontend UX](https://ethskills.com/frontend-ux/SKILL.md)
@@ -158,6 +160,6 @@ Pre-ship audit checklist for a reviewer agent.
 | Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
 | Reviewing a finished dApp | `qa/` |
 | Auditing a smart contract | `audit/` |
-| Monitoring / analytics | `indexing/` |
+| Monitoring / analytics | `indexing/`, `tools/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |
 | Choosing a chain | `l2s/`, `gas/` |
