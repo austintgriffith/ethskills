@@ -181,7 +181,7 @@ Note: IPFS only works with static content — no server-side rendering, API endp
 
 **Vercel:**
 ```bash
-cd packages/nextjs && vercel
+yarn vercel
 ```
 
 ### Production QA
