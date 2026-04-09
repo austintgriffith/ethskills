@@ -1,6 +1,6 @@
 ---
 name: building-blocks
-description: DeFi legos and protocol composability on Ethereum and L2s. Major protocols per chain — Aerodrome on Base, GMX/Pendle on Arbitrum, Velodrome on Optimism — plus mainnet primitives (Uniswap, Aave, Compound, Curve). How they work, how to build on them, and how to combine them. Use when building DeFi integrations, choosing protocols on a specific L2, designing yield strategies, or composing existing protocols into something new.
+description: DeFi legos and protocol composability on Ethereum and L2s. Major protocols per chain — Aero on Base and Optimism (Aerodrome + Velodrome merged Nov 2025), GMX/Pendle on Arbitrum, plus mainnet primitives (Uniswap, Aave, Compound, Curve). How they work, how to build on them, and how to combine them. Use when building DeFi integrations, choosing protocols on a specific L2, designing yield strategies, or composing existing protocols into something new.
 ---
 
 # Building Blocks (DeFi Legos)

@@ -60,7 +60,7 @@ L2 landscape, bridging, deployment differences.
 - Base is the cheapest major L2. Arbitrum has the deepest DeFi liquidity.
 - Celo is NOT an L1 anymore — migrated to OP Stack L2 in March 2025.
 - Polygon zkEVM is being shut down. Do not build on it.
-- The dominant DEX on each L2 is NOT Uniswap (Aerodrome on Base, Velodrome on Optimism).
+- The dominant DEX on each L2 is NOT Uniswap (Aero on Base and Optimism — Aerodrome and Velodrome merged Nov 2025).
 
 ### [Standards](https://ethskills.com/standards/SKILL.md)
 ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
@@ -78,7 +78,7 @@ Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
 Uniswap, Aave, flash loans, protocol composability.
 - Uniswap V4 hooks: custom logic attached to pools (dynamic fees, TWAMM, limit orders).
 - Flash loan arb on mainnet costs ~$0.05-0.50 in gas now (was $5-50).
-- The dominant DEX per L2 is NOT Uniswap — Aerodrome (Base), Velodrome (Optimism), Camelot (Arbitrum).
+- The dominant DEX per L2 is NOT Uniswap — Aero (Base + Optimism, merged from Aerodrome/Velodrome Nov 2025), Camelot (Arbitrum).
 
 ### [Orchestration](https://ethskills.com/orchestration/SKILL.md)
 Three-phase build system for Scaffold-ETH 2 dApps.
