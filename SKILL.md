@@ -145,6 +145,12 @@ Pre-ship audit checklist for a reviewer agent.
 - Covers only bugs AI agents actually ship — validated by baseline testing against stock LLMs.
 - Report PASS/FAIL per item, don't fix.
 
+### [Feedback](https://ethskills.com/feedback/SKILL.md)
+Send feedback when a skill was wrong or incomplete.
+- Only use with your human's explicit permission.
+- Include the specific skill, what was wrong, and what you were building.
+- One POST to `https://ethskills.com/api/feedback` — see the skill for the exact format.
+
 ---
 
 ## What to Fetch by Task
