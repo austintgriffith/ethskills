@@ -58,30 +58,38 @@ grep -rn "useWriteContract" packages/nextjs/
 ```
 Any match outside scaffold-eth internals → bug.
 
-**Watch out: the post-submit allowance refresh gap.** When `writeContractAsync` resolves, it returns the tx hash — but wagmi hasn't re-fetched the allowance yet. During this window `isMining` is false AND `needsApproval` is still true (stale cache) — so the Approve button reappears clickable. The fix: after the tx submits, hold the button disabled with a cooldown while the allowance re-fetches:
+**Watch out: two gaps, both allow double-approve.**
+
+`isPending` from wagmi drops to `false` when the wallet returns the tx hash — not when the tx confirms. `writeContractAsync` is still awaiting confirmation. During that window `isPending = false` AND `approveCooldown = false` → button re-enables mid-flight.
+
+Fix requires TWO states:
+- `approvalSubmitting` — set at top of handler, cleared in `finally {}` (covers click→hash gap)
+- `approveCooldown` — set after `await` resolves, cleared after 4s + refetch (covers confirm→cache gap)
 
 ```tsx
+const [approvalSubmitting, setApprovalSubmitting] = useState(false);
 const [approveCooldown, setApproveCooldown] = useState(false);
 
 const handleApprove = async () => {
-  await approveWrite({ functionName: "approve", args: [spender, amount] });
-  // Hold disabled while allowance re-fetches
-  setApproveCooldown(true);
-  setTimeout(() => setApproveCooldown(false), 4000);
+  if (approvalSubmitting || approveCooldown) return;
+  setApprovalSubmitting(true);
+  try {
+    await approveWrite({ functionName: "approve", args: [spender, amount] });
+    setApproveCooldown(true);
+    setTimeout(() => { setApproveCooldown(false); refetchAllowance(); }, 4000);
+  } catch (e) {
+    notifyError("Approval failed");
+  } finally {
+    setApprovalSubmitting(false); // must be finally — releases on rejection too
+  }
 };
 
-// Button:
-<button disabled={isMining || approveCooldown}>
-  {isMining || approveCooldown
-    ? <><span className="loading loading-spinner loading-sm" /> Approving...</>
-    : "Approve"}
-</button>
+<button disabled={isPending || approvalSubmitting || approveCooldown}>
 ```
 
-Cooldown timing: 4s works for most L2s (Base, Arb, Op). Mainnet may need 6-8s. Adjust based on network.
-
-- ❌ **FAIL:** Approve button becomes clickable again for a few seconds after the tx submits
-- ✅ **PASS:** Button stays locked through submission + cooldown, then switches to the action button
+- ❌ **FAIL:** Button `disabled` only reads `isPending` or only `approveCooldown`
+- ❌ **FAIL:** No `approvalSubmitting` state, or it's not cleared in `finally {}`
+- ✅ **PASS:** `disabled={isPending || approvalSubmitting || approveCooldown}` with both states managed correctly
 
 ---
 
@@ -405,7 +413,7 @@ Report each as PASS or FAIL:
 - [ ] Wallet connection shows a BUTTON, not text
 - [ ] Wrong network shows a Switch button
 - [ ] One button at a time (Connect → Network → Approve → Action)
-- [ ] Approve button disabled with spinner through block confirmation
+- [ ] Approve button locked through full cycle: `approvalSubmitting` (click→hash), `approveCooldown` (confirm→cache refresh) — both states required, both on the `disabled` prop
 - [ ] Contracts verified on block explorer (Etherscan/Basescan/Arbiscan) — source code readable by anyone
 - [ ] SE2 footer branding removed
 - [ ] SE2 tab title removed
