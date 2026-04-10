@@ -30,10 +30,8 @@ a:hover { text-decoration: underline; }
 h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.25rem; }
 .subtitle { color: var(--dim); font-size: 13px; margin-bottom: 2rem; }
 
-/* Auth screen */
-#auth {
-  max-width: 400px;
-}
+/* Auth */
+#auth { max-width: 400px; }
 #auth label { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 0.5rem; }
 #auth input {
   width: 100%;
@@ -67,11 +65,36 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
 .toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
-  gap: 0.5rem;
 }
+.filter-btns { display: flex; gap: 0; }
+.filter-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 0.3rem 0.85rem;
+  cursor: pointer;
+}
+.filter-btn:first-child { border-radius: 3px 0 0 3px; }
+.filter-btn:last-child { border-radius: 0 3px 3px 0; border-left: none; }
+.filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(255,176,0,0.06); }
+.filter-btn:hover:not(.active) { color: var(--fg); border-color: var(--dim); }
+
+.unread-badge {
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 10px;
+  margin-left: 0.3rem;
+}
+
+.spacer { flex: 1; }
 .count { color: var(--dim); font-size: 13px; }
 .btn-small {
   background: transparent;
@@ -85,21 +108,33 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
 }
 .btn-small:hover { border-color: var(--accent); color: var(--accent); }
 
+/* Entries */
 .entry {
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
   background: var(--hover);
+  transition: opacity 0.15s;
 }
-.entry-meta {
+.entry.is-read { opacity: 0.5; }
+.entry.is-read:hover { opacity: 0.8; }
+
+.entry-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.75rem;
-  flex-wrap: wrap;
 }
+.entry-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 .entry-ts { color: var(--dim); font-size: 12px; }
+.unread-dot {
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 .entry-skill {
   color: var(--accent);
   font-size: 12px;
@@ -110,12 +145,7 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
 }
 .entry-agent { color: var(--dim); font-size: 12px; }
 
-.entry-problem {
-  color: var(--fg);
-  font-size: 14px;
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
-}
+.entry-problem { color: var(--fg); font-size: 14px; margin-bottom: 0.5rem; line-height: 1.6; }
 .entry-context {
   color: var(--dim);
   font-size: 13px;
@@ -124,9 +154,22 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
   margin-top: 0.5rem;
 }
 
-.empty { color: var(--dim); font-size: 14px; padding: 2rem 0; }
+.mark-read-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  font-family: inherit;
+  font-size: 11px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.mark-read-btn:hover { border-color: var(--accent); color: var(--accent); }
+.is-read .mark-read-btn { display: none; }
 
-.loading { color: var(--dim); font-size: 14px; }
+.empty { color: var(--dim); font-size: 14px; padding: 2rem 0; }
 
 .footer {
   color: var(--dim);
@@ -142,7 +185,6 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
 <h1>ETHSKILLS / Feedback Inbox</h1>
 <p class="subtitle"><a href="/">← ethskills.com</a></p>
 
-<!-- Auth -->
 <div id="auth">
   <label for="secret-input">Secret</label>
   <input type="password" id="secret-input" placeholder="Enter your FEEDBACK_SECRET" autocomplete="off">
@@ -150,10 +192,17 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
   <p class="auth-error" id="auth-error">Wrong secret or server error.</p>
 </div>
 
-<!-- Inbox -->
 <div id="inbox">
   <div class="toolbar">
+    <div class="filter-btns">
+      <button class="filter-btn active" id="filter-unread">
+        Unread<span class="unread-badge" id="unread-count" style="display:none"></span>
+      </button>
+      <button class="filter-btn" id="filter-all">All</button>
+    </div>
+    <span class="spacer"></span>
     <span class="count" id="count"></span>
+    <button class="btn-small" id="mark-all-btn">Mark all read</button>
     <button class="btn-small" id="refresh-btn">↻ Refresh</button>
     <button class="btn-small" id="logout-btn">Sign out</button>
   </div>
@@ -164,89 +213,136 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
 
 <script>
 const SECRET_KEY = 'ethskills_feedback_secret';
+let allEntries = [];
+let currentFilter = 'unread';
+let secret = '';
 
 function formatDate(iso) {
-  const d = new Date(iso);
-  return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 }
-
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-async function loadFeedback(secret) {
+async function loadFeedback() {
   const res = await fetch(`/api/feedback?secret=${encodeURIComponent(secret)}`);
   if (res.status === 401) throw new Error('unauthorized');
   if (!res.ok) throw new Error('server error');
   return res.json();
 }
 
-function renderEntries(data) {
-  const el = document.getElementById('entries');
-  const count = document.getElementById('count');
-  count.textContent = `${data.count} submission${data.count !== 1 ? 's' : ''}`;
+async function markRead(id) {
+  await fetch(`/api/feedback?action=read&secret=${encodeURIComponent(secret)}&id=${encodeURIComponent(id)}`, {
+    method: 'POST',
+  });
+  const entry = allEntries.find(e => e.id === id);
+  if (entry) entry.read = true;
+  renderEntries();
+}
 
-  if (!data.entries.length) {
-    el.innerHTML = '<p class="empty">No feedback yet.</p>';
+async function markAllRead() {
+  const unread = allEntries.filter(e => !e.read);
+  await Promise.all(unread.map(e => markRead(e.id)));
+}
+
+function renderEntries() {
+  const el = document.getElementById('entries');
+  const countEl = document.getElementById('count');
+  const unreadCountEl = document.getElementById('unread-count');
+
+  const unread = allEntries.filter(e => !e.read);
+  const visible = currentFilter === 'unread' ? unread : allEntries;
+
+  // Update unread badge
+  if (unread.length > 0) {
+    unreadCountEl.textContent = unread.length;
+    unreadCountEl.style.display = '';
+  } else {
+    unreadCountEl.style.display = 'none';
+  }
+
+  countEl.textContent = `${visible.length} ${currentFilter === 'unread' ? 'unread' : `of ${allEntries.length}`}`;
+
+  if (!visible.length) {
+    el.innerHTML = `<p class="empty">${currentFilter === 'unread' ? 'All caught up.' : 'No feedback yet.'}</p>`;
     return;
   }
 
-  el.innerHTML = data.entries.map(e => `
-    <div class="entry">
-      <div class="entry-meta">
-        <span class="entry-ts">${formatDate(e.ts)}</span>
-        ${e.skill ? `<span class="entry-skill">${esc(e.skill)}</span>` : ''}
-        ${e.agent ? `<span class="entry-agent">${esc(e.agent)}</span>` : ''}
+  el.innerHTML = visible.map(e => `
+    <div class="entry ${e.read ? 'is-read' : ''}" data-id="${esc(e.id)}">
+      <div class="entry-header">
+        <div class="entry-meta">
+          ${!e.read ? '<span class="unread-dot"></span>' : ''}
+          <span class="entry-ts">${formatDate(e.ts)}</span>
+          ${e.skill ? `<span class="entry-skill">${esc(e.skill)}</span>` : ''}
+          ${e.agent ? `<span class="entry-agent">${esc(e.agent)}</span>` : ''}
+        </div>
+        <button class="mark-read-btn" data-id="${esc(e.id)}">Mark read</button>
       </div>
       <div class="entry-problem">${esc(e.problem)}</div>
       ${e.context ? `<div class="entry-context">${esc(e.context)}</div>` : ''}
     </div>
   `).join('');
+
+  el.querySelectorAll('.mark-read-btn').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); markRead(btn.dataset.id); });
+  });
 }
 
-async function openInbox(secret) {
-  const data = await loadFeedback(secret);
-  localStorage.setItem(SECRET_KEY, secret);
+async function openInbox(s) {
+  secret = s;
+  const data = await loadFeedback();
+  localStorage.setItem(SECRET_KEY, s);
+  allEntries = data.entries;
   document.getElementById('auth').style.display = 'none';
   document.getElementById('inbox').style.display = 'block';
-  renderEntries(data);
+  renderEntries();
 }
 
-// Auth form
+// Auth
 document.getElementById('auth-btn').addEventListener('click', async () => {
-  const secret = document.getElementById('secret-input').value.trim();
-  if (!secret) return;
-  try {
-    await openInbox(secret);
-  } catch (e) {
-    document.getElementById('auth-error').style.display = 'block';
-  }
+  const s = document.getElementById('secret-input').value.trim();
+  if (!s) return;
+  try { await openInbox(s); }
+  catch { document.getElementById('auth-error').style.display = 'block'; }
 });
 document.getElementById('secret-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('auth-btn').click();
 });
 
-// Refresh
-document.getElementById('refresh-btn').addEventListener('click', async () => {
-  const secret = localStorage.getItem(SECRET_KEY);
-  if (!secret) return;
-  const data = await loadFeedback(secret);
-  renderEntries(data);
+// Filter
+document.getElementById('filter-unread').addEventListener('click', () => {
+  currentFilter = 'unread';
+  document.getElementById('filter-unread').classList.add('active');
+  document.getElementById('filter-all').classList.remove('active');
+  renderEntries();
+});
+document.getElementById('filter-all').addEventListener('click', () => {
+  currentFilter = 'all';
+  document.getElementById('filter-all').classList.add('active');
+  document.getElementById('filter-unread').classList.remove('active');
+  renderEntries();
 });
 
-// Logout
+// Actions
+document.getElementById('refresh-btn').addEventListener('click', async () => {
+  const data = await loadFeedback();
+  allEntries = data.entries;
+  renderEntries();
+});
+document.getElementById('mark-all-btn').addEventListener('click', markAllRead);
 document.getElementById('logout-btn').addEventListener('click', () => {
   localStorage.removeItem(SECRET_KEY);
+  secret = '';
+  allEntries = [];
   document.getElementById('inbox').style.display = 'none';
   document.getElementById('auth').style.display = 'block';
   document.getElementById('secret-input').value = '';
 });
 
-// Auto-login if secret is stored
+// Auto-login
 const stored = localStorage.getItem(SECRET_KEY);
-if (stored) {
-  openInbox(stored).catch(() => localStorage.removeItem(SECRET_KEY));
-}
+if (stored) openInbox(stored).catch(() => localStorage.removeItem(SECRET_KEY));
 </script>
 </body>
 </html>
