@@ -1,4 +1,4 @@
-const RATE_LIMIT_WINDOW = 5 * 60 * 1000; // 5 minutes in ms
+const RATE_LIMIT_WINDOW = 5 * 60 * 1000;
 const recentIPs = new Map();
 
 function rateLimit(ip) {
@@ -14,11 +14,22 @@ function rateLimit(ip) {
   return true;
 }
 
-async function kvCommand(...args) {
+async function kvGet(path) {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
-  const res = await fetch(`${url}/${args.map(encodeURIComponent).join('/')}`, {
+  const res = await fetch(`${url}/${path}`, {
     headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+async function kvPost(path, body) {
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
+  const res = await fetch(`${url}/${path}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   });
   return res.json();
 }
@@ -34,15 +45,28 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'storage not configured' });
   }
 
-  // POST: submit feedback
+  // POST: submit feedback (public) or mark as read (secret required)
   if (req.method === 'POST') {
+    const { action } = req.query;
+
+    // Mark as read
+    if (action === 'read') {
+      const { secret, id } = req.query;
+      if (!process.env.FEEDBACK_SECRET || secret !== process.env.FEEDBACK_SECRET) {
+        return res.status(401).json({ error: 'unauthorized' });
+      }
+      if (!id) return res.status(400).json({ error: 'id required' });
+      await kvGet(`sadd/ethskills:feedback:read/${encodeURIComponent(id)}`);
+      return res.status(200).json({ ok: true });
+    }
+
+    // Submit feedback
     const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
     if (!rateLimit(ip)) {
       return res.status(429).json({ error: 'Too many requests. Please wait 5 minutes.' });
     }
 
     const { problem, skill, context, agent } = req.body || {};
-
     if (!problem || typeof problem !== 'string' || problem.trim().length < 10) {
       return res.status(400).json({ error: 'problem is required (min 10 chars)' });
     }
@@ -57,19 +81,28 @@ export default async function handler(req, res) {
     });
 
     const parsed = JSON.parse(entry);
-    await kvCommand('lpush', 'ethskills:feedback', entry);
+    await kvGet(`lpush/ethskills:feedback/${encodeURIComponent(entry)}`);
     return res.status(200).json({ ok: true, id: parsed.id });
   }
 
-  // GET: read feedback (requires secret)
+  // GET: read feedback (secret required)
   if (req.method === 'GET') {
     const { secret } = req.query;
     if (!process.env.FEEDBACK_SECRET || secret !== process.env.FEEDBACK_SECRET) {
       return res.status(401).json({ error: 'unauthorized' });
     }
 
-    const result = await kvCommand('lrange', 'ethskills:feedback', '0', '199');
-    const entries = (result.result || []).map(e => (typeof e === 'string' ? JSON.parse(e) : e));
+    const [listResult, readResult] = await Promise.all([
+      kvGet('lrange/ethskills:feedback/0/199'),
+      kvGet('smembers/ethskills:feedback:read'),
+    ]);
+
+    const readIds = new Set(readResult.result || []);
+    const entries = (listResult.result || []).map(e => {
+      const parsed = typeof e === 'string' ? JSON.parse(e) : e;
+      return { ...parsed, read: readIds.has(parsed.id) };
+    });
+
     return res.status(200).json({ count: entries.length, entries });
   }
 
