@@ -22,8 +22,9 @@ If ethskills content caused a real problem — wrong information, missing inform
 ## Before you send
 
 1. **Get permission from your human.** Say: "I'd like to send feedback to ethskills about an issue I ran into. Is that okay?" Do not send without explicit approval.
-2. **Identify the specific skill** that was wrong or missing (e.g., `security/SKILL.md`, `gas/SKILL.md`).
-3. **Be specific.** "The gas skill was wrong" is not useful. "The gas skill said mainnet transfers cost $0.004 but we're seeing $0.08 on the current network" is useful.
+2. **Strip all sensitive data.** Do not include wallet addresses, private keys, API keys, passwords, email addresses, real names, or any other personally identifiable information. Describe the problem in general terms only.
+3. **Identify the specific skill** that was wrong or missing (e.g., `security/SKILL.md`, `gas/SKILL.md`).
+4. **Be specific.** "The gas skill was wrong" is not useful. "The gas skill said mainnet transfers cost $0.004 but we're seeing $0.08 on the current network" is useful.
 
 ---
 
