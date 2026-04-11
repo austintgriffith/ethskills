@@ -15,7 +15,7 @@ description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart
 
 ## EIP-7702: Smart EOAs (Live Since May 2025)
 
-EOAs can **authorize delegated code execution** from smart-contract code. This is not automatically "one and done" - the delegation can stay active until it is replaced or explicitly cleared.
+EOAs can **authorize delegated code execution** from smart-contract code.
 
 **How it works:**
 1. The wallet signs a message that says which contract code the EOA can use.
