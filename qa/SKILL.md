@@ -48,8 +48,18 @@ The app must show exactly ONE primary button at a time, progressing through:
 Check specifically:
 - ❌ **FAIL:** Approve and Action buttons both visible simultaneously
 - ❌ **FAIL:** No network check — app tries to work on wrong chain and fails silently
+- ❌ **FAIL:** Main onchain CTA renders instead of a "Switch to [Chain]" button when the connected wallet is on the wrong network. SE-2's header `WrongNetworkDropdown` is **not sufficient** — the action button itself must become the switch CTA, or the user clicks Sign/Stake/Deposit on the wrong chain and eats a silent wagmi error.
 - ❌ **FAIL:** User can click Approve, sign in wallet, come back, and click Approve again while tx is pending
 - ✅ **PASS:** One button at a time. Approve button shows spinner, stays disabled until block confirms onchain. Then switches to the action button.
+- ✅ **PASS:** Action button's render path branches on `useChainId() === targetNetwork.id` (or equivalent); mismatch renders a `useSwitchChain`-driven "Switch to [Chain]" button in the **same slot** as the primary CTA.
+
+**In the code:** grep the page(s) that own the primary CTA for a chainId check:
+
+```
+grep -rnE "useChainId|useAccount.*chain|targetNetwork\.id" packages/nextjs/app/
+```
+
+If the file with `useScaffoldWriteContract` has no chainId comparison near the button's render branch → FAIL. Header-only network handling does not cover this.
 
 **In the code:** the button's `disabled` prop must be tied to `isPending` from `useScaffoldWriteContract`. Verify it uses `useScaffoldWriteContract` (waits for block confirmation), NOT raw wagmi `useWriteContract` (resolves on wallet signature):
 
@@ -411,7 +421,7 @@ Report each as PASS or FAIL:
 
 ### Ship-Blocking
 - [ ] Wallet connection shows a BUTTON, not text
-- [ ] Wrong network shows a Switch button
+- [ ] Wrong network shows a Switch button **in the primary CTA slot** (not only in the header dropdown)
 - [ ] One button at a time (Connect → Network → Approve → Action)
 - [ ] Approve button locked through full cycle: `approvalSubmitting` (click→hash), `approveCooldown` (confirm→cache refresh) — both states required, both on the `disabled` prop
 - [ ] Contracts verified on block explorer (Etherscan/Basescan/Arbiscan) — source code readable by anyone
