@@ -53,14 +53,6 @@ Check specifically:
 - ✅ **PASS:** One button at a time. Approve button shows spinner, stays disabled until block confirms onchain. Then switches to the action button.
 - ✅ **PASS:** Action button's render path branches on `useChainId() === targetNetwork.id` (or equivalent); mismatch renders a `useSwitchChain`-driven "Switch to [Chain]" button in the **same slot** as the primary CTA.
 
-**In the code:** grep the page(s) that own the primary CTA for a chainId check:
-
-```
-grep -rnE "useChainId|useAccount.*chain|targetNetwork\.id" packages/nextjs/app/
-```
-
-If the file with `useScaffoldWriteContract` has no chainId comparison near the button's render branch → FAIL. Header-only network handling does not cover this.
-
 **In the code:** the button's `disabled` prop must be tied to `isPending` from `useScaffoldWriteContract`. Verify it uses `useScaffoldWriteContract` (waits for block confirmation), NOT raw wagmi `useWriteContract` (resolves on wallet signature):
 
 ```
