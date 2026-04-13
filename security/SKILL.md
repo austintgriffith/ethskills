@@ -144,7 +144,7 @@ function getPrice() internal view returns (uint256) {
 
 **If you must use onchain price data:**
 - Use **TWAP** (Time-Weighted Average Price) over 30+ minutes — resistant to single-block manipulation
-- Uniswap V3 has built-in TWAP oracles via `observe()`
+- Uniswap V3 has built-in TWAP oracles via `observe()` (verified addresses: `addresses/SKILL.md`)
 - Still less safe than Chainlink for high-value decisions
 
 ### 6. Vault Inflation Attack
