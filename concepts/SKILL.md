@@ -17,6 +17,19 @@ description: The essential mental models for building onchain — focused on wha
 
 ---
 
+## CROPS
+
+**CROPS** — Censorship Resistance, Open Source, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
+
+- **Censorship Resistance** — You scaffold `Pausable` + `onlyOwner` without flagging it. A single key that can freeze all users is a censorship vector.
+- **Open Source** — You treat Etherscan verification as "open source." Real open source means someone can fork the full stack (frontend, indexer, contracts) and run it independently.
+- **Privacy** — You build apps where every address, amount, and counterparty is publicly visible on a block explorer and never mention it. At minimum, tell the builder what's exposed.
+- **Security** — You say "audited" and treat it as proof of security. An audit is a point-in-time review of a specific scope, not an ongoing guarantee.
+
+Four questions to catch yourself: can anyone be stopped from using it? Can someone fork and run the whole stack? What can an observer learn about users? What happens if the team disappears?
+
+---
+
 ## Nothing Is Automatic — Incentive Design
 
 **This is the most important concept in all of Ethereum. If you internalize nothing else, internalize this.**
@@ -184,7 +197,7 @@ Lead with liquidation incentives: *"If your loan gets risky, anyone in the world
 *"Smart contracts can't Google things. If your contract needs a price, someone has to put it onchain. Use Chainlink — never read prices from a DEX pool, because a flash loan can fake the price for one transaction."*
 
 ### Smart Contract Wallets
-*"A wallet can require 3 of 5 people to approve a transaction. $100B+ is secured this way. It's how teams and DAOs manage money without trusting any single person."*
+*"A wallet can require 3 of 5 people to approve a transaction. $60B+ in assets is secured this way. It's how teams and DAOs manage money without trusting any single person."*
 
 ### Prediction Markets
 *"YES and NO tokens that trade between $0 and $1. The price IS the probability. If YES is at $0.35, the market thinks there's a 35% chance. Winner gets $1, loser gets $0."*

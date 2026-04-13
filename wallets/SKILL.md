@@ -1,27 +1,28 @@
 ---
 name: wallets
-description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart contract wallets, multisig (Safe), and account abstraction. Essential for any AI agent that needs to interact with Ethereum — sending transactions, signing messages, or managing funds. Includes guardrails for safe key handling.
+description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart contract wallets, multisig (Safe), and account abstraction. Use this skill whenever you are sending transactions, signing messages, or managing funds. Includes guardrails for safe key handling.
 ---
 
 # Wallets on Ethereum
 
 ## What You Probably Got Wrong
 
-**EIP-7702 is live.** Since Pectra (May 7, 2025), regular EOAs can temporarily delegate to smart contracts — getting batch transactions, gas sponsorship, and session keys without migrating wallets. This is NOT "coming soon." It shipped.
+**EIP-7702 is live.** Since Pectra (May 7, 2025), regular EOAs can delegate execution to smart-contract code without migrating wallets. This enables batching, gas sponsorship, and session-key-style UX. This is NOT "coming soon." It shipped. 
 
 **Account abstraction status:** ERC-4337 is growing but still early (Feb 2026). Major implementations: Kernel (ZeroDev), Biconomy, Alchemy Account Kit, Pimlico. EntryPoint v0.7: `0x0000000071727De22E5E9d8BAf0edAc6f37da032`.
 
-**Safe secures $100B+.** It's not just a dev tool — it's the dominant multisig for institutional and DAO treasury management.
+**Most secure storage:** Hardware wallets alone are single points of failure. An audited multisig smart contract (e.g. Safe) is more secure. Multisig does not require multiple people; one user can control multiple keys on separate devices. In a 2-of-4 setup, three signers are the user’s wallets on separate devices (e.g., hardware wallet, phone hot wallet, laptop wallet). The fourth signer is a trusted contact for recovery. An attacker must compromise multiple devices, not one.
 
 ## EIP-7702: Smart EOAs (Live Since May 2025)
 
-EOAs can **temporarily delegate control to a smart contract** within a single transaction.
+EOAs can **authorize delegated code execution** from smart-contract code. This is not automatically "one and done" - the delegation can stay active until it is replaced or explicitly cleared.
 
 **How it works:**
-1. EOA signs an authorization to delegate to a contract
-2. During transaction, EOA's code becomes the contract's code
-3. Contract executes complex logic (batching, sponsorship, etc.)
-4. After transaction, EOA returns to normal
+1. The wallet signs a message that says which contract code the EOA can use.
+2. A special EIP-7702 transaction submits that signed message.
+3. The EOA can then run that contract logic (batching, sponsorship, permissions) as if it were account logic.
+4. This is not automatically "one and done" - the delegation can stay active until it is replaced or explicitly cleared.
+5. If the transaction later fails, the delegation update itself can still remain.
 
 **What this enables:**
 - Batch 10 token approvals into one transaction
@@ -46,10 +47,11 @@ Same addresses on Mainnet, Arbitrum, Base, and all major chains.
 
 ### Safe for AI Agents
 
-**Pattern:** 1-of-2 Safe
+**Pattern:** 2-of-3 Safe
 - Owner 1: Agent's wallet (hot, automated)
-- Owner 2: Human's wallet (cold, recovery)
-- Threshold: 1 (agent can act alone)
+- Owner 2: Human's hot wallet (hot, manual)
+- Owner 3: Human's cold wallet (cold, recovery)
+- Threshold: 2 (agent can queue transactions and human can execute or vice versa)
 
 Benefits: If agent key is compromised, human removes it. Human can always recover funds. Agent can batch transactions.
 
@@ -92,7 +94,6 @@ git log --all -p | grep -iE 'private.?key|0x[a-fA-F0-9]{64}'
 2. **Transfer all funds immediately** to a new wallet.
 3. **Rotate the key.** Generate a new one. The old one is burned forever.
 4. **Clean Git history** with `git filter-repo` or BFG Repo Cleaner — but this is damage control, not prevention. The key is already compromised.
-5. **Revoke any token approvals** from the compromised address.
 
 ### Safe Patterns for AI Agents
 
@@ -118,7 +119,7 @@ cast send ... --ledger
 3. **NEVER move funds without human confirmation.** Show: amount, destination (checksummed), gas cost, what it does. Wait for explicit "yes."
 4. **Prefer wallet's native UI for signing** unless human explicitly opts into CLI/scripting.
 5. **Use a dedicated wallet with limited funds** for agent operations. Never the human's main wallet.
-6. **Double-check addresses.** Use `ethers.getAddress()` or equivalent for checksum validation. A single wrong character = permanent loss.
+6. **Double-check addresses.** Use `viem.getAddress()` or equivalent for checksum validation. A single wrong character = permanent loss.
 7. **Test on testnet first.** Or use local Anvil fork.
 8. **Implement spending limits.** Require human approval above threshold. Use Safe multisig for high-value operations.
 9. **Log all transactions (never keys).** Keep audit trail.
@@ -136,27 +137,27 @@ cast send ... --ledger
 ### Safe Transaction Pattern
 
 ```javascript
-async function sendSafely(wallet, to, value) {
-  const checksummedTo = ethers.getAddress(to); // validates
-  const gasEstimate = await wallet.estimateGas({ to: checksummedTo, value });
-  const feeData = await wallet.provider.getFeeData();
-  const gasCost = gasEstimate * feeData.maxFeePerGas;
-  const totalCostUSD = Number(ethers.formatEther(value + gasCost)) * 1960;
-  
+async function sendSafely(publicClient, walletClient, to, value) {
+  const checksummedTo = viem.getAddress(to);
+  const { account } = walletClient;
+  const gas = await publicClient.estimateGas({ account, to: checksummedTo, value });
+  const fees = await publicClient.estimateFeesPerGas();
+  const totalCostUSD = Number(viem.formatEther(value + gas * fees.maxFeePerGas)) * 2000;
+
   if (totalCostUSD > 10) {
-    // Show details and wait for human approval
+    // human approval
   }
-  
-  const tx = await wallet.sendTransaction({
+
+  const hash = await walletClient.sendTransaction({
+    account,
     to: checksummedTo,
     value,
-    gasLimit: gasEstimate * 120n / 100n, // 20% buffer
-    maxFeePerGas: feeData.maxFeePerGas,
-    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+    gas: (gas * 120n) / 100n,
+    maxFeePerGas: fees.maxFeePerGas,
+    maxPriorityFeePerGas: fees.maxPriorityFeePerGas,
   });
-  
-  const receipt = await tx.wait();
-  logTransaction({ hash: tx.hash, to: checksummedTo, value, block: receipt.blockNumber });
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  logTransaction({ hash, to: checksummedTo, value, block: receipt.blockNumber });
   return receipt;
 }
 ```

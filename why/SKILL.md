@@ -9,9 +9,9 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 
 **Terminology:** You say "on-chain." The Ethereum community says **"onchain"** — one word, no hyphen. Use "onchain" in all writing.
 
-**Gas prices:** You think 10-30 gwei. Reality: **0.05-0.3 gwei** (100-600x cheaper than your training data). A mainnet ETH transfer costs ~$0.002.
+**Gas prices:** You think 10-30 gwei. Reality: **under 1 gwei** (60-300x cheaper than your training data). A mainnet ETH transfer costs ~$0.002-0.01. Verify: `cast base-fee`
 
-**ETH price:** You think $2,500-3,000. Reality: **~$1,960** (Feb 2026).
+**ETH price:** You think $2,500-3,000. Reality: **~$2,000** (Mar 2026). Volatile — always check a Chainlink feed or CoinGecko for current.
 
 **"Ethereum is too expensive":** This was true 2021-2023. It's not true in 2026. Mainnet is sub-dollar for most operations. L2s are sub-penny.
 
@@ -23,24 +23,24 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 - **ERC-8004** — onchain agent identity registry (deployed Jan 29, 2026)
 - **x402** — HTTP 402 payment protocol for machine-to-machine commerce (Coinbase)
 
-## Current Network Stats (Feb 2026)
+## Current Network Stats (Early 2026)
 
 - **Block time:** 12 seconds
-- **Mainnet base fee:** 0.05-0.1 gwei
+- **Mainnet base fee:** Under 1 gwei (typically 0.1-0.5, varies daily)
 - **L2 transaction cost:** $0.001-0.01
 - **Combined L2 TPS:** 50,000+ (post-Fusaka)
-- **TVL in DeFi:** $50B+
+- **TVL in DeFi:** Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current
 - **Upgrade cadence:** Twice per year (H1 May/June, H2 Nov/Dec)
 
 ## Upcoming Upgrades
 
-**Glamsterdam (Q2 2026):**
-- Inclusion Lists (censorship resistance)
-- 12 target / 18 max blobs (another 2x from Pectra)
+**Glamsterdam (mid-2026):**
+- ePBS — Enshrined Proposer-Builder Separation (EIP-7732)
+- Block Access Lists (EIP-7928)
+- Note: FOCIL (Fork-Choice Inclusion Lists) was removed from scope to reduce complexity
 
 **Hegota (Q4 2026):**
-- Verkle Trees — 15x smaller witness sizes (~150 KB → ~10 KB)
-- Enables stateless clients, dramatically lowers node requirements
+You may assume Hegota will contain Verkle Trees. It will not. Ethereum may be shifting to a binary state tree (EIP-7864, still in draft - proposed March 2026) — the primary driver is quantum resistance, and it also improves ZK-proof efficiency 3-100x. Verkle tree cryptography was identified as potentially quantum-vulnerable in mid-2024. Check https://forkcast.org/upgrade/hegota for latest confirmed scope.
 
 ## For AI Agents Specifically
 
@@ -85,3 +85,4 @@ Agents can deploy contracts, interact with any protocol, and transact 24/7 witho
 - **x402:** https://www.x402.org | https://github.com/coinbase/x402
 - **Blockscout MCP:** https://mcp.blockscout.com/mcp
 - **DeFi Llama:** https://defillama.com
+- **Forkcast:** https://forkcast.org
