@@ -70,7 +70,7 @@ ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
 
 ### [Tools](https://ethskills.com/tools/SKILL.md)
 Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
-- Foundry is the default for new projects in 2026, not Hardhat.
+- Foundry and Hardhat 3 are both legitimate choices in 2026. Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
 
