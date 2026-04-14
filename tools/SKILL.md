@@ -13,7 +13,7 @@ description: Current Ethereum development tools, frameworks, libraries, RPCs, an
 
 **x402 has production SDKs:** `@x402/fetch` (TS), `x402` (Python), `github.com/coinbase/x402/go` — production-ready libraries for HTTP payments.
 
-**Foundry is the default for new projects in 2026.** Uniswap v4, Aave v4, and every major audit firm use it. Note: Hardhat 3 (Aug 2025) now has Solidity testing and fuzzing too — consider it if your team lives in TypeScript.
+**Foundry is the default for new projects in 2026.** Note: Hardhat 3 (Aug 2025) now has Solidity testing and fuzzing too — consider it if your team lives in TypeScript.
 
 ## Tool Discovery Pattern for AI Agents
 
