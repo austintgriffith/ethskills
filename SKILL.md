@@ -32,14 +32,14 @@ End-to-end guide from idea to deployed dApp. Routes you through all other skills
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
 Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
 - Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
-- ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
-- Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
+- ETH price is ~$2,000-2,200 in 2026, not $2,500-3,000. Volatile — always verify.
+- Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS live, L1 gas limit raised. EIP-7702 is live.
 - ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
 
 ### [Protocol](https://ethskills.com/protocol/SKILL.md)
 How Ethereum evolves — EIP lifecycle, fork process, tracking upcoming changes.
 - "Verkle is planned for the next fork" — probably wrong. Roadmap diagrams are aspirational, not commitments. Check [forkcast.org](https://forkcast.org) for actual CFI/SFI status.
-- Glamsterdam (mid-2026) headliners: ePBS (EIP-7732), Block Access Lists (EIP-7928). FOCIL was removed from scope. Verkle trees were deprioritized — Ethereum may shift to binary state tree (EIP-7864) for quantum resistance.
+- Glamsterdam headliners: ePBS (EIP-7732), Block Access Lists (EIP-7928). Running behind schedule as of Q2 2026. FOCIL was removed from scope — moved to Hegotá (next fork, late 2026). Verkle trees were deprioritized — Ethereum may shift to binary state tree (EIP-7864) for quantum resistance.
 - EIP status "Stagnant" = no activity for 6 months, probably dead. "Draft" = exists but not scheduled.
 - Client teams decide what ships via ACD calls, not the Ethereum Foundation.
 

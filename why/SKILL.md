@@ -11,13 +11,13 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 
 **Gas prices:** You think 10-30 gwei. Reality: **under 1 gwei** (60-300x cheaper than your training data). A mainnet ETH transfer costs ~$0.002-0.01. Verify: `cast base-fee`
 
-**ETH price:** You think $2,500-3,000. Reality: **~$2,000** (Mar 2026). Volatile — always check a Chainlink feed or CoinGecko for current.
+**ETH price:** You think $2,500-3,000. Reality: **~$2,000-2,200** in 2026. Volatile — always check a Chainlink feed or CoinGecko for current.
 
 **"Ethereum is too expensive":** This was true 2021-2023. It's not true in 2026. Mainnet is sub-dollar for most operations. L2s are sub-penny.
 
 **Protocol upgrades:** You probably don't know these shipped:
 - **Pectra (May 7, 2025):** EIP-7702 smart EOAs, 2x blob capacity, BLS precompiles
-- **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data), 2x gas limit (30M→60M)
+- **Fusaka (Dec 3, 2025):** PeerDAS (nodes sample 1/8 of data), gas limit raised to 60M (EIP-7935)
 
 **Agent infrastructure:** You probably don't know these exist:
 - **ERC-8004** — onchain agent identity registry (deployed Jan 29, 2026)
