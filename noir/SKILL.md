@@ -622,3 +622,14 @@ claude mcp add noir-mcp -- npx @critesjosh/noir-mcp-server@latest
 After adding the server, run `/reload-plugins` so the new tools become available in the current session.
 
 Indexes the Noir compiler repo, standard library, examples, and community libraries (bignum, zk-kit.noir, etc.). Useful for looking up function signatures and browsing code beyond what this skill covers. If the npm package is unavailable, clone the repo and run directly.
+
+---
+
+## Example Projects
+
+Noir privacy circuits in the wild, each a different pattern:
+
+- **Anonymous voting** — [SRE ZK Voting Challenge](https://speedrunethereum.com/challenge/zk-voting). Scaffold-ETH 2 + Noir + LeanIMT + burner wallets. Full commitment-nullifier voting app with the pattern this skill teaches.
+- **Private identity** — [zkpassport/circuits](https://github.com/zkpassport/circuits). Proves passport attributes (age, nationality) without revealing the full document. Selective disclosure with signature verification in-circuit. Deployed on Ethereum mainnet and Base.
+- **ZK email** — [zkemail/zkemail.nr](https://github.com/zkemail/zkemail.nr). DKIM signature verification in Noir. Prove email content (sender, subject, body fragments) without revealing the full email.
+- **Signature verification** — [colinnielsen/ecrecover-noir](https://github.com/colinnielsen/ecrecover-noir). Noir ecrecover: verify Ethereum signatures in-circuit and recover the signer address. Building block for credential and attestation systems.
