@@ -141,7 +141,7 @@ MCP servers are composable — agents can use multiple together.
 
 ## What Changed in 2025-2026
 
-- **Hardhat 3** (Aug 2025) shipped Solidity testing, fuzzing, and Rust internals — now on par with Foundry for most use cases.
+- **Foundry became the default** over Hardhat for new projects — then Hardhat 3 (Aug 2025) shipped Solidity testing, fuzzing, and Rust internals, making it a legitimate choice again.
 - **Viem gaining on ethers.js** (smaller, better TypeScript)
 - **MCP servers emerged** for agent-blockchain interaction
 - **x402 SDKs** went production-ready
