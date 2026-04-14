@@ -13,7 +13,7 @@ description: Current Ethereum development tools, frameworks, libraries, RPCs, an
 
 **x402 has production SDKs:** `@x402/fetch` (TS), `x402` (Python), `github.com/coinbase/x402/go` — production-ready libraries for HTTP payments.
 
-**Foundry is the default for new projects in 2026.** Note: Hardhat 3 (Aug 2025) now has Solidity testing and fuzzing too — consider it if your team lives in TypeScript.
+**Foundry and Hardhat 3 are both legitimate choices in 2026.** Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 
 ## Tool Discovery Pattern for AI Agents
 
@@ -141,7 +141,7 @@ MCP servers are composable — agents can use multiple together.
 
 ## What Changed in 2025-2026
 
-- **Foundry became default** over Hardhat for new projects
+- **Foundry became the default** over Hardhat for new projects — then Hardhat 3 (Aug 2025) shipped Solidity testing, fuzzing, and Rust internals, making it a legitimate choice again.
 - **Viem gaining on ethers.js** (smaller, better TypeScript)
 - **MCP servers emerged** for agent-blockchain interaction
 - **x402 SDKs** went production-ready
