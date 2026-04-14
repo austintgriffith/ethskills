@@ -7,7 +7,7 @@ description: Current Ethereum gas prices, transaction costs, and the real econom
 
 ## What You Probably Got Wrong
 
-**Your gas estimate is 100-600x too high.** Most LLMs confidently state gas is 10-30 gwei. Post-Fusaka (Dec 2025), typical base fee is **under 1 gwei** — usually 0.1-0.5 gwei. Verify: `cast base-fee --rpc-url https://eth.llamarpc.com`
+**Your gas estimate is 100-600x too high.** Most LLMs confidently state gas is 10-30 gwei. Post-Fusaka (Dec 2025), typical base fee is **under 1 gwei** — usually 0.05-0.5 gwei. Verify: `cast base-fee --rpc-url https://eth.llamarpc.com`
 
 - **Base fee:** Under 1 gwei (not 30-100 gwei) — fluctuates, check live
 - **Priority fee (tip):** ~0.01-0.1 gwei
@@ -38,7 +38,7 @@ description: Current Ethereum gas prices, transaction costs, and the real econom
 | NFT mint | $0.030 | $0.002 | $0.002 | $0.004 | $0.003 |
 | ERC-20 deploy | $0.240 | $0.020 | $0.018 | $0.040 | $0.030 |
 
-**Key insight:** Mainnet is now cheap enough for most use cases. L2s are 5-10x cheaper still.
+**Key insight:** Mainnet is now cheap enough for most use cases. L2s are 10-20x cheaper still.
 
 ## Why Gas Dropped 95%+
 
@@ -74,7 +74,7 @@ L2 transactions have two cost components:
 
 ```javascript
 // Rule of thumb for current conditions
-maxFeePerGas: "1-2 gwei"          // headroom for spikes (base is usually 0.1-0.5)
+maxFeePerGas: "1-2 gwei"          // headroom for spikes (base is usually 0.05-0.5)
 maxPriorityFeePerGas: "0.01-0.1 gwei"   // enough for quick inclusion
 ```
 
