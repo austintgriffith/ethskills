@@ -11,7 +11,7 @@ description: Smart contract testing with Foundry — unit tests, fuzz testing, f
 
 **You don't fuzz.** `forge test` finds the bugs you thought of. Fuzzing finds the ones you didn't. If your contract does math, fuzz it. If it handles user input, fuzz it. If it moves value, definitely fuzz it.
 
-**You don't fork-test.** If your contract calls Uniswap, Aave, or any external protocol, test against their real deployed contracts on a fork. Mocking them hides integration bugs that only appear with real state.
+**You don't fork-test.** If your contract calls Uniswap, Aave, or any external protocol (verified addresses: `addresses/SKILL.md`), test against their real deployed contracts on a fork. Mocking them hides integration bugs that only appear with real state.
 
 **You write tests that mirror the implementation.** Testing that `deposit(100)` sets `balance[user] = 100` is tautological — you're testing that Solidity assignments work. Test properties: "after deposit and withdraw, user gets their tokens back." Test invariants: "total deposits always equals contract balance."
 
@@ -197,7 +197,7 @@ Test your contract against real deployed protocols on a mainnet fork. This catch
 
 ```solidity
 contract SwapTest is Test {
-    // Real mainnet addresses
+    // Real mainnet addresses — full verified list: addresses/SKILL.md
     address constant UNISWAP_ROUTER = 0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45;
     address constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;

@@ -37,7 +37,7 @@ const [isStaking, setIsStaking] = useState(false);
     } catch (e) {
       notifyError("Approval failed");
     } finally {
-      setIsApproving(false);
+      setIsApproving(false); // always release — even on rejection
     }
   }}
 >
@@ -46,6 +46,12 @@ const [isStaking, setIsStaking] = useState(false);
 ```
 
 Never use one shared `isLoading` state for multiple buttons. It causes wrong labels, wrong disabled states, and duplicate submissions.
+
+**For approval flows: `isPending` alone is not enough.**
+
+`isPending` drops to `false` when the wallet returns the tx hash — before on-chain confirmation. There is a window where `isPending = false` AND the allowance hasn't updated → button re-enables mid-flight and a user can double-submit.
+
+Approval handlers need two states: `approvalSubmitting` (set on click, cleared in `finally {}`) to cover the wallet→confirmation gap, and `approveCooldown` (set after confirm, cleared after 4s + refetch) to cover the confirmation→cache gap. Both go on `disabled`. `finally {}` is required — without it a rejected tx locks the button permanently.
 
 ---
 

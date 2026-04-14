@@ -3,6 +3,7 @@
     { "source": "/l2",      "destination": "/l2s/SKILL.md" },
     { "source": "/layer2",  "destination": "/l2s/SKILL.md" },
     { "source": "/defi",    "destination": "/building-blocks/SKILL.md" },
+    { "source": "/inbox",   "destination": "/inbox.html" },
     { "source": "/:skill",  "destination": "/:skill/SKILL.md" }
   ],
   "headers": [
