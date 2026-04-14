@@ -625,11 +625,18 @@ Indexes the Noir compiler repo, standard library, examples, and community librar
 
 ---
 
-## Example Projects
+## Example Repos and Building Blocks
 
-Noir privacy circuits in the wild, each a different pattern:
+Use app-pattern repos for end-to-end architecture. Use primitives for narrow cryptographic building blocks.
 
-- **Anonymous voting** — [SRE ZK Voting Challenge](https://speedrunethereum.com/challenge/zk-voting). Scaffold-ETH 2 + Noir + LeanIMT + burner wallets. Full commitment-nullifier voting app with the pattern this skill teaches.
-- **Private identity** — [zkpassport/circuits](https://github.com/zkpassport/circuits). Proves passport attributes (age, nationality) without revealing the full document. Selective disclosure with signature verification in-circuit. Deployed on Ethereum mainnet and Base.
-- **ZK email** — [zkemail/zkemail.nr](https://github.com/zkemail/zkemail.nr). DKIM signature verification in Noir. Prove email content (sender, subject, body fragments) without revealing the full email.
-- **Signature verification** — [colinnielsen/ecrecover-noir](https://github.com/colinnielsen/ecrecover-noir). Noir ecrecover: verify Ethereum signatures in-circuit and recover the signer address. Building block for credential and attestation systems.
+### App Patterns
+
+- **Simple private proof** — [noir-lang/tiny-noirjs-app](https://github.com/noir-lang/tiny-noirjs-app). Minimal NoirJS app for proving a private fact without a Merkle tree, nullifier, or signed-document flow. Good reference for age-threshold or balance-threshold style proofs.
+- **Anonymous voting** — [scaffold-eth/se-2-challenges (zk-voting branch)](https://github.com/scaffold-eth/se-2-challenges/tree/challenge-zk-voting). Full Scaffold-ETH 2 + Noir app: commitment-nullifier flow, LeanIMT membership proofs, Solidity verifier wiring, proof generation, and burner-wallet UX. [Challenge guide](https://speedrunethereum.com/challenge/zk-voting).
+- **Private withdrawals / mixer** — [Cyfrin/zk-mixer-cu](https://github.com/Cyfrin/zk-mixer-cu). Direct Tornado-style Noir reference: deposit commitments into a Merkle tree, then withdraw with a membership proof and nullifier. Good for commitment-nullifier private withdrawal flows. Educational repo, not a production deployment reference.
+- **Private identity** — [zkpassport/circuits](https://github.com/zkpassport/circuits). Selective-disclosure identity circuits: prove attributes like age or nationality without revealing the full credential.
+- **ZK email** — [zkemail/zkemail.nr](https://github.com/zkemail/zkemail.nr). Email-auth proof system: DKIM verification plus selective disclosure of sender, subject, or body fragments without revealing the whole message.
+
+### Primitives
+
+- **Signature verification** — [colinnielsen/ecrecover-noir](https://github.com/colinnielsen/ecrecover-noir). Focused secp256k1 / Ethereum signature recovery primitive for credentials, attestations, and account-linked proofs. Useful as a building block, not a full app architecture. Inspect the math and interface shape, but do not copy exact Noir syntax or package versions blindly.
