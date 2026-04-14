@@ -28,19 +28,19 @@ description: Why build on Ethereum specifically. The AI agent angle — ERC-8004
 - **Block time:** 12 seconds
 - **Mainnet base fee:** Under 1 gwei (typically 0.1-0.5, varies daily)
 - **L2 transaction cost:** $0.001-0.01
-- **Combined L2 TPS:** 50,000+ (post-Fusaka)
+- **Combined L2 TPS:** 10,000-25,000+ (varies; check [L2Beat](https://l2beat.com/scaling/activity) for live data)
 - **TVL in DeFi:** Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current
 - **Upgrade cadence:** Twice per year (H1 May/June, H2 Nov/Dec)
 
 ## Upcoming Upgrades
 
-**Glamsterdam (mid-2026):**
+**Glamsterdam (~Q3-Q4 2026, running behind schedule):**
 - ePBS — Enshrined Proposer-Builder Separation (EIP-7732)
 - Block Access Lists (EIP-7928)
 - Note: FOCIL (Fork-Choice Inclusion Lists) was removed from scope to reduce complexity
 
-**Hegota (Q4 2026):**
-You may assume Hegota will contain Verkle Trees. It will not. Ethereum may be shifting to a binary state tree (EIP-7864, still in draft - proposed March 2026) — the primary driver is quantum resistance, and it also improves ZK-proof efficiency 3-100x. Verkle tree cryptography was identified as potentially quantum-vulnerable in mid-2024. Check https://forkcast.org/upgrade/hegota for latest confirmed scope.
+**Hegotá (Late 2026):**
+You may assume Hegotá will contain Verkle Trees. It will not. Ethereum may be shifting to a binary state tree (EIP-7864, draft since January 2025) — the primary driver is quantum resistance, and it also improves ZK-proof efficiency 3-100x. Verkle tree cryptography was identified as potentially quantum-vulnerable in mid-2024. Check https://forkcast.org/upgrade/hegota for latest confirmed scope.
 
 ## For AI Agents Specifically
 
