@@ -79,7 +79,7 @@ const response = await x402Fetch('https://api.example.com/data', {
 | Need | Tool |
 |------|------|
 | Rapid prototyping / full dApps | **Scaffold-ETH 2** |
-| Contract-focused dev | **Foundry** (forge + cast + anvil) |
+| Contract-focused dev | **Foundry** (forge + cast + anvil) · or **Hardhat 3** if TypeScript-first |
 | Quick contract interaction | **abi.ninja** (browser) or **cast** (CLI) |
 | React frontends | **wagmi + viem** (or SE2 which wraps these) |
 | Agent blockchain reads | **Blockscout MCP** |
