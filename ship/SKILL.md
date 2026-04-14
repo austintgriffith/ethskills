@@ -84,7 +84,8 @@ If "what if nobody calls it?" breaks your system, you have a design problem. Fix
 | **Base** | Coinbase distribution, smart wallets, account abstraction | Consumer apps, social, onboarding non-crypto users, high-frequency micro-payments |
 | **Arbitrum** | Deepest L2 DeFi liquidity, Stylus (Rust contracts) | DeFi protocols that need to compose with existing Arbitrum liquidity |
 | **Optimism** | RetroPGF, Superchain ecosystem | Public goods, OP Stack ecosystem plays |
-| **zkSync / Scroll** | ZK proofs, native account abstraction | Privacy features, ZK-native applications |
+| **zkSync** | Native account abstraction, paymaster support | Gasless UX, smart wallet features, consumer apps |
+| **Scroll** | EVM-equivalent ZK-rollup | Maximum EVM compatibility with ZK-proven security |
 
 **Don't pick an L2 because "mainnet is expensive." Pick an L2 because its superpower fits your app.**
 
