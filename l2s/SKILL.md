@@ -19,7 +19,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **Unichain exists.** Launched mainnet February 11, 2025. Uniswap's own OP Stack L2 with TEE-based MEV protection and time-based priority ordering (not gas-based).
 
-**Aerodrome and Velodrome merged into "Aero."** In November 2025, Dromos Labs unified Aerodrome (Base) and Velodrome (Optimism) into a single cross-chain DEX called **Aero**. Same contracts, new brand. Aero dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
+**Aerodrome and Velodrome are merging into "Aero."** In November 2025, Dromos Labs announced the unification of Aerodrome (Base) and Velodrome (Optimism) into a single cross-chain DEX called **Aero**. Rebranded November 2025; full platform launch Q2 2026. Aerodrome/Aero dominates Base, Velodrome/Aero dominates Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
 
 ## L2 Comparison Table (Mar 2026)
 
@@ -66,7 +66,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | No 7-day withdrawal wait | **ZK rollup** (zkSync, Scroll, Linea) | 15-120 min finality |
 | AI agents | **Base** | ERC-8004, x402, consumer ecosystem, AgentKit |
 | Gasless UX (native AA) | **zkSync Era** | Native account abstraction, paymasters, no bundlers needed |
-| Multi-chain deployment | **Base or Optimism** | Superchain / OP Stack, shared infra |
+| Multi-chain deployment | **Optimism** | Superchain / OP Stack, shared infra (Base left Superchain Feb 2026) |
 | Maximum EVM compatibility | **Scroll or Arbitrum** | Bytecode-identical |
 | Mobile / real-world payments | **Celo** | MiniPay, sub-cent fees, Africa/LatAm focus |
 | MEV protection | **Unichain** | TEE-based priority ordering, private mempool |
