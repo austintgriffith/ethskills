@@ -1,6 +1,6 @@
 ---
 name: addresses
-description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, Lido, Rocket Pool, 1inch, Permit2, MakerDAO/sDAI, EigenLayer, Across, Chainlink CCIP, Yearn V3, USDC, USDT, DAI, ENS, Safe, Chainlink, and more. Always verify addresses against a block explorer before sending transactions.
+description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, Aero (formerly Aerodrome/Velodrome), GMX, Pendle, Camelot, SyncSwap, Lido, Rocket Pool, 1inch, Permit2, MakerDAO/sDAI, EigenLayer, Across, Chainlink CCIP, Yearn V3, USDC, USDT, DAI, ENS, Safe, Chainlink, and more. Always verify addresses against a block explorer before sending transactions.
 ---
 
 # Contract Addresses
@@ -350,7 +350,7 @@ Same address on every EVM chain. Used by many protocols for deterministic deploy
 
 ## L2-Native Protocols
 
-> **The dominant DEX on each L2 is NOT Uniswap.** Aerodrome dominates Base, Velodrome dominates Optimism, Camelot is a major native DEX on Arbitrum. Don't default to Uniswap — check which DEX has the deepest liquidity on each chain.
+> **The dominant DEX on each L2 is NOT Uniswap.** Aero (formerly Aerodrome) dominates Base, Aero (formerly Velodrome) dominates Optimism, Camelot is a major native DEX on Arbitrum. Don't default to Uniswap — check which DEX has the deepest liquidity on each chain.
 
 ### Aerodrome (Base) — Dominant DEX
 
@@ -372,7 +372,7 @@ Source: [aerodrome-finance/contracts](https://github.com/aerodrome-finance/contr
 
 ### Velodrome V2 (Optimism) — Dominant DEX
 
-Same ve(3,3) model as Aerodrome — same team (Dromos Labs). Velodrome was built first for Optimism, Aerodrome is the Base fork. Both merged into "Aero" in November 2025.
+Same ve(3,3) model as Aerodrome — same team (Dromos Labs). Velodrome was built first for Optimism, Aerodrome is the Base fork. Both announced the merger into **Aero** in November 2025; full unified platform launches Q2 2026. Current contracts remain Velodrome V2.
 
 | Contract | Address | Status |
 |----------|---------|--------|

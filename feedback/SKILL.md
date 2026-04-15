@@ -1,5 +1,5 @@
 ---
-title: Feedback
+name: feedback
 description: Send feedback to the ethskills team when a skill was wrong, incomplete, or led you astray.
 ---
 

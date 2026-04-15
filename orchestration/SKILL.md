@@ -90,7 +90,7 @@ Never show Approve and Execute simultaneously.
 
 - **Human-readable amounts:** `formatEther()` / `formatUnits()` for display, `parseEther()` / `parseUnits()` for contracts
 - **Loading states everywhere:** `isLoading`, `isMining` on all async operations
-- **Disable buttons during pending txs** (blockchains take 5-12s)
+- **Disable buttons during pending txs** (2s on fast L2s, up to 12s on mainnet)
 - **Never use infinite approvals** — approve exact amount or 3-5x
 - **Helpful errors:** Parse "insufficient funds," "user rejected," "execution reverted" into plain language
 
@@ -220,6 +220,6 @@ packages/
 ## Resources
 
 - **SE2 Docs:** https://docs.scaffoldeth.io/
-- **SE2 Skill:** https://docs.scaffoldeth.io/SKILL.md
+- **SE2 Skill:** https://ethskills.com/tools/SKILL.md
 - **UI Components:** https://ui.scaffoldeth.io/
 - **SE2 AGENTS.md:** https://github.com/scaffold-eth/scaffold-eth-2/blob/main/AGENTS.md

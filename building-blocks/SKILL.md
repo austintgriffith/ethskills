@@ -1,6 +1,6 @@
 ---
 name: building-blocks
-description: DeFi legos and protocol composability on Ethereum and L2s. Major protocols per chain — Aerodrome on Base, GMX/Pendle on Arbitrum, Velodrome on Optimism — plus mainnet primitives (Uniswap, Aave, Compound, Curve). How they work, how to build on them, and how to combine them. Use when building DeFi integrations, choosing protocols on a specific L2, designing yield strategies, or composing existing protocols into something new.
+description: DeFi legos and protocol composability on Ethereum and L2s. Major protocols per chain — Aero (formerly Aerodrome) on Base, GMX/Pendle on Arbitrum, Aero (formerly Velodrome) on Optimism — plus mainnet primitives (Uniswap, Aave, Compound, Curve). How they work, how to build on them, and how to combine them. Use when building DeFi integrations, choosing protocols on a specific L2, designing yield strategies, or composing existing protocols into something new.
 ---
 
 # Building Blocks (DeFi Legos)
@@ -13,7 +13,7 @@ description: DeFi legos and protocol composability on Ethereum and L2s. Major pr
 
 **Costs changed everything:** A flash loan arbitrage on mainnet costs ~$0.05-0.50 in gas now (was $5-50). This opens composability patterns that were previously uneconomical.
 
-**The dominant DEX on each L2 is NOT Uniswap.** Aerodrome and Velodrome merged into **Aero** (November 2025, Dromos Labs) — the unified DEX dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. Don't default to Uniswap on every chain.
+**The dominant DEX on each L2 is NOT Uniswap.** In November 2025, Dromos Labs announced the merger of Aerodrome (Base) and Velodrome (Optimism) into **Aero** — the unified DEX dominates both Base and Optimism; full platform launches Q2 2026. Camelot is a major native DEX on Arbitrum. Don't default to Uniswap on every chain.
 
 ## Key Protocol Addresses (Verified Mar 2026)
 
@@ -166,7 +166,7 @@ contract FlashLoanArb is FlashLoanSimpleReceiverBase {
 
 ## Building on Base
 
-**Dominant DEX: Aero** (formerly Aerodrome, ~$500-600M TVL) — NOT Uniswap. In November 2025, Dromos Labs merged Aerodrome (Base) and Velodrome (Optimism) into a unified cross-chain DEX called **Aero**. Same contracts, same ve(3,3) model, new brand.
+**Dominant DEX: Aero** (formerly Aerodrome, ~$500-600M TVL) — NOT Uniswap. In November 2025, Dromos Labs announced the merger of Aerodrome (Base) and Velodrome (Optimism) into a unified cross-chain DEX called **Aero**; full platform launches Q2 2026. Same contracts, same ve(3,3) model, new brand.
 
 ### How Aero Works (Critical Difference from Uniswap)
 - **LPs deposit tokens** into pools → earn **AERO emissions** (not trading fees!)
@@ -225,7 +225,7 @@ Pendle splits yield-bearing assets into principal and yield components:
 - **Stylus:** Write smart contracts in Rust/C++/WASM alongside EVM (10-100x gas savings for compute-heavy operations)
 - **Orbit:** Launch custom L3 chains (47 live on mainnet)
 
-See `addresses/SKILL.md` for all verified protocol addresses (GMX, Pendle, Camelot, Aerodrome, Velodrome, SyncSwap, Morpho).
+See `addresses/SKILL.md` for all verified protocol addresses (GMX, Pendle, Camelot, Aero, SyncSwap, Morpho).
 
 ## Discovery Resources
 
