@@ -15,7 +15,7 @@ description: How to create, manage, and use Ethereum wallets. Covers EOAs, smart
 
 ## EIP-7702: Smart EOAs (Live Since May 2025)
 
-EOAs can **authorize delegated code execution** from smart-contract code. This is not automatically "one and done" - the delegation can stay active until it is replaced or explicitly cleared.
+EOAs can **authorize delegated code execution** from smart-contract code.
 
 **How it works:**
 1. The wallet signs a message that says which contract code the EOA can use.
@@ -31,7 +31,7 @@ EOAs can **authorize delegated code execution** from smart-contract code. This i
 - Custom authorization logic
 - Eliminates "approval fatigue" (approve + execute → one step)
 
-**Status (Feb 2026):** Deployed on mainnet. MetaMask, Rainbow adding support. Still early for production agents — use standard EOAs or Safe until tooling matures.
+**Status (2026):** Live on mainnet. MetaMask shipped full support; other wallets following. Still early for production agents — use standard EOAs or Safe until tooling matures.
 
 ## Safe (Gnosis Safe) Multisig
 
