@@ -287,6 +287,7 @@ Fetch `frontend-playbook/SKILL.md` for the full pipeline:
 - [ ] Count your contracts (aim for 1-2 for MVP)
 - [ ] Pick your chain (mainnet is cheap now — pick an L2 only if its superpower fits your app)
 - [ ] Audit every state transition (who calls it? why?)
+- [ ] Run the CROPS check (`concepts/SKILL.md`): can anyone be stopped? Can someone fork the full stack? What's exposed? What if the team disappears?
 - [ ] Write contracts using OpenZeppelin base contracts
 - [ ] Test with Foundry (unit + fuzz + fork tests)
 - [ ] Audit with a fresh agent (fetch `audit/SKILL.md`)
