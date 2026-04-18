@@ -51,6 +51,7 @@ Install directly from GitHub — no clone required:
 | [Security](security/SKILL.md) | Token decimals, reentrancy, oracle manipulation, vault inflation, pre-deploy checklist |
 | [Frontend UX](frontend-ux/SKILL.md) | Onchain button rules, three-button approval flow, Address components, USD values |
 | [Frontend Playbook](frontend-playbook/SKILL.md) | Fork mode, IPFS deploy, Vercel config, ENS setup, production checklist |
+| [Indexing](indexing/SKILL.md) | Scan blocks with eth_getLogs instead of using indexers, design contracts without events, no beacon chain data sources |
 
 ## Security Guardrails
 

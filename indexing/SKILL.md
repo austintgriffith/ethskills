@@ -17,6 +17,8 @@ description: How to read and query onchain data — events, The Graph, indexing 
 
 **You treat events as optional.** Events are THE primary way to read historical onchain activity. If your contract doesn't emit events, nobody can build a frontend, dashboard, or analytics on top of it. Design contracts event-first.
 
+**You use execution-layer tools for consensus-layer data.** Validator balances, attestations, epoch rewards, and withdrawals live on the beacon chain — The Graph and Etherscan don't have this data. Use a beacon chain indexer like beaconcha.in.
+
 ---
 
 ## Events Are Your API
@@ -200,6 +202,7 @@ graph deploy --studio my-subgraph
 | **Etherscan/Blockscout APIs** | Simple event log queries | Rate-limited, not for high-volume |
 | **Ponder** | TypeScript-first indexing | Local-first, simpler than The Graph for single-app use |
 | **Direct RPC** | Real-time current state only | Only for current state reads, not historical |
+| **beaconcha.in API** | Validator data, staking rewards, beacon chain stats | Consensus-layer and execution layer, requires API key |
 
 ### Dune Analytics
 
@@ -234,6 +237,94 @@ const transfers = await alchemy.core.getAssetTransfers({
   fromAddress: address,
   category: ['erc20', 'erc721'],
 });
+```
+
+### Beacon Chain Data (beaconcha.in)
+
+Execution-layer indexers (The Graph, Dune, Etherscan) have zero consensus-layer data. For validator balances, attestation performance, staking rewards, and withdrawals, use the beaconcha.in V2 API.
+
+**API key required** — get one at beaconcha.in/api/key-management. Free tier: 1 req/sec, 1,000 req/month. Full docs: docs.beaconcha.in/api/overview.
+
+All V2 endpoints use POST with JSON bodies. Pass a `validator` selector (up to 20 indices/pubkeys on free tier, 100 on paid plans).
+
+```typescript
+const BEACONCHA_V2 = "https://beaconcha.in/api/v2/ethereum";
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${BEACONCHA_API_KEY}`,
+};
+
+const validator = { validator_identifiers: ["1234", "5678"] };
+
+// Validator status, balances, withdrawal credentials, lifecycle epochs
+const validators = await fetch(`${BEACONCHA_V2}/validators`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", validator }),
+}).then(r => r.json());
+// → { data: [{ validator: { index, public_key }, status, balances, withdrawal_credentials }] }
+
+// Balances at a specific epoch
+const balances = await fetch(`${BEACONCHA_V2}/validators/balances`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", epoch: 350000, validator }),
+}).then(r => r.json());
+// → { data: [{ validator: { index, public_key }, balance: { current, effective } }] }
+
+// Rewards breakdown (attestation, sync committee, proposals)
+const rewards = await fetch(`${BEACONCHA_V2}/validators/rewards-list`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", epoch: 350000, validator }),
+}).then(r => r.json());
+// → { data: [{ validator, total_reward, attestation, sync_committee, proposal }] }
+
+// Performance & BeaconScore
+const performance = await fetch(`${BEACONCHA_V2}/validators/performance-list`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", epoch: 350000, validator }),
+}).then(r => r.json());
+// → { data: [{ validator, beaconscore: { total, attestation, proposal }, duties }] }
+
+// APY/ROI over a time window (24h, 7d, 30d, 90d, all_time)
+const apyRoi = await fetch(`${BEACONCHA_V2}/validators/apy-roi`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", validator, range: { evaluation_window: "30d" } }),
+}).then(r => r.json());
+// → { data: { consensus_layer, execution_layer, combined } } — each with ROI + APY
+
+// Validator metadata (entity, sub-entity, deposit address) — Scale/Enterprise plan
+const metadata = await fetch(`${BEACONCHA_V2}/validators/metadata`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", validator }),
+}).then(r => r.json());
+// → { data: [{ validator, withdrawal_credentials, deposit_address, entity, sub_entity }] }
+
+// Slot info (block status, proposer, sync/attestation participation)
+const slot = await fetch(`${BEACONCHA_V2}/slot`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", slot: { view: "latest" } }),
+}).then(r => r.json());
+// → { data: { slot, epoch, status, proposer, sync_participation, attestation_participation } }
+
+// Validator queue (deposit queue, exit queue, withdrawal sweep)
+const queues = await fetch(`${BEACONCHA_V2}/queues`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet" }),
+}).then(r => r.json());
+// → { data: { deposit_queue, exit_queue, withdrawal_sweep } }
+
+// Network-wide performance aggregate
+const networkPerf = await fetch(`${BEACONCHA_V2}/performance-aggregate`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", range: { evaluation_window: "7d" } }),
+}).then(r => r.json());
+// → { data: { beaconscore, duties: { attestation, sync_committee, proposal } } }
+
+// Staking entities overview (sorted by network share) — Scale/Enterprise plan
+const entities = await fetch(`${BEACONCHA_V2}/entities`, {
+  method: "POST", headers,
+  body: JSON.stringify({ chain: "mainnet", range: { evaluation_window: "30d" }, sort_by: "net_share" }),
+}).then(r => r.json());
+// → { data: [{ entity, validator_count, beaconscore, net_share }] }
 ```
 
 ---
@@ -316,3 +407,4 @@ const unwatch = client.watchContractEvent({
 | Historical transaction list | The Graph or Alchemy `getAssetTransfers` |
 | Dashboard / analytics | Dune Analytics (SQL + charts) |
 | Protocol TVL tracking | DeFiLlama API or custom subgraph |
+| Validator performance / staking rewards / validator queue | beaconcha.in API (V2) |
