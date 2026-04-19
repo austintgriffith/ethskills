@@ -334,6 +334,9 @@ After deploying, every contract MUST be verified on the block explorer. Unverifi
 **How to check:** Take each contract address from `deployedContracts.ts`, open it on the block explorer (Etherscan, Basescan, Arbiscan, etc.), and look for the "Contract" tab with a ✅ checkmark. If it shows bytecode only — not verified.
 
 **How to fix (SE2):**
+
+⚠️ **Before running:** Your deploy script must be named exactly `Deploy.s.sol`. `VerifyAll.s.sol` hardcodes the broadcast path to `broadcast/Deploy.s.sol/<chainId>/run-latest.json` — any other name fails with `No such file or directory`. If your script has a custom name, use the Foundry fallback below instead of renaming.
+
 ```bash
 yarn verify --network mainnet   # or base, arbitrum, optimism, etc.
 ```
