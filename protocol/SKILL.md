@@ -123,6 +123,7 @@ Hard forks are how Ethereum upgrades. Recent and upcoming:
 | Pectra | May 7, 2025 | EIP-7702 (smart EOAs), validator consolidation (EIP-7251) |
 | Fusaka | Dec 3, 2025 | PeerDAS (EIP-7594), more blobs (EIP-7892) |
 | Glamsterdam | ~Q3-Q4 2026 (in progress) | ePBS (EIP-7732), block access lists (EIP-7928) |
+| Hegotá | Late 2026 (planned) | FOCIL (EIP-7805), Account Abstraction (EIP-8141) |
 
 **To find what's in a fork:**
 1. Check [forkcast.org](https://forkcast.org) — filter by fork to see all CFI/SFI EIPs
