@@ -164,6 +164,14 @@ eip155:42161:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 // Arbitrum
 
 **Resources:** https://www.8004.org | https://eips.ethereum.org/EIPS/eip-8004 | https://github.com/erc-8004/erc-8004-contracts
 
+### Custom ERC-8004 Deployments — Pattern Note
+
+Not every project uses the canonical `0x8004A169...` registry. Some teams deploy **their own** ERC-8004-compatible IdentityRegistry to gate the registration set (e.g. require a stake, attach a reputation framework, or publish a different agentURI schema). When you see an ERC-8004 reference, **always read the `agentRegistry` chain+address** — don't assume canonical.
+
+Live example: **Vaultfire** runs its own ERC-8004 IdentityRegistry on Base/Arbitrum/Avalanche/Polygon (Base address `0xa7BD20bf5De63df949cA5Be2F20835978eCba81A`), pairs it with on-chain partnership-bond + reputation contracts, and ships an XMTP V3 group registry (`VaultfireForumRegistry`, byte-identical 2,660-byte deploy on all 4 chains, Sourcify-perfect) for permissionless category discovery on top of the agent set. Source + addresses: https://github.com/Ghostkey316/ghostkey-316-vaultfire-init.
+
+Doesn't matter if you use canonical or custom — the key thing is: **agent identity is now a chain+address+tokenId tuple**, not a global ID. Cite the registry, not just the agentId.
+
 ## EIP-3009: Transfer With Authorization
 
 You probably know the concept (gasless meta-transaction transfers). The key update: **EIP-3009 is what makes x402 work.** USDC implements it on Ethereum and most chains. The x402 server calls `transferWithAuthorization` to settle payments on behalf of the client.
