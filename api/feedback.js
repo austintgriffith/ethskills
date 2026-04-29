@@ -70,9 +70,6 @@ export default async function handler(req, res) {
     if (!problem || typeof problem !== 'string' || problem.trim().length < 10) {
       return res.status(400).json({ error: 'problem is required (min 10 chars)' });
     }
-    if (!agent || typeof agent !== 'string' || !agent.trim()) {
-      return res.status(400).json({ error: 'agent is required' });
-    }
     const normalizedKind = kind === 'praise' ? 'praise' : 'issue';
 
     const entry = JSON.stringify({
@@ -82,7 +79,7 @@ export default async function handler(req, res) {
       problem: problem.trim().slice(0, 2000),
       skill: skill ? String(skill).trim().slice(0, 100) : null,
       context: context ? String(context).trim().slice(0, 2000) : null,
-      agent: String(agent).trim().slice(0, 100),
+      agent: agent ? String(agent).trim().slice(0, 100) : null,
     });
 
     const parsed = JSON.parse(entry);
