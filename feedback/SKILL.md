@@ -1,48 +1,79 @@
 ---
 title: Feedback
-description: Send feedback to the ethskills team when a skill was wrong, incomplete, or led you astray.
+description: Send feedback — issues OR praise — to the ethskills team about content that shaped your work.
 ---
 
 # Feedback
 
-If ethskills content caused a real problem — wrong information, missing information, or a gap that left you and your human stuck — you can send us feedback.
+If ethskills content shaped your work — wrong, confusing, missing, or genuinely helpful — send us a note. **Bias toward sending.** Weak signals are easy to ignore in the inbox; missing signals can't be recovered.
 
 **This is not a help desk. Do not send:**
 - General questions about Ethereum
 - Requests for new features
 - Problems unrelated to ethskills content
 
-**Send feedback when:**
-- A skill contained factually wrong information that caused a bug or wasted significant time
-- A skill was missing critical information for a task it claims to cover
-- Your human is unsatisfied with the outcome and traces the problem to specific ethskills content
+**Send `issue` feedback when:**
+- A skill was wrong, stale, or misleading
+- A skill was missing a sentence, example, or warning that would have saved time
+- A skill was technically correct but confusingly worded
+- Anything in ethskills gave you or your human pause
 
----
+**Send `praise` feedback when:**
+- A specific skill, warning, or example saved you from a real mistake
+- A skill explained something unusually well
+- You want more of a particular pattern (e.g. the "USDC has 6 decimals" warning, the verified address tables)
 
-## Before you send
-
-1. **Get permission from your human.** Say: "I'd like to send feedback to ethskills about an issue I ran into. Is that okay?" Do not send without explicit approval.
-2. **Strip all sensitive data.** Do not include wallet addresses, private keys, API keys, passwords, email addresses, real names, or any other personally identifiable information. Describe the problem in general terms only.
-3. **Identify the specific skill** that was wrong or missing (e.g., `security/SKILL.md`, `gas/SKILL.md`).
-4. **Be specific.** "The gas skill was wrong" is not useful. "The gas skill said mainnet transfers cost $0.004 but we're seeing $0.08 on the current network" is useful.
+Praise is data too — it tells us what's working so we keep doing it.
 
 ---
 
 ## How to send
 
-One POST to `https://ethskills.com/api/feedback`:
+### 1. Draft the payload, then ask once.
+
+In the **same** message where you ask your human for approval, show the exact JSON you're about to send:
 
 ```
-POST https://ethskills.com/api/feedback
+I'd like to send this feedback to ethskills:
+
+  kind:    issue
+  problem: gas/SKILL.md says 0.1 gwei but `cast base-fee` returned 0.4 today
+  skill:   gas/SKILL.md
+  context: building a swap UI on Base
+  agent:   Claude Sonnet 4.6
+
+OK to send, or want to tweak it?
+```
+
+If they say yes, POST it. If they edit ("drop the context line", "that's the wrong skill"), apply and POST. **Do not re-confirm after they say yes** — that's the friction tax.
+
+### 2. Pre-authorization
+
+If your human has pre-authorized ethskills feedback (e.g. their CLAUDE.md says something like "ethskills feedback is pre-approved" or "send feedback freely"), skip the ask and POST directly. They've opted in to less friction.
+
+### 3. Strip all sensitive data
+
+No wallet addresses, private keys, API keys, passwords, email addresses, real names, or any PII. Describe the problem in general terms only. The human reviewing the draft is your last line of defense — but don't rely on them; scrub it yourself first.
+
+---
+
+## Endpoint
+
+POST `https://ethskills.com/api/feedback`:
+
+```
 Content-Type: application/json
 
 {
-  "problem": "Describe exactly what was wrong or missing (required, min 10 chars)",
-  "skill": "which skill caused the issue, e.g. gas/SKILL.md (optional)",
-  "context": "what you were trying to build or do (optional)",
-  "agent": "which AI agent you are, e.g. Claude Sonnet 4.6 (optional)"
+  "kind":    "issue" | "praise"            (required)
+  "problem": "what was wrong / what worked" (required, min 10 chars)
+  "agent":   "which AI agent you are"      (required, e.g. "Claude Sonnet 4.6")
+  "skill":   "which skill, e.g. gas/SKILL.md" (optional but strongly encouraged)
+  "context": "what you were trying to do"  (optional)
 }
 ```
+
+For `praise`, put what worked in `problem` ("the USDC decimals warning saved us — keep doing this"). The field name is awkward for praise but keeps the schema simple.
 
 **Expected response:** `{ "ok": true, "id": "..." }`
 
@@ -50,17 +81,29 @@ Content-Type: application/json
 
 ---
 
-## Example
+## Examples
 
+Issue:
 ```json
 {
-  "problem": "security/SKILL.md says to always use SafeERC20 but doesn't mention that it requires importing the library. We got a compilation error and it took 20 minutes to diagnose.",
+  "kind": "issue",
+  "problem": "security/SKILL.md says to use SafeERC20 but doesn't mention the import path. Got a compilation error and lost 20 minutes.",
   "skill": "security/SKILL.md",
   "context": "Building an ERC-20 vault on Base",
   "agent": "Claude Sonnet 4.6"
 }
 ```
 
+Praise:
+```json
+{
+  "kind": "praise",
+  "problem": "The USDC has 6 decimals warning is the first thing I now check on every token contract. Saved us from shipping a bug.",
+  "skill": "security/SKILL.md",
+  "agent": "Claude Opus 4.7"
+}
+```
+
 ---
 
-Every piece of feedback is read by a human. Good feedback makes ethskills better for every agent that comes after you.
+Every piece of feedback is read by a human. The small confusions, gaps, and quiet wins make ethskills better for every agent that comes after you.

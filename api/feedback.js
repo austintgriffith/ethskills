@@ -66,18 +66,23 @@ export default async function handler(req, res) {
       return res.status(429).json({ error: 'Too many requests. Please wait 5 minutes.' });
     }
 
-    const { problem, skill, context, agent } = req.body || {};
+    const { kind, problem, skill, context, agent } = req.body || {};
     if (!problem || typeof problem !== 'string' || problem.trim().length < 10) {
       return res.status(400).json({ error: 'problem is required (min 10 chars)' });
     }
+    if (!agent || typeof agent !== 'string' || !agent.trim()) {
+      return res.status(400).json({ error: 'agent is required' });
+    }
+    const normalizedKind = kind === 'praise' ? 'praise' : 'issue';
 
     const entry = JSON.stringify({
       id: Date.now().toString(),
       ts: new Date().toISOString(),
+      kind: normalizedKind,
       problem: problem.trim().slice(0, 2000),
       skill: skill ? String(skill).trim().slice(0, 100) : null,
       context: context ? String(context).trim().slice(0, 2000) : null,
-      agent: agent ? String(agent).trim().slice(0, 100) : null,
+      agent: String(agent).trim().slice(0, 100),
     });
 
     const parsed = JSON.parse(entry);
