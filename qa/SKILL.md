@@ -169,7 +169,7 @@ Open `packages/nextjs/scaffold.config.ts`:
 
 - ❌ **FAIL:** `pollingInterval: 30000` (default — makes the UI feel broken, 30 second update lag)
 - ✅ **PASS:** `pollingInterval: 3000`
-- ❌ **FAIL:** Using default Alchemy API key that ships with SE2
+- ❌ **FAIL:** Using the default demo RPC key that ships with SE2 (shared across all users, rate-limited)
 - ❌ **FAIL:** Code references `process.env.NEXT_PUBLIC_*` but the variable isn't actually set in the deployment environment (Vercel/hosting). Falls back to public RPC like `mainnet.base.org` which is rate-limited
 - ✅ **PASS:** `rpcOverrides` uses `process.env.NEXT_PUBLIC_*` variables AND the env var is confirmed set on the hosting platform
 - ❌ **FAIL:** `services/web3/wagmiConfig.tsx` still includes bare `http()` fallback transport (silently hits public RPCs in parallel, causing rate limits)
