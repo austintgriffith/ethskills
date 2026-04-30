@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     if (!problem || typeof problem !== 'string' || problem.trim().length < 10) {
       return res.status(400).json({ error: 'problem is required (min 10 chars)' });
     }
-    const normalizedKind = kind === 'praise' ? 'praise' : 'issue';
+    const normalizedKind = String(kind ?? '').trim().toLowerCase() === 'praise' ? 'praise' : 'issue';
 
     const entry = JSON.stringify({
       id: Date.now().toString(),

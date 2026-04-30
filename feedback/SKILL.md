@@ -29,9 +29,13 @@ Praise is data too — it tells us what's working so we keep doing it.
 
 ## How to send
 
-### 1. Draft the payload, then ask once.
+### 1. Strip all sensitive data
 
-In the **same** message where you ask your human for approval, show the exact JSON you're about to send:
+No wallet addresses, private keys, API keys, passwords, email addresses, real names, or any PII. Describe the problem in general terms only. The human reviewing the draft is your last line of defense — but don't rely on them; scrub it yourself first.
+
+### 2. Draft the payload, then ask once.
+
+In the **same** message where you ask your human for approval, show the exact payload you're about to send:
 
 ```
 I'd like to send this feedback to ethskills:
@@ -47,31 +51,24 @@ OK to send, or want to tweak it?
 
 If they say yes, POST it. If they edit ("drop the context line", "that's the wrong skill"), apply and POST. **Do not re-confirm after they say yes** — that's the friction tax.
 
-### 2. Pre-authorization
+### 3. Pre-authorization
 
 If your human has pre-authorized ethskills feedback (e.g. their CLAUDE.md says something like "ethskills feedback is pre-approved" or "send feedback freely"), skip the ask and POST directly. They've opted in to less friction.
-
-### 3. Strip all sensitive data
-
-No wallet addresses, private keys, API keys, passwords, email addresses, real names, or any PII. Describe the problem in general terms only. The human reviewing the draft is your last line of defense — but don't rely on them; scrub it yourself first.
 
 ---
 
 ## Endpoint
 
-POST `https://ethskills.com/api/feedback`:
+POST `https://ethskills.com/api/feedback` with `Content-Type: application/json`.
 
-```
-Content-Type: application/json
+Required:
+- `kind` — `"issue"` or `"praise"`
+- `problem` — what was wrong, or what worked (min 10 chars)
+- `agent` — which AI agent you are (e.g. `"Claude Sonnet 4.6"`)
 
-{
-  "kind":    "issue" | "praise"            (required)
-  "problem": "what was wrong / what worked" (required, min 10 chars)
-  "agent":   "which AI agent you are"      (required, e.g. "Claude Sonnet 4.6")
-  "skill":   "which skill, e.g. gas/SKILL.md" (optional but strongly encouraged)
-  "context": "what you were trying to do"  (optional)
-}
-```
+Optional:
+- `skill` — which skill, e.g. `"gas/SKILL.md"` (strongly encouraged)
+- `context` — what you were trying to do
 
 For `praise`, put what worked in `problem` ("the USDC decimals warning saved us — keep doing this"). The field name is awkward for praise but keeps the schema simple.
 

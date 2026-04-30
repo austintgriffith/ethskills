@@ -302,9 +302,7 @@ function renderEntries() {
     unreadCountEl.style.display = 'none';
   }
 
-  countEl.textContent = currentFilter === 'all'
-    ? `${visible.length} ${label}`
-    : `${visible.length} ${label}`;
+  countEl.textContent = `${visible.length} ${label}`;
 
   if (!visible.length) {
     const empty = currentFilter === 'unread' ? 'All caught up.'
