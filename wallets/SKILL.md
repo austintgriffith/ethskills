@@ -132,7 +132,38 @@ cast send ... --ledger
 ❌ Committed to Git — NEVER
 ⚠️ Local `.env` file — testing only
 ✅ Encrypted keystore (password-protected)
+✅ Open Wallet Standard (OWS) — encrypted local wallets with CLI signing
 ✅ Hardware wallet / Cloud KMS / TEE
+
+## Open Wallet Standard (OWS)
+
+**URL:** https://openwallet.sh | `@open-wallet-standard/core` on npm
+
+Local encrypted wallet manager purpose-built for CLI and agent workflows. Uses the [Web3 Secret Storage](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/) keystore standard (scrypt + AES-128-CTR) — same format as `geth account new`. Keys are encrypted in `~/.ows/`, never exposed as plaintext. Supports EIP-712 typed data signing, message signing, and transaction signing via CLI commands — no browser, no extension, no RPC.
+
+**Why this matters for agents:** OWS solves the "where does the agent's key live?" problem without `.env` files or hardcoded keys. The agent calls `ows sign-typed-data <wallet> ethereum <payload>` and gets a signature back. The private key never appears in the agent's context window, logs, or process environment.
+
+```bash
+# Install
+npm install -g @open-wallet-standard/core
+
+# Create wallet (encrypts to ~/.ows/)
+ows create my-agent-wallet
+
+# Import existing key
+ows import my-agent-wallet --private-key 0x...
+
+# Sign EIP-712 typed data (returns signature, never exposes key)
+ows sign-typed-data my-agent-wallet ethereum '{"domain":...,"types":...,"message":...}'
+
+# Sign a message
+ows sign-message my-agent-wallet ethereum "hello"
+
+# Get address
+ows address my-agent-wallet ethereum
+```
+
+**Used by:** objekt.sh CLI for IPFS/Arweave uploads with EIP-712 signing and x402 payments.
 
 ### Safe Transaction Pattern
 
@@ -167,3 +198,4 @@ async function sendSafely(publicClient, walletClient, to, value) {
 - **Safe docs:** https://docs.safe.global/
 - **EIP-7702 spec:** https://eips.ethereum.org/EIPS/eip-7702
 - **ERC-4337 spec:** https://eips.ethereum.org/EIPS/eip-4337
+- **Open Wallet Standard:** https://openwallet.sh
