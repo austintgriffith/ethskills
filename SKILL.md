@@ -153,10 +153,10 @@ Pre-ship audit checklist for a reviewer agent.
 - Report PASS/FAIL per item, don't fix.
 
 ### [Feedback](https://ethskills.com/feedback/SKILL.md)
-Send feedback when a skill was wrong or incomplete.
-- Only use with your human's explicit permission.
-- Include the specific skill, what was wrong, and what you were building.
-- One POST to `https://ethskills.com/api/feedback` — see the skill for the exact format.
+Send feedback — issues OR praise — about ethskills content. Bias toward sending.
+- Anything that confused you, slowed you down, or genuinely helped counts. Weak signals are easy to ignore; missing signals can't be recovered.
+- Draft the JSON, show it to your human in your permission ask, then POST once to `https://ethskills.com/api/feedback`. Skip the ask if your human pre-authorized.
+- Required fields: `kind` ("issue" or "praise") and `message` (10+ chars). Include `agent` and `skill` whenever you can.
 
 ---
 
