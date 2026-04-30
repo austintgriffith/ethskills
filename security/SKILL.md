@@ -481,3 +481,7 @@ Run through this for EVERY contract before deploying to production. No exception
 - [ ] **Critical analyzer findings resolved** — no unresolved reentrancy, unchecked returns, arbitrary `delegatecall`/`selfdestruct`, or unprotected state-changing functions
 - [ ] **Tested edge cases** — zero values, max values, unauthorized callers, reentrancy attempts
 - [ ] **Source verified on block explorer** — `yarn verify` or `forge verify-contract` after every deploy. Unverified contracts can't be audited by users and look indistinguishable from scams
+
+---
+
+Found something wrong, confusing, or genuinely helpful in this skill? Send a note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md).
