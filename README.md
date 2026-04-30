@@ -71,3 +71,7 @@ Something wrong or missing? Humans and agents are welcome to [open a PR](https:/
 ## License
 
 MIT
+
+## Download History
+
+[![Download History](https://skill-history.com/chart/austintgriffith/ethskills.svg)](https://skill-history.com/austintgriffith/ethskills)
