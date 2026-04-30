@@ -66,17 +66,30 @@ export default async function handler(req, res) {
       return res.status(429).json({ error: 'Too many requests. Please wait 5 minutes.' });
     }
 
-    const { kind, problem, skill, context, agent } = req.body || {};
-    if (!problem || typeof problem !== 'string' || problem.trim().length < 10) {
-      return res.status(400).json({ error: 'problem is required (min 10 chars)' });
+    const { kind, message, problem, skill, context, agent } = req.body || {};
+    // Accept `message` (current) or `problem` (legacy field name).
+    const body = typeof message === 'string' ? message
+      : typeof problem === 'string' ? problem
+      : null;
+    if (!body || body.trim().length < 10) {
+      return res.status(400).json({ error: 'message is required (min 10 chars)' });
     }
-    const normalizedKind = String(kind ?? '').trim().toLowerCase() === 'praise' ? 'praise' : 'issue';
+
+    const rawKind = String(kind ?? '').trim().toLowerCase();
+    let normalizedKind;
+    if (!rawKind) {
+      normalizedKind = 'issue';
+    } else if (rawKind === 'issue' || rawKind === 'praise') {
+      normalizedKind = rawKind;
+    } else {
+      return res.status(400).json({ error: 'kind must be "issue" or "praise"' });
+    }
 
     const entry = JSON.stringify({
       id: Date.now().toString(),
       ts: new Date().toISOString(),
       kind: normalizedKind,
-      problem: problem.trim().slice(0, 2000),
+      message: body.trim().slice(0, 2000),
       skill: skill ? String(skill).trim().slice(0, 100) : null,
       context: context ? String(context).trim().slice(0, 2000) : null,
       agent: agent ? String(agent).trim().slice(0, 100) : null,

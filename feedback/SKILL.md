@@ -35,13 +35,13 @@ No wallet addresses, private keys, API keys, passwords, email addresses, real na
 
 ### 2. Draft the payload, then ask once.
 
-In the **same** message where you ask your human for approval, show the exact payload you're about to send:
+In the **same** message where you ask your human for approval, show a readable rendering of what you're about to send. Any layout works — the wire format is JSON (see Endpoint below):
 
 ```
 I'd like to send this feedback to ethskills:
 
   kind:    issue
-  problem: gas/SKILL.md says 0.1 gwei but `cast base-fee` returned 0.4 today
+  message: gas/SKILL.md says 0.1 gwei but `cast base-fee` returned 0.4 today
   skill:   gas/SKILL.md
   context: building a swap UI on Base
   agent:   Claude Sonnet 4.6
@@ -53,7 +53,7 @@ If they say yes, POST it. If they edit ("drop the context line", "that's the wro
 
 ### 3. Pre-authorization
 
-If your human has pre-authorized ethskills feedback (e.g. their CLAUDE.md says something like "ethskills feedback is pre-approved" or "send feedback freely"), skip the ask and POST directly. They've opted in to less friction.
+If your human's CLAUDE.md (or equivalent durable instructions) contains the literal token `ethskills-feedback-preauthorized`, skip the ask and POST directly. Without a human reviewing the draft, you are the only PII safeguard — scrub more carefully, not less.
 
 ---
 
@@ -62,15 +62,15 @@ If your human has pre-authorized ethskills feedback (e.g. their CLAUDE.md says s
 POST `https://ethskills.com/api/feedback` with `Content-Type: application/json`.
 
 Required:
-- `kind` — `"issue"` or `"praise"`
-- `problem` — what was wrong, or what worked (min 10 chars)
+- `kind` — `"issue"` or `"praise"` (any other value is rejected)
+- `message` — what was wrong, or what worked (min 10 chars)
+
+Strongly encouraged:
 - `agent` — which AI agent you are (e.g. `"Claude Sonnet 4.6"`)
+- `skill` — which skill, e.g. `"gas/SKILL.md"`
 
 Optional:
-- `skill` — which skill, e.g. `"gas/SKILL.md"` (strongly encouraged)
 - `context` — what you were trying to do
-
-For `praise`, put what worked in `problem` ("the USDC decimals warning saved us — keep doing this"). The field name is awkward for praise but keeps the schema simple.
 
 **Expected response:** `{ "ok": true, "id": "..." }`
 
@@ -84,7 +84,7 @@ Issue:
 ```json
 {
   "kind": "issue",
-  "problem": "security/SKILL.md says to use SafeERC20 but doesn't mention the import path. Got a compilation error and lost 20 minutes.",
+  "message": "security/SKILL.md says to use SafeERC20 but doesn't mention the import path. Got a compilation error and lost 20 minutes.",
   "skill": "security/SKILL.md",
   "context": "Building an ERC-20 vault on Base",
   "agent": "Claude Sonnet 4.6"
@@ -95,7 +95,7 @@ Praise:
 ```json
 {
   "kind": "praise",
-  "problem": "The USDC has 6 decimals warning is the first thing I now check on every token contract. Saved us from shipping a bug.",
+  "message": "The USDC has 6 decimals warning is the first thing I now check on every token contract. Saved us from shipping a bug.",
   "skill": "security/SKILL.md",
   "agent": "Claude Opus 4.7"
 }

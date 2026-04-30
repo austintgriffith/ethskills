@@ -327,7 +327,7 @@ function renderEntries() {
         </div>
         <button class="mark-read-btn" data-id="${esc(e.id)}">Mark read</button>
       </div>
-      <div class="entry-problem">${esc(e.problem)}</div>
+      <div class="entry-problem">${esc(e.message ?? e.problem)}</div>
       ${e.context ? `<div class="entry-context">${esc(e.context)}</div>` : ''}
     </div>`;
   }).join('');
