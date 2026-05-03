@@ -85,6 +85,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 - **Flashblocks:** Currently 1s blocks, roadmap to 250ms sub-blocks
 
 ### Celo
+
 - **Was:** Independent L1 blockchain (2020-2025)
 - **Now:** OP Stack L2 on Ethereum — **migrated March 26, 2025** (block 31056500)
 - **Focus:** Mobile-first payments, emerging markets
@@ -92,12 +93,13 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 - **Multi-currency stablecoins (rebranded Dec 2025 by Mento Protocol):** USDm (was cUSD) (`0x765de816845861e75a25fca122bb6898b8b1282a`), EURm (was cEUR) (`0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`), BRLm (was cREAL) (`0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`). Same contract addresses, new onchain symbols.
 
 ### Dominant DEX Per Chain
-| Chain | Dominant DEX | Model | Why NOT Uniswap |
-|-------|-------------|-------|-----------------|
-| Base | **Aero** (was Aerodrome) | ve(3,3) — LPs earn emissions, voters earn fees | Deeper liquidity for most pairs |
-| Optimism | **Aero** (was Velodrome) | ve(3,3) — merged Nov 2025 under Dromos Labs | Same flywheel, unified brand |
-| Arbitrum | Camelot + GMX | Native DEX + perps | Camelot for spot, GMX for perps |
-| zkSync | SyncSwap | Classic AMM | Largest native DEX on zkSync |
+
+| Chain    | Dominant DEX             | Model                                          | Why NOT Uniswap                 |
+| -------- | ------------------------ | ---------------------------------------------- | ------------------------------- |
+| Base     | **Aero** (was Aerodrome) | ve(3,3) — LPs earn emissions, voters earn fees | Deeper liquidity for most pairs |
+| Optimism | **Aero** (was Velodrome) | ve(3,3) — merged Nov 2025 under Dromos Labs    | Same flywheel, unified brand    |
+| Arbitrum | Camelot + GMX            | Native DEX + perps                             | Camelot for spot, GMX for perps |
+| zkSync   | SyncSwap                 | Classic AMM                                    | Largest native DEX on zkSync    |
 
 See `addresses/SKILL.md` for verified contract addresses for all these protocols.
 
@@ -110,46 +112,83 @@ Members contribute **15% of sequencer revenue** to the Optimism Collective. Cros
 ## Deployment Differences (Gotchas)
 
 ### Optimistic Rollups (Arbitrum, Optimism, Base, Unichain, Celo)
+
 ✅ Deploy like mainnet — just change RPC URL and chain ID. No code changes.
 
 **Gotchas:**
+
 - Don't use `block.number` for time-based logic (increments at different rates). Use `block.timestamp`.
 - Arbitrum's `block.number` returns L1 block number, not L2.
 - **Unichain:** Transactions are priority-ordered by time, not gas. Don't waste gas on priority fees.
 
 ### ZK Rollups
+
 - **zkSync Era:** Must use `zksolc` compiler. No `EXTCODECOPY` (compile-time error). 65K instruction limit. Non-inlinable libraries must be pre-deployed. Native account abstraction (all accounts are smart contracts).
 - **Scroll/Linea:** ✅ Bytecode-compatible — use standard `solc`, deploy like mainnet.
 
 ### Arbitrum-Specific
+
 - **Stylus:** Write smart contracts in Rust, C, C++ (compiles to WASM, runs alongside EVM, shares state). Use for compute-heavy operations (10-100x gas savings). Contracts must be "activated" via `ARB_WASM_ADDRESS` (0x0000…0071).
 - **Orbit:** Framework for launching L3 chains on Arbitrum. 47 live on mainnet.
 
+## zkSync Developer Patterns
+
+### Native Account Abstraction
+
+- How zkSync AA differs from ERC-4337: no bundlers, no UserOperation mempool, no EntryPoint
+- Every account has smart contract code (EOAs use `DefaultAccount.sol`)
+- `IAccount` interface: `validateTransaction`, `executeTransaction`, `payForTransaction`, `prepareForPaymaster`
+- Account deployment: `createAccount` / `create2Account` (not regular `create`)
+- Must implement EIP-1271 for signature validation
+- Nonce management via `NonceHolder` system contract
+
+### Paymaster Implementation
+
+- `IPaymaster` interface with exact function signatures
+- Two flows: General (paymaster just pays) vs Approval-based (user sets token allowance)
+- Magic value: `PAYMASTER_VALIDATION_SUCCESS_MAGIC = IPaymaster.validateAndPayForPaymasterTransaction.selector`
+- Gas considerations (paymaster txs cost more: internal computation + fund transfer + allowance management)
+- Complete code example for a basic paymaster
+
+### zksolc Compiler Gotchas
+
+- No `EXTCODECOPY` — `address(..).code` is a compile-time error
+- Contract size limit: 2^16 (65,535) instructions max
+- Workarounds: `--zk-force-evmla=true`, `--zk-fallback-oz=true`, or split contracts
+- Non-inlinable libraries must be pre-deployed and linked at compile time
+- Compilation pipeline: Solidity → Yul → LLVM IR → zkEVM bytecode
+- Foundry-zksync: use `--zksync` flag
+
+### zkSync-Specific Protocols
+
+- SyncSwap (dominant native DEX)
+- Ecosystem TVL context (~$110M — much smaller than Base/Arbitrum)
+
 ## RPCs and Explorers
 
-| L2 | RPC | Explorer |
-|----|-----|----------|
-| Arbitrum | `https://arb1.arbitrum.io/rpc` | https://arbiscan.io |
-| Base | `https://mainnet.base.org` | https://basescan.org |
-| Optimism | `https://mainnet.optimism.io` | https://optimistic.etherscan.io |
-| Unichain | `https://mainnet.unichain.org` | https://uniscan.xyz |
-| Celo | `https://forno.celo.org` | https://celoscan.io |
-| zkSync | `https://mainnet.era.zksync.io` | https://explorer.zksync.io |
-| Scroll | `https://rpc.scroll.io` | https://scrollscan.com |
-| Linea | `https://rpc.linea.build` | https://lineascan.build |
+| L2       | RPC                             | Explorer                        |
+| -------- | ------------------------------- | ------------------------------- |
+| Arbitrum | `https://arb1.arbitrum.io/rpc`  | https://arbiscan.io             |
+| Base     | `https://mainnet.base.org`      | https://basescan.org            |
+| Optimism | `https://mainnet.optimism.io`   | https://optimistic.etherscan.io |
+| Unichain | `https://mainnet.unichain.org`  | https://uniscan.xyz             |
+| Celo     | `https://forno.celo.org`        | https://celoscan.io             |
+| zkSync   | `https://mainnet.era.zksync.io` | https://explorer.zksync.io      |
+| Scroll   | `https://rpc.scroll.io`         | https://scrollscan.com          |
+| Linea    | `https://rpc.linea.build`       | https://lineascan.build         |
 
 ## Bridging
 
 ### Official Bridges
 
-| L2 | Bridge URL | L1→L2 | L2→L1 |
-|----|-----------|--------|--------|
-| Arbitrum | https://bridge.arbitrum.io | ~10-15 min | ~7 days |
-| Base | https://bridge.base.org | ~10-15 min | ~7 days |
-| Optimism | https://app.optimism.io/bridge | ~10-15 min | ~7 days |
-| Unichain | https://app.uniswap.org/swap | ~10-15 min | ~7 days |
-| zkSync | https://bridge.zksync.io | ~15-30 min | ~15-60 min |
-| Scroll | https://scroll.io/bridge | ~15-30 min | ~30-120 min |
+| L2       | Bridge URL                     | L1→L2      | L2→L1       |
+| -------- | ------------------------------ | ---------- | ----------- |
+| Arbitrum | https://bridge.arbitrum.io     | ~10-15 min | ~7 days     |
+| Base     | https://bridge.base.org        | ~10-15 min | ~7 days     |
+| Optimism | https://app.optimism.io/bridge | ~10-15 min | ~7 days     |
+| Unichain | https://app.uniswap.org/swap   | ~10-15 min | ~7 days     |
+| zkSync   | https://bridge.zksync.io       | ~15-30 min | ~15-60 min  |
+| Scroll   | https://scroll.io/bridge       | ~15-30 min | ~30-120 min |
 
 ### Fast Bridges (Instant Withdrawals)
 
@@ -172,6 +211,15 @@ forge create src/MyContract.sol:MyContract \
 ```
 
 **Strategy for new projects:** Start with 1 chain — mainnet if it fits your use case, or the L2 whose superpower matches your app. Prove product-market fit. Expand with CREATE2 for consistent addresses across chains.
+
+## Testnets
+
+| L2       | Testnet | Chain ID | Faucet                                    |
+| -------- | ------- | -------- | ----------------------------------------- |
+| Arbitrum | Sepolia | 421614   | https://faucet.arbitrum.io                |
+| Base     | Sepolia | 84532    | https://faucet.quicknode.com/base/sepolia |
+| Optimism | Sepolia | 11155420 | https://faucet.optimism.io                |
+| Unichain | Sepolia | 1301     | https://faucet.unichain.org               |
 
 ## Further Reading
 
