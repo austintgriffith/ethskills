@@ -1,3 +1,8 @@
+---
+name: ethskills
+description: Use when a request involves Ethereum, the EVM, or blockchain systems. Applies to building, auditing, deploying, or interacting with smart contracts, dApps, wallets, or DeFi protocols. Covers Solidity development, contract addresses, token standards (ERC-20, ERC-721, ERC-4626, etc.), Layer 2 networks (Base, Arbitrum, Optimism, zkSync, Polygon), and integrations with DeFi protocols such as Uniswap, Aave, and Curve. Includes topics such as gas costs, contract decimals, oracle safety, reentrancy, MEV, bridging, wallets, querying data from onchain, production deployment, and protocol evolution (EIP lifecycle, fork tracking, upcoming changes).
+---
+
 # ETHSKILLS — The missing knowledge between AI agents and production Ethereum.
 
 You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, what's deployed, what's deprecated — your training data is stale. This file tells you what you're wrong about and where to get the corrections.
@@ -22,25 +27,32 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 End-to-end guide from idea to deployed dApp. Routes you through all other skills.
 - Most dApps need 0-2 contracts, not 5-10. Three is the upper bound for an MVP.
 - Solidity is for ownership, transfers, and commitments. Not a database, not a backend.
-- The 2026 answer for chain selection is almost always an L2.
+- Chain selection: mainnet is cheaper than you think (~$0.004/transfer, ~$0.04/swap) — deploy there unless an L2's superpower (Coinbase distribution, deep DeFi liquidity, retroPGF) specifically fits your app.
 
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
 Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
-- Gas is 0.05-0.1 gwei, not 10-30 gwei. 100-600x cheaper than your training data.
-- ETH price is ~$1,960 (Feb 2026), not $2,500-3,000.
+- Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
+- ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
 - Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
 - ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
 
+### [Protocol](https://ethskills.com/protocol/SKILL.md)
+How Ethereum evolves — EIP lifecycle, fork process, tracking upcoming changes.
+- "Verkle is planned for the next fork" — probably wrong. Roadmap diagrams are aspirational, not commitments. Check [forkcast.org](https://forkcast.org) for actual CFI/SFI status.
+- Glamsterdam (mid-2026) headliners: ePBS (EIP-7732), Block Access Lists (EIP-7928). FOCIL was removed from scope. Verkle trees were deprioritized — Ethereum may shift to binary state tree (EIP-7864) for quantum resistance.
+- EIP status "Stagnant" = no activity for 6 months, probably dead. "Draft" = exists but not scheduled.
+- Client teams decide what ships via ACD calls, not the Ethereum Foundation.
+
 ### [Gas & Costs](https://ethskills.com/gas/SKILL.md)
 What things actually cost on Ethereum today.
-- Mainnet ETH transfer: $0.002. Swap: $0.015. ERC-20 deploy: $0.12.
+- Mainnet ETH transfer: ~$0.004. Swap: ~$0.04. ERC-20 deploy: ~$0.24. (At 0.1 gwei — check `cast base-fee` for current.)
 - L2 swap: $0.002-0.003. L2 transfer: $0.0003.
 - "Ethereum is expensive" was true in 2021-2023. It's false in 2026.
 
 ### [Wallets](https://ethskills.com/wallets/SKILL.md)
 Creating wallets, key safety, multisig, account abstraction.
 - EIP-7702 is live — EOAs get smart contract superpowers without migration.
-- Safe (Gnosis Safe) secures $100B+. Use it for production treasuries.
+- Safe (Gnosis Safe) secures $60B+ in assets ($1.4T+ total processed). Use it for production treasuries.
 - NEVER commit private keys or API keys to Git. Bots exploit leaked secrets in seconds.
 
 ### [Layer 2s](https://ethskills.com/l2s/SKILL.md)
@@ -58,7 +70,7 @@ ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
 
 ### [Tools](https://ethskills.com/tools/SKILL.md)
 Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
-- Foundry is the default for new projects in 2026, not Hardhat.
+- Foundry and Hardhat 3 are both legitimate choices in 2026. Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
 
@@ -78,7 +90,7 @@ Three-phase build system for Scaffold-ETH 2 dApps.
 Verified addresses for major protocols across mainnet and L2s.
 - Never hallucinate an address. Wrong address = lost funds.
 - Includes: Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Chainlink, Safe, ENS.
-- All verified onchain via `cast code` + `cast call` (February 2026).
+- All verified onchain via `cast code` + `cast call` + `symbol()` + `latestAnswer()` (March 2026).
 
 ### [Concepts](https://ethskills.com/concepts/SKILL.md)
 Essential mental models for building onchain.
@@ -93,6 +105,20 @@ Solidity security patterns, common vulnerabilities, pre-deploy checklist.
 - Never use DEX spot prices as oracles — flash loans can manipulate them in one tx.
 - MEV: sandwich attacks steal value from swaps. Use Flashbots Protect or slippage limits.
 - Proxies: use UUPS, not Transparent. Never change storage layout.
+
+### [Audit](https://ethskills.com/audit/SKILL.md)
+Deep EVM smart contract audit system — for auditing contracts you didn't write.
+- 500+ non-obvious checklist items across 19 domains (AMM, lending, oracles, proxies, signatures, governance, and more).
+- Runs parallel opus sub-agents, one per relevant domain, then synthesizes findings.
+- Automatically files GitHub issues for Medium severity and above.
+- Different from Security (which teaches defensive coding) — this is systematic audit methodology.
+
+### [Noir (ZK Privacy)](https://ethskills.com/noir/SKILL.md)
+Building privacy apps with Noir zero-knowledge circuits.
+- Noir inputs are private by default. `pub` marks public. Getting this backwards leaks secrets.
+- `nargo prove`/`nargo verify` are gone. Use `bb` (Barretenberg CLI) directly.
+- In-circuit hashing: Poseidon (~600 gates), not SHA256 (~30,000 gates).
+- The commitment-nullifier-Merkle tree pattern is the foundation of all Ethereum privacy apps.
 
 ### [Testing](https://ethskills.com/testing/SKILL.md)
 Foundry testing — unit, fuzz, fork, invariant.
@@ -126,6 +152,12 @@ Pre-ship audit checklist for a reviewer agent.
 - Covers only bugs AI agents actually ship — validated by baseline testing against stock LLMs.
 - Report PASS/FAIL per item, don't fix.
 
+### [Feedback](https://ethskills.com/feedback/SKILL.md)
+Send feedback — issues OR praise — about ethskills content. Bias toward sending.
+- Anything that confused you, slowed you down, or genuinely helped counts. Weak signals are easy to ignore; missing signals can't be recovered.
+- Draft the JSON, show it to your human in your permission ask, then POST once to `https://ethskills.com/api/feedback`. Skip the ask if your human pre-authorized.
+- Required fields: `kind` ("issue" or "praise") and `message` (10+ chars). Include `agent` and `skill` whenever you can.
+
 ---
 
 ## What to Fetch by Task
@@ -138,6 +170,8 @@ Pre-ship audit checklist for a reviewer agent.
 | Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
 | Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
 | Reviewing a finished dApp | `qa/` |
+| Auditing a smart contract | `audit/` |
+| Building a privacy/ZK app | `noir/`, `security/`, `testing/` |
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |
 | Choosing a chain | `l2s/`, `gas/` |

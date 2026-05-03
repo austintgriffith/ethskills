@@ -13,7 +13,7 @@ description: Current Ethereum development tools, frameworks, libraries, RPCs, an
 
 **x402 has production SDKs:** `@x402/fetch` (TS), `x402` (Python), `github.com/coinbase/x402/go` — production-ready libraries for HTTP payments.
 
-**Foundry is the default for new projects in 2026.** Not Hardhat. 10-100x faster tests, Solidity-native testing, built-in fuzzing.
+**Foundry and Hardhat 3 are both legitimate choices in 2026.** Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 
 ## Tool Discovery Pattern for AI Agents
 
@@ -79,7 +79,7 @@ const response = await x402Fetch('https://api.example.com/data', {
 | Need | Tool |
 |------|------|
 | Rapid prototyping / full dApps | **Scaffold-ETH 2** |
-| Contract-focused dev | **Foundry** (forge + cast + anvil) |
+| Contract-focused dev | **Foundry** (forge + cast + anvil) · or **Hardhat 3** if TypeScript-first |
 | Quick contract interaction | **abi.ninja** (browser) or **cast** (CLI) |
 | React frontends | **wagmi + viem** (or SE2 which wraps these) |
 | Agent blockchain reads | **Blockscout MCP** |
@@ -141,7 +141,7 @@ MCP servers are composable — agents can use multiple together.
 
 ## What Changed in 2025-2026
 
-- **Foundry became default** over Hardhat for new projects
+- **Foundry became the default** over Hardhat for new projects — then Hardhat 3 (Aug 2025) shipped Solidity testing, fuzzing, and Rust internals, making it a legitimate choice again.
 - **Viem gaining on ethers.js** (smaller, better TypeScript)
 - **MCP servers emerged** for agent-blockchain interaction
 - **x402 SDKs** went production-ready
@@ -157,3 +157,16 @@ anvil --fork-url https://eth.llamarpc.com
 ```
 
 **Primary testnet:** Sepolia (Chain ID: 11155111). Goerli and Rinkeby are deprecated.
+
+### Testnet ETH Faucets
+
+| Network | Faucet |
+|---------|--------|
+| Sepolia | https://sepolia-faucet.pk910.de/ |
+| Sepolia | https://www.infura.io/faucet/sepolia |
+| Multiple | https://www.alchemy.com/faucets |
+| Multiple | https://cloud.google.com/application/web3/faucet/ethereum |
+| Multiple | https://faucet.quicknode.com/drip |
+| Multiple | https://getblock.io/faucet/ |
+
+Once you have Sepolia ETH you can bridge it to any L2 using each L2's testnet bridge then you will have ETH on that L2 testnet.

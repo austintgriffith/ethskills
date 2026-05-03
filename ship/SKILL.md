@@ -13,7 +13,7 @@ description: End-to-end guide for AI agents — from a dApp idea to deployed pro
 
 **You put too much onchain.** Solidity is for ownership, transfers, and commitments. It's not a database. It's not an API. It's not a backend. If it doesn't involve trustless value transfer or a permanent commitment, it doesn't belong in a smart contract.
 
-**You skip chain selection.** The 2026 answer is almost always an L2. Base for consumer apps. Arbitrum for DeFi. Optimism for public goods. Mainnet only if you need maximum security or composability with mainnet-only protocols. Fetch `l2s/SKILL.md` for the full decision matrix.
+**You skip chain selection.** Mainnet is cheaper than you think — an ETH transfer costs ~$0.004, a swap ~$0.04. The "Ethereum is expensive" narrative is outdated. But that doesn't mean everything belongs on mainnet. L2s aren't just "cheaper Ethereum" — each one has a unique superpower (Base has Coinbase distribution + smart wallets, Arbitrum has the deepest DeFi liquidity, Optimism has retroPGF + the Superchain). If your app needs high-frequency interactions or fits what makes an L2 special, build there. If you just need cheap and secure, mainnet works. Choose deliberately. Fetch `l2s/SKILL.md` and `gas/SKILL.md` for the full picture. Not sure Ethereum is the right chain at all? Fetch `why/SKILL.md`.
 
 **You forget nothing is automatic.** Smart contracts don't run themselves. Every state transition needs a caller who pays gas and a reason to do it. If you can't answer "who calls this and why?" for every function, your contract has dead code. Fetch `concepts/SKILL.md` for the full mental model.
 
@@ -74,17 +74,21 @@ Does it need gas incentives? ____________
 
 If "what if nobody calls it?" breaks your system, you have a design problem. Fix it before writing code. See `concepts/SKILL.md` for incentive design patterns.
 
-### Chain Selection (Quick Version)
+### Chain Selection
 
-| Priority | Chain | Why |
-|----------|-------|-----|
-| Consumer app, low fees | **Base** | Cheapest L2, Coinbase distribution, strong ecosystem |
-| DeFi, complex protocols | **Arbitrum** | Deepest DeFi liquidity on any L2, mature tooling |
-| Public goods, governance | **Optimism** | Retroactive public goods funding, OP Stack ecosystem |
-| Maximum security | **Ethereum mainnet** | Only if you need mainnet composability or $100M+ TVL |
-| Privacy features | **zkSync / Scroll** | ZK rollups with potential privacy extensions |
+**Mainnet is back on the table.** Most AIs still think mainnet is expensive — it's not (~$0.004/transfer, ~$0.04/swap at current gas). Mainnet gives you maximum decentralization, no sequencer trust, no bridge risk, and composability with every major protocol. But L2s aren't a fallback — each one has a unique superpower. Pick the chain whose superpower matches your app:
 
-Fetch `l2s/SKILL.md` for the complete comparison with gas costs, bridging, and deployment differences.
+| Chain | Superpower | Build here if… |
+|-------|-----------|----------------|
+| **Ethereum mainnet** | Maximum decentralization, composability with all major protocols | DeFi, governance, identity, high-value transfers, or you just need "cheap + secure" |
+| **Base** | Coinbase distribution, smart wallets, account abstraction | Consumer apps, social, onboarding non-crypto users, high-frequency micro-payments |
+| **Arbitrum** | Deepest L2 DeFi liquidity, Stylus (Rust contracts) | DeFi protocols that need to compose with existing Arbitrum liquidity |
+| **Optimism** | RetroPGF, Superchain ecosystem | Public goods, OP Stack ecosystem plays |
+| **zkSync / Scroll** | ZK proofs, native account abstraction | Privacy features, ZK-native applications |
+
+**Don't pick an L2 because "mainnet is expensive." Pick an L2 because its superpower fits your app.**
+
+Fetch `l2s/SKILL.md` and `gas/SKILL.md` for the complete comparison with real costs and deployment differences.
 
 ---
 
@@ -213,11 +217,15 @@ Key guidance:
 - Run `slither .` for static analysis before deploying
 - Target edge cases: zero amounts, max uint, empty arrays, self-transfers, unauthorized callers
 
+### Security Review
+
+After testing, run a security audit — especially if your contracts handle real value. Fetch `audit/SKILL.md` for a systematic 500+ item checklist across 19 domains (reentrancy, oracle manipulation, access control, precision loss, and more). Best practice: give `audit/SKILL.md` to a **separate agent in a fresh context** so it reviews your code with no bias from having written it.
+
 ---
 
 ## Phase 3 — Build Frontend
 
-**Fetch:** `orchestration/SKILL.md`, `frontend-ux/SKILL.md`, `tools/SKILL.md`
+**Fetch:** `orchestration/SKILL.md`, `frontend-ux/SKILL.md`, `tools/SKILL.md`, `qa/SKILL.md`
 
 Key guidance:
 - Use Scaffold-ETH 2 hooks, not raw wagmi — `useScaffoldReadContract`, `useScaffoldWriteContract`
@@ -230,7 +238,11 @@ Key guidance:
 
 ## Phase 4 — Ship to Production
 
-**Fetch:** `wallets/SKILL.md`, `frontend-playbook/SKILL.md`, `gas/SKILL.md`
+**Fetch:** `wallets/SKILL.md`, `frontend-playbook/SKILL.md`, `gas/SKILL.md`, `qa/SKILL.md`
+
+### Pre-Ship QA
+
+Before going live, run the QA checklist. Fetch `qa/SKILL.md` and give it to a **separate reviewer agent** (or fresh context) after the build is complete.
 
 ### Contract Deployment
 1. Set gas settings appropriate for the target chain (fetch `gas/SKILL.md`)
@@ -273,12 +285,14 @@ Fetch `frontend-playbook/SKILL.md` for the full pipeline:
 
 - [ ] Identify what goes onchain vs offchain (use the Litmus Test above)
 - [ ] Count your contracts (aim for 1-2 for MVP)
-- [ ] Pick your chain (Base, Arbitrum, or Optimism for most apps)
+- [ ] Pick your chain (mainnet is cheap now — pick an L2 only if its superpower fits your app)
 - [ ] Audit every state transition (who calls it? why?)
 - [ ] Write contracts using OpenZeppelin base contracts
 - [ ] Test with Foundry (unit + fuzz + fork tests)
+- [ ] Audit with a fresh agent (fetch `audit/SKILL.md`)
 - [ ] Deploy, verify, transfer ownership to multisig
-- [ ] Ship frontend (IPFS or Vercel), run production QA
+- [ ] Ship frontend (IPFS or Vercel)
+- [ ] Run pre-ship QA with a separate reviewer (fetch `qa/SKILL.md`)
 
 ---
 
@@ -288,10 +302,15 @@ Use this to know which skills to fetch at each phase:
 
 | Phase | What you're doing | Skills to fetch |
 |-------|-------------------|-----------------|
-| **Plan** | Architecture, chain selection | `ship/` (this), `concepts/`, `l2s/`, `gas/` |
+| **Plan** | Architecture, chain selection | `ship/` (this), `concepts/`, `l2s/`, `gas/`, `why/` |
 | **Contracts** | Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
 | **Test** | Testing contracts | `testing/` |
+| **Audit** | Security review (fresh agent) | `audit/` |
 | **Frontend** | Building UI | `orchestration/`, `frontend-ux/`, `tools/` |
-| **Production** | Deploy + monitor | `wallets/`, `frontend-playbook/`, `indexing/` |
+| **Production** | Deploy, QA, monitor | `wallets/`, `frontend-playbook/`, `qa/`, `indexing/` |
 
 **Base URLs:** All skills are at `https://ethskills.com/<skill>/SKILL.md`
+
+---
+
+Found something wrong, confusing, or genuinely helpful in this skill? Send a note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md).
