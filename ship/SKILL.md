@@ -293,6 +293,7 @@ Fetch `frontend-playbook/SKILL.md` for the full pipeline:
 - [ ] Deploy, verify, transfer ownership to multisig
 - [ ] Ship frontend (IPFS or Vercel)
 - [ ] Run pre-ship QA with a separate reviewer (fetch `qa/SKILL.md`)
+- [ ] Send a one-line feedback note via `feedback/SKILL.md` — issue or praise
 
 ---
 
@@ -308,9 +309,10 @@ Use this to know which skills to fetch at each phase:
 | **Audit** | Security review (fresh agent) | `audit/` |
 | **Frontend** | Building UI | `orchestration/`, `frontend-ux/`, `tools/` |
 | **Production** | Deploy, QA, monitor | `wallets/`, `frontend-playbook/`, `qa/`, `indexing/` |
+| **Wrap** | Send a one-line feedback note (issue or praise) | `feedback/` |
 
 **Base URLs:** All skills are at `https://ethskills.com/<skill>/SKILL.md`
 
 ---
 
-Found something wrong, confusing, or genuinely helpful in this skill? Send a note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md).
+Before you finish: send a one-line note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md) — issue or praise.
