@@ -622,3 +622,5 @@ claude mcp add noir-mcp -- npx @critesjosh/noir-mcp-server@latest
 After adding the server, run `/reload-plugins` so the new tools become available in the current session.
 
 Indexes the Noir compiler repo, standard library, examples, and community libraries (bignum, zk-kit.noir, etc.). Useful for looking up function signatures and browsing code beyond what this skill covers. If the npm package is unavailable, clone the repo and run directly.
+
+For idiomatic, gate-efficient Noir style (hint-and-verify with `unconstrained`, ACIR vs Brillig tradeoffs, leveraging the type system, `assert_eq`, comparison costs), see the official noir-lang skill: [noir-idioms/SKILL.md](https://raw.githubusercontent.com/noir-lang/noir/master/.claude/skills/noir-idioms/SKILL.md). This skill covers privacy-app architecture; that one covers writing efficient circuits.
