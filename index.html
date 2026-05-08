@@ -100,6 +100,18 @@ a:hover { text-decoration: underline; }
 }
 .hero-btn:hover { background: var(--hover); }
 
+.clarifier {
+  color: var(--dim);
+  font-size: 13px;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+.hero-caption {
+  color: var(--dim);
+  font-size: 12px;
+  margin: -2rem 0 2.5rem 0;
+}
+
 h2 {
   color: var(--accent);
   font-size: 12px;
@@ -160,41 +172,106 @@ h2 {
   color: var(--dim);
   font-size: 13px;
 }
-
-.how-to-methods {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 0.75rem;
-  margin-top: 1rem;
+.command-line + .section-text {
+  margin-top: 1.75rem;
 }
-.how-to-method {
+
+.command-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.75rem;
+  padding: 0.55rem 0.65rem;
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 0.75rem 1rem;
   background: var(--hover);
 }
-.how-to-method-title {
-  font-size: 13px;
-  font-weight: 600;
+.command-label {
   color: var(--accent);
-  margin-bottom: 0.25rem;
-}
-.how-to-method-desc {
-  font-size: 12px;
-  color: var(--dim);
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
-}
-.how-to-method code {
-  display: block;
-  font-family: monospace;
   font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  flex-shrink: 0;
+  margin-right: 1.5rem;
+}
+.command-line code {
+  flex: 1;
+  min-width: 0;
   color: var(--fg);
-  background: var(--bg);
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.command-line .copy-btn { flex-shrink: 0; }
+.setup-list {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.setup-row {
+  display: grid;
+  grid-template-columns: 10rem 1.5fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.setup-tool {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding-top: 0.1rem;
+}
+.setup-artifact { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.setup-howto {
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.15rem;
+  opacity: 0.85;
+}
+.setup-artifact code {
+  display: block;
+  color: var(--fg);
+  background: var(--hover);
   border: 1px solid var(--border);
   border-radius: 3px;
-  padding: 0.4rem 0.6rem;
-  word-break: break-all;
+  padding: 0.35rem 0.55rem;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+.setup-artifact code.is-content {
+  border-style: dashed;
+  color: var(--fg);
+}
+.setup-howto + .setup-howto,
+.setup-artifact code + .setup-howto {
+  margin-top: 0.65rem;
+}
+.setup-note {
+  color: var(--dim);
+  line-height: 1.6;
+  padding-top: 0.5rem;
+}
+@media (max-width: 620px) {
+  .command-line {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .command-line .copy-btn {
+    width: fit-content;
+  }
+  .setup-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .setup-note { padding-top: 0; }
 }
 
 .footer {
@@ -329,9 +406,19 @@ h2 {
 
 <p class="tagline">The missing knowledge between AI agents and production Ethereum.<span class="cursor"></span></p>
 
-<button class="hero-btn copy-btn" data-url="https://ethskills.com/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/SKILL.md</button>
+<p class="clarifier">Your AI agent is wrong about building on Ethereum. ETHSKILLS fixes that, so anyone can ship onchain, expert or not. Works in Claude, ChatGPT, Cursor, or any agent.</p>
 
-<div class="skill" style="margin-top:2rem;">
+<div class="command-line">
+  <span class="command-label">Prompt</span>
+  <code>Read https://ethskills.com/SKILL.md and follow it before writing Solidity or shipping anything onchain.</code>
+  <button class="copy-btn" data-url="Read https://ethskills.com/SKILL.md and follow it before writing Solidity or shipping anything onchain."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy prompt</button>
+</div>
+
+<p class="section-text">Per session. To install it once in Claude Code, Cursor, or Codex, see <a href="#persistent-setup">Persistent Setup</a> below.</p>
+
+<h2>Skills</h2>
+
+<div class="skill">
   <div class="skill-name">Ship</div>
   <div class="skill-desc">End-to-end guide for AI agents — from a dApp idea to deployed production app. Fetch this FIRST, it routes you through all other skills.</div>
   <button class="copy-btn" data-url="https://ethskills.com/ship/SKILL.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> ethskills.com/ship/SKILL.md</button>
@@ -451,29 +538,60 @@ h2 {
 </div>
 
 
-<h2>How to Use</h2>
-<p class="section-text">Give your AI agent any skill URL. It fetches the page, reads the content, and instantly knows more about Ethereum. No install, no CLI, no package manager.</p>
+<h2 id="persistent-setup">Persistent Setup</h2>
+<p class="section-text">Optional. If you'd rather not paste the prompt above every session, configure your tool once below.</p>
 
-<div class="how-to-methods">
-  <div class="how-to-method">
-    <div class="how-to-method-title">Just tell your Agent</div>
-    <div class="how-to-method-desc">Give any agent an ethskills URL and tell it to go learn. Works in ChatGPT, Claude, Cursor, Copilot — anything.</div>
-    <code>"Read ethskills.com before you start building"</code>
+<div class="setup-list">
+  <div class="setup-row">
+    <span class="setup-tool">Codex</span>
+    <div class="setup-artifact">
+      <span class="setup-howto">1. Create this file in your repo root</span>
+      <code>AGENTS.md</code>
+      <span class="setup-howto">2. Paste this inside the file</span>
+      <code class="is-content">Read https://ethskills.com/SKILL.md and follow it before writing Solidity or shipping anything onchain.</code>
+    </div>
+    <span class="setup-note">Pointer (per repo). Codex fetches ethskills on each task.</span>
   </div>
-  <div class="how-to-method">
-    <div class="how-to-method-title">curl / fetch</div>
-    <div class="how-to-method-desc">For scripting, pipelines, and system prompts. Clean markdown back, ready to use.</div>
-    <code>curl -s https://ethskills.com/SKILL.md</code>
+  <div class="setup-row">
+    <span class="setup-tool">Cursor</span>
+    <div class="setup-artifact">
+      <span class="setup-howto">1. Create this Cursor rule file</span>
+      <code>.cursor/rules/ethskills.mdc</code>
+      <span class="setup-howto">2. Paste this inside the file</span>
+      <code class="is-content">---
+description: ethskills knowledge pack for building on Ethereum
+alwaysApply: true
+---
+
+Before writing Solidity, deploying contracts, integrating DeFi, or building a dApp frontend, read https://ethskills.com/SKILL.md and follow it.</code>
+    </div>
+    <span class="setup-note">Pointer (per repo). Cursor fetches when the rule fires.</span>
   </div>
-  <div class="how-to-method">
-    <div class="how-to-method-title">Claude Code plugin</div>
-    <div class="how-to-method-desc">Auto-loads Ethereum knowledge on every coding task.</div>
-    <code>claude plugin install https://github.com/austintgriffith/ethskills</code>
+  <div class="setup-row">
+    <span class="setup-tool">Claude Code</span>
+    <div class="setup-artifact">
+      <span class="setup-howto">1. Add the marketplace catalog</span>
+      <code>/plugin marketplace add austintgriffith/ethskills</code>
+      <span class="setup-howto">2. Install ethskills (active in every project)</span>
+      <code>/plugin install ethskills@ethskills</code>
+    </div>
+    <span class="setup-note">Install (user-wide). Plugin reads from disk, granular skill loading.</span>
   </div>
-  <div class="how-to-method">
-    <div class="how-to-method-title">ClawHub install</div>
-    <div class="how-to-method-desc">OpenClaw agent skill. Versioned, rollback-ready, discoverable at clawhub.com.</div>
-    <code>clawhub install ethskills</code>
+  <div class="setup-row">
+    <span class="setup-tool">OpenClaw</span>
+    <div class="setup-artifact">
+      <span class="setup-howto">Run in your terminal</span>
+      <code>clawhub install ethskills</code>
+    </div>
+    <span class="setup-note">Install (per project). Cloned into ./skills/.</span>
+  </div>
+  <div class="setup-row">
+    <span class="setup-tool">Scripts</span>
+    <div class="setup-artifact">
+      <span class="setup-howto">Run in your shell</span>
+      <code>curl -s https://ethskills.com/SKILL.md</code>
+    </div>
+    <span class="setup-note">Fetch + bake (per script). Embed in pipelines or system prompts.</span>
   </div>
 </div>
 
