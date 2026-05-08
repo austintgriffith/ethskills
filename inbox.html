@@ -10,6 +10,7 @@
   --fg: #e8d5b0;
   --dim: #8a7a5f;
   --accent: #ffb000;
+  --praise: #6ec27a;
   --border: #2e2410;
   --hover: #251c0c;
 }
@@ -80,7 +81,8 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
   cursor: pointer;
 }
 .filter-btn:first-child { border-radius: 3px 0 0 3px; }
-.filter-btn:last-child { border-radius: 0 3px 3px 0; border-left: none; }
+.filter-btn:not(:first-child) { border-left: none; }
+.filter-btn:last-child { border-radius: 0 3px 3px 0; }
 .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(255,176,0,0.06); }
 .filter-btn:hover:not(.active) { color: var(--fg); border-color: var(--dim); }
 
@@ -143,6 +145,25 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
   padding: 0.1rem 0.5rem;
   border-radius: 3px;
 }
+.entry-kind {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.1rem 0.5rem;
+  border-radius: 3px;
+}
+.entry-kind.kind-issue {
+  color: var(--accent);
+  background: rgba(255,176,0,0.08);
+  border: 1px solid rgba(255,176,0,0.25);
+}
+.entry-kind.kind-praise {
+  color: var(--praise);
+  background: rgba(110,194,122,0.08);
+  border: 1px solid rgba(110,194,122,0.3);
+}
+.entry.kind-praise { border-left: 3px solid var(--praise); }
 .entry-agent { color: var(--dim); font-size: 12px; }
 
 .entry-problem { color: var(--fg); font-size: 14px; margin-bottom: 0.5rem; line-height: 1.6; }
@@ -195,10 +216,12 @@ h1 { color: var(--accent); font-size: 18px; font-weight: 600; margin-bottom: 0.2
 <div id="inbox">
   <div class="toolbar">
     <div class="filter-btns">
-      <button class="filter-btn active" id="filter-unread">
+      <button class="filter-btn active" data-filter="unread" id="filter-unread">
         Unread<span class="unread-badge" id="unread-count" style="display:none"></span>
       </button>
-      <button class="filter-btn" id="filter-all">All</button>
+      <button class="filter-btn" data-filter="issue">Issues</button>
+      <button class="filter-btn" data-filter="praise">Praise</button>
+      <button class="filter-btn" data-filter="all">All</button>
     </div>
     <span class="spacer"></span>
     <span class="count" id="count"></span>
@@ -245,13 +268,31 @@ async function markAllRead() {
   await Promise.all(unread.map(e => markRead(e.id)));
 }
 
+function kindOf(entry) {
+  return entry.kind === 'praise' ? 'praise' : 'issue';
+}
+
 function renderEntries() {
   const el = document.getElementById('entries');
   const countEl = document.getElementById('count');
   const unreadCountEl = document.getElementById('unread-count');
 
   const unread = allEntries.filter(e => !e.read);
-  const visible = currentFilter === 'unread' ? unread : allEntries;
+  let visible;
+  let label;
+  if (currentFilter === 'unread') {
+    visible = unread;
+    label = 'unread';
+  } else if (currentFilter === 'issue') {
+    visible = allEntries.filter(e => kindOf(e) === 'issue');
+    label = `issue${visible.length === 1 ? '' : 's'}`;
+  } else if (currentFilter === 'praise') {
+    visible = allEntries.filter(e => kindOf(e) === 'praise');
+    label = visible.length === 1 ? 'praise entry' : 'praise entries';
+  } else {
+    visible = allEntries;
+    label = `of ${allEntries.length}`;
+  }
 
   // Update unread badge
   if (unread.length > 0) {
@@ -261,28 +302,35 @@ function renderEntries() {
     unreadCountEl.style.display = 'none';
   }
 
-  countEl.textContent = `${visible.length} ${currentFilter === 'unread' ? 'unread' : `of ${allEntries.length}`}`;
+  countEl.textContent = `${visible.length} ${label}`;
 
   if (!visible.length) {
-    el.innerHTML = `<p class="empty">${currentFilter === 'unread' ? 'All caught up.' : 'No feedback yet.'}</p>`;
+    const empty = currentFilter === 'unread' ? 'All caught up.'
+      : currentFilter === 'praise' ? 'No praise yet.'
+      : currentFilter === 'issue' ? 'No issues.'
+      : 'No feedback yet.';
+    el.innerHTML = `<p class="empty">${empty}</p>`;
     return;
   }
 
-  el.innerHTML = visible.map(e => `
-    <div class="entry ${e.read ? 'is-read' : ''}" data-id="${esc(e.id)}">
+  el.innerHTML = visible.map(e => {
+    const k = kindOf(e);
+    return `
+    <div class="entry kind-${k} ${e.read ? 'is-read' : ''}" data-id="${esc(e.id)}">
       <div class="entry-header">
         <div class="entry-meta">
           ${!e.read ? '<span class="unread-dot"></span>' : ''}
+          <span class="entry-kind kind-${k}">${k}</span>
           <span class="entry-ts">${formatDate(e.ts)}</span>
           ${e.skill ? `<span class="entry-skill">${esc(e.skill)}</span>` : ''}
           ${e.agent ? `<span class="entry-agent">${esc(e.agent)}</span>` : ''}
         </div>
         <button class="mark-read-btn" data-id="${esc(e.id)}">Mark read</button>
       </div>
-      <div class="entry-problem">${esc(e.problem)}</div>
+      <div class="entry-problem">${esc(e.message ?? e.problem)}</div>
       ${e.context ? `<div class="entry-context">${esc(e.context)}</div>` : ''}
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   el.querySelectorAll('.mark-read-btn').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); markRead(btn.dataset.id); });
@@ -311,17 +359,14 @@ document.getElementById('secret-input').addEventListener('keydown', e => {
 });
 
 // Filter
-document.getElementById('filter-unread').addEventListener('click', () => {
-  currentFilter = 'unread';
-  document.getElementById('filter-unread').classList.add('active');
-  document.getElementById('filter-all').classList.remove('active');
-  renderEntries();
-});
-document.getElementById('filter-all').addEventListener('click', () => {
-  currentFilter = 'all';
-  document.getElementById('filter-all').classList.add('active');
-  document.getElementById('filter-unread').classList.remove('active');
-  renderEntries();
+document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentFilter = btn.dataset.filter;
+    document.querySelectorAll('.filter-btn[data-filter]').forEach(b => {
+      b.classList.toggle('active', b.dataset.filter === currentFilter);
+    });
+    renderEntries();
+  });
 });
 
 // Actions

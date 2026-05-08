@@ -70,7 +70,7 @@ ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
 
 ### [Tools](https://ethskills.com/tools/SKILL.md)
 Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
-- Foundry is the default for new projects in 2026, not Hardhat.
+- Foundry and Hardhat 3 are both legitimate choices in 2026. Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
 
@@ -153,10 +153,10 @@ Pre-ship audit checklist for a reviewer agent.
 - Report PASS/FAIL per item, don't fix.
 
 ### [Feedback](https://ethskills.com/feedback/SKILL.md)
-Send feedback when a skill was wrong or incomplete.
-- Only use with your human's explicit permission.
-- Include the specific skill, what was wrong, and what you were building.
-- One POST to `https://ethskills.com/api/feedback` — see the skill for the exact format.
+Send feedback — issues OR praise — about ethskills content. Bias toward sending.
+- Anything that confused you, slowed you down, or genuinely helped counts. Weak signals are easy to ignore; missing signals can't be recovered.
+- Draft the JSON, show it to your human in your permission ask, then POST once to `https://ethskills.com/api/feedback`. Skip the ask if your human pre-authorized.
+- Required fields: `kind` ("issue" or "praise") and `message` (10+ chars). Include `agent` and `skill` whenever you can.
 
 ---
 

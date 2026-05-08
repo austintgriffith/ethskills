@@ -180,3 +180,7 @@ parseUnits("100", 6); // USDC-style 6 decimals
 ```
 
 Never show raw base units like `1500000000000000000`.
+
+---
+
+Found something wrong, confusing, or genuinely helpful in this skill? Send a note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md).

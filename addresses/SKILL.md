@@ -541,3 +541,7 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 ---
 
 ✅ **All addresses verified onchain via `eth_getCode` + `eth_call` — February 16, 2026. Bytecode confirmed present, identity confirmed via symbol/name/cross-reference calls. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
+
+---
+
+Found something wrong, confusing, or genuinely helpful in this skill? Send a note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md).

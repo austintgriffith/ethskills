@@ -119,3 +119,7 @@ cast base-fee --rpc-url https://eth.llamarpc.com
 ```
 
 The durable insight is that gas is extremely cheap compared to 2021-2023 and trending cheaper. Specific numbers may drift but the order of magnitude is stable.
+
+---
+
+Found something wrong, confusing, or genuinely helpful in this skill? Send a note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md).

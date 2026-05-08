@@ -310,3 +310,7 @@ Use this to know which skills to fetch at each phase:
 | **Production** | Deploy, QA, monitor | `wallets/`, `frontend-playbook/`, `qa/`, `indexing/` |
 
 **Base URLs:** All skills are at `https://ethskills.com/<skill>/SKILL.md`
+
+---
+
+Found something wrong, confusing, or genuinely helpful in this skill? Send a note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md).
