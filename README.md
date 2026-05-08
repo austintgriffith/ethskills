@@ -27,7 +27,7 @@ Install directly from GitHub — no clone required:
 
 ```bash
 /plugin marketplace add austintgriffith/ethskills
-/plugin install ethskills
+/plugin install ethskills@ethskills
 ```
 
 ## Terminology
