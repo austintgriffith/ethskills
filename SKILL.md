@@ -175,3 +175,7 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |
 | Choosing a chain | `l2s/`, `gas/` |
+
+---
+
+<!-- END ETHSKILLS -->
