@@ -19,10 +19,10 @@ description: The essential mental models for building onchain — focused on wha
 
 ## CROPS
 
-**CROPS** — Censorship Resistance, Open Source, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
+**CROPS** — Censorship Resistance, Open Source and Free, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
 
 - **Censorship Resistance** — You scaffold `Pausable` + `onlyOwner` without flagging it. A single key that can freeze all users is a censorship vector.
-- **Open Source** — You treat Etherscan verification as "open source." Real open source means someone can fork the full stack (frontend, indexer, contracts) and run it independently.
+- **Open Source and Free** — You treat Etherscan verification as "open source." Real openness means the full stack is inspectable, forkable, self-hostable, and free enough that users and builders can exit without asking permission.
 - **Privacy** — You build apps where every address, amount, and counterparty is publicly visible on a block explorer and never mention it. At minimum, tell the builder what's exposed.
 - **Security** — You say "audited" and treat it as proof of security. An audit is a point-in-time review of a specific scope, not an ongoing guarantee.
 
