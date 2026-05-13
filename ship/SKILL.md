@@ -36,7 +36,11 @@ Answer each with the concrete decision and tradeoff for this app:
 - **Privacy:** what addresses, balances, counterparties, behavior, metadata, or identity data leaks, is that disclosure necessary, and can users selectively negotiate it?
 - **Security:** who controls funds, approvals, upgrades, admin keys, recovery, emergency powers, and the user's exit path? Does the design pass the walkaway test if the team or a critical vendor disappears?
 
-Your output should name the chosen default, the compromises you accept, and the user's escape path. Fetch `concepts/SKILL.md` for the deeper CROPS and incentive mental model.
+Your output should name the chosen default, the compromises you accept, and the user's escape path.
+
+Whenever you present the builder with architecture, custody, infra, permissions, emergency-powers, or other tradeoff options, label each option with its CROPS impact (which properties it strengthens, which it weakens) and call out the most CROPS-aligned choice as the recommended default. Do not present options as a neutral list, builders should see the values cost of each.
+
+Fetch `concepts/SKILL.md` for the deeper CROPS and incentive mental model.
 
 ### The Onchain Litmus Test
 
