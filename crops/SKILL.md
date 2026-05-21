@@ -66,9 +66,9 @@ Prefer:
 Ask: **is the whole stack visible (Open), and does the license actually let a third party fork, modify, and run it (Free)?**
 
 Check for — **Open** (visibility):
+- "open source" claim that only covers the deployed contract, not the surrounding stack
 - dependencies that make the app hard to inspect, fork, or self-host, such as private indexers required for the frontend, vendor-hosted APIs, backend-only business logic, proprietary SDK lock-in, or opaque AI/risk/scoring systems
 - frontend source that cannot be rebuilt from the repo because build steps, env vars, ABIs, contract addresses, or deployment instructions are missing
-- "open source" claim that only covers the deployed contract, not the surrounding stack
 
 Check for — **Free, as in Freedom** (license actually grants the freedoms):
 - source-available-only licenses: BUSL, SSPL, custom "no commercial use", "no derivatives"
