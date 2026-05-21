@@ -71,10 +71,10 @@ Check for — **Open** (visibility):
 - frontend source that cannot be rebuilt from the repo because build steps, env vars, ABIs, contract addresses, or deployment instructions are missing
 
 Check for — **Free, as in Freedom** (license actually grants the freedoms):
-- source-available-only licenses: BUSL, SSPL, custom "no commercial use", "no derivatives"
-- license terms that still require special permission from the original team or block useful independent forks
-- no pledge that the license will stay open — projects that reserve the right to change the license later
-- copyleft license paired with proprietary plugins or hosted-only dependencies that defeat the freedom in practice
+- restricted or source-available licenses that do not grant normal open-source freedoms, including BUSL, SSPL, custom "no commercial use", or "no derivatives" terms
+- license terms that require special permission from the original team before a third party can run, modify, redistribute, or operate a fork
+- future-license risk: current code is open, but future versions can be relicensed or closed, pulling users and builders toward a non-forkable upgrade path
+- "open core" designs where the core repo is open, but a useful production deployment depends on proprietary plugins or hosted-only services
 
 Prefer:
 - permissive (MIT, Apache 2.0) or copyleft (GPL, AGPL) licenses across the whole stack
