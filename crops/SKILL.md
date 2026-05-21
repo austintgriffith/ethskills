@@ -1,6 +1,6 @@
 ---
 name: crops
-description: "CROPS architecture review for Ethereum apps and smart contract systems: Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security. Use when planning or reviewing dApps or contracts where custody, wallets, L2s, bridges, RPC/indexers, relayers, paymasters, frontend hosting, admin keys, upgrades, privacy, identity, stablecoins, agent permissions, or vendor dependencies affect user self-sovereignty and exit. Also use before shipping any app or contract that handles user funds or permissions."
+description: "Deep CROPS architecture review (Censorship Resistance, Open Source and Free, Privacy, Security) for Ethereum apps and contracts. Run after the short CROPS Gate in ship/SKILL.md surfaces a real tradeoff: custody, admin powers, upgrades, hosted infra, identity, or agent permissions."
 ---
 
 # CROPS Review
@@ -29,17 +29,16 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 ## When To Fetch This Skill
 
-Fetch this skill before finalizing architecture, or when reviewing an existing dApp or smart contract, if the system involves:
+CROPS applies to every dApp. The short gate in `ship/SKILL.md` always runs first.
 
-- user funds, custody, approvals, permissions, or spending limits
-- wallets, embedded wallets, account abstraction, session keys, or agent wallets
-- L2s, bridges, sequencers, data availability, or withdrawal paths
-- RPC providers, indexers, relayers, paymasters, or commercial APIs
-- admin keys, upgradeability, pausing, blacklists, allowlists, or emergency controls
-- identity, credentials, stablecoins, compliance surfaces, or privacy-sensitive data
-- frontend hosting, ENS/IPFS deployment, app stores, analytics, or closed backend services
+Fetch this deeper template when the short gate surfaces a non-trivial answer on any pillar:
 
-If none of those apply, keep the short CROPS Gate from `ship/SKILL.md` and avoid loading extra context.
+- **C** — someone (admin, sequencer, host, relayer, bundler, paymaster, indexer, oracle, OFAC list) can block users.
+- **O** — part of the stack is closed, opaquely hosted, source-available-only licensed, or not reproducible from a public commit.
+- **P** — addresses, balances, identity, IP, or behavior leak in ways the user hasn't knowingly consented to.
+- **S** — admin keys, upgradeable contracts, embedded custody, social recovery, agent permissions, vendor liveness, or oracle dependence affect funds and exit.
+
+If the short gate landed cleanly on all four pillars (no admin powers, no hosted single points, no identity flows, no custody surface), the short gate is the CROPS record. No need to fetch this deeper template.
 
 ---
 
@@ -116,7 +115,7 @@ Prefer:
 - capped permissions, allowlists, expiries, and clear revocation paths for delegated or automated actions
 - Safe/multisig ownership and timelocks for admin powers that cannot be removed
 - onchain or wallet-level enforcement for spending and permission policy, not prompt text or backend promises
-- simple designs with documented recovery and exit paths that can pass the walkaway test
+- simple designs with documented recovery and exit paths that can pass the walkaway test (if the team, vendor, host, or oracle disappears, can the user still access funds and exit?)
 
 ---
 
@@ -124,42 +123,39 @@ Prefer:
 
 When using this skill, output a concrete review for the user's app. Do not repeat generic CROPS definitions.
 
-Use this shape:
+Use this shape for the chosen architecture:
 
 ```md
 ## CROPS Review
 
 Chosen default:
-- <architecture choice and why>
+- <architecture choice and why it is the most CROPS-aligned option>
 
 Censorship Resistance:
-- Strengthens:
-- Weakens:
-- Required fallback:
+- Risk: <who can block users or critical app paths>
+- Mitigation: <what the design does, or commits to do, about it>
+- User escape: <how the user routes around if the mitigation fails>
 
 Open Source and Free, as in Freedom:
-- Open (visibility): <whole stack public, no black boxes>
-- Free (license): <OSI-permissive or copyleft, no source-available-only, no future relicensing>
-- Required docs/source:
+- Risk: <closed code, hosted dependencies, source-available-only licenses, relicensing risk>
+- Mitigation: <open repos, OSI-permissive or copyleft license, self-host docs, ABI/schema exports>
+- User escape: <documented fork and self-host path, alternative client>
 
 Privacy:
-- Leaks:
-- Avoidable leaks:
-- User disclosure:
+- Risk: <what addresses, balances, identity, behavior, IP, or metadata leak and to whom>
+- Mitigation: <minimum disclosure, selective disclosure, configurable RPC/indexer, ZK where applicable>
+- User escape: <opt-out, local-first, or alternate-route options>
 
 Security:
-- Controls:
-- Failure mode:
-- Walkaway test:
+- Risk: <who controls funds, approvals, upgrades, recovery, emergency powers; vendor liveness dependencies>
+- Mitigation: <least authority, capped permissions, multisig/timelock, onchain enforcement>
+- User escape: <walkaway test: if the team, vendor, host, or oracle disappears, can the user still access funds and exit>
 
 Accepted compromises:
-- <only compromises that are explicit and justified>
-
-User escape path:
-- <how the user exits, revokes, self-hosts, withdraws, or routes around failure>
+- <only compromises that are explicit, bounded, and justified>
 ```
 
-When presenting options, label each option with its CROPS impact and mark the most CROPS-aligned default. Example:
+When comparing multiple architecture options against each other (e.g., Vercel-only vs IPFS + ENS), use this short-form per option and mark the most CROPS-aligned one as the recommended default:
 
 ```md
 Option A: Vercel-only frontend
@@ -199,25 +195,14 @@ Option B: IPFS + ENS with Vercel mirror (recommended default)
 
 ---
 
-## Teaching Your Human
+## How To Phrase Findings
 
-Your job is not to make the builder recite values. Your job is to make hidden power visible.
-
-When a builder picks a convenient default, explain four things:
-
-1. **Who gets power** because of this design.
-2. **What they can do** if they are pressured, hacked, captured, negligent, or gone.
-3. **What the user can do** to exit, revoke, self-host, withdraw, or route around failure.
-4. **What default you recommend** if the builder wants the most CROPS-aligned version.
-
-Use concrete language:
+When reporting a CROPS finding to the builder, name the power, bound the compromise, and point to the user's exit. Sample phrasings:
 
 - "This admin key can freeze every user. If you need an emergency pause for v1, put it behind a Safe, add a timelock or expiry, and tell users what can be paused."
 - "This closed indexer means the contracts are public but the app is not forkable in practice. Publish the event schema and a self-host path."
 - "This agent can spend from the user's wallet without an onchain cap. Put the policy in a smart account or Safe module; prompt instructions are not a security boundary."
 - "This stablecoin route is good UX, but it adds issuer freeze risk and public payment graph leakage. Say that before recommending it."
-
-Do not shame the builder for pragmatic compromises. Name the compromise, bound it, and preserve the user's exit path.
 
 ---
 
