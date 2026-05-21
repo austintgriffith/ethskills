@@ -113,7 +113,7 @@ Check for:
 
 Prefer:
 - least authority by default: every key, contract, backend, and agent gets only the permissions it needs
-- capped permissions, allowlists, expiries, and one-click revocation for agents or automation
+- capped permissions, allowlists, expiries, and clear revocation paths for delegated or automated actions
 - Safe/multisig ownership and timelocks for admin powers that cannot be removed
 - onchain or wallet-level enforcement for spending and permission policy, not prompt text or backend promises
 - simple designs with documented recovery and exit paths that can pass the walkaway test
