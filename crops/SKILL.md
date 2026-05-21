@@ -52,7 +52,7 @@ Ask: **who can block valid use, and can users route around them?**
 Check for:
 - admin pause, blacklist, allowlist, upgrade, or kill-switch powers
 - relayers, paymasters, RPCs, sequencers, bridges, app stores, CDNs, frontends, or APIs that can block users
-- durable, non-competitive control of any critical mechanism
+- any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it
 - missing fallback paths for direct contract calls, alternate RPCs, self-hosted frontends, or L1 exits
 
 Prefer:

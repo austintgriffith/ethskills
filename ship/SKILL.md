@@ -31,7 +31,7 @@ Before choosing the architecture, run a CROPS check. CROPS means Censorship Resi
 
 Answer each with the concrete decision and tradeoff for this app:
 
-- **Censorship Resistance:** who can block valid users, transactions, relayers, RPC access, sequencers, bridges, frontends, or app access, including by gaining durable, non-competitive control of any critical mechanism?
+- **Censorship Resistance:** who can block valid users, transactions, relayers, RPC access, sequencers, bridges, frontends, or app access? Is any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it?
 - **Open Source and Free, as in Freedom:** *Open* — is the whole stack (contracts, frontend, indexer, infra config, docs) public and auditable, with no proprietary black boxes? *Free* — is it under an OSI-permissive or copyleft license, not source-available-only (BUSL, SSPL, "no commercial use")? Will the license stay that way?
 - **Privacy:** what addresses, balances, counterparties, behavior, metadata, or identity data leaks, is that disclosure necessary, and can users selectively negotiate it?
 - **Security:** who controls funds, approvals, upgrades, admin keys, recovery, emergency powers, and the user's exit path? Does the design pass the walkaway test if the team or a critical vendor disappears?
