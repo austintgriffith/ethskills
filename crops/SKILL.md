@@ -76,11 +76,11 @@ Check for — **Free, as in Freedom** (license actually grants the freedoms):
 - "open core" designs where the core repo is open, but a useful production deployment depends on proprietary plugins or hosted-only services
 
 Prefer:
-- permissive (MIT, Apache 2.0) or copyleft (GPL, AGPL) licenses across the whole stack
-- explicit commitment not to relicense in the future
-- open-source contracts, frontend, indexer, deployment scripts, and docs
-- reproducible builds and verified contracts
-- self-host instructions for the full stack
+- OSI-approved permissive or copyleft licenses for every repo needed to run the app, such as MIT, Apache-2.0, GPL, or AGPL
+- a clear license-stability commitment, or at minimum no stated plan to close or relicense core code later
+- open-source contracts, frontend, indexer/backend, deployment scripts, and docs needed to operate the app
+- verified contracts and reproducible build/deploy steps where practical
+- self-host instructions for the full stack, including required env vars, ABIs, contract addresses, and RPC/indexer setup
 - documented ABIs, events, metadata schemas, API formats, and export formats so other builders can build compatible frontends, indexers, wallets, or integrations without asking permission
 
 ### Privacy
