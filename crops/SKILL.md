@@ -57,7 +57,7 @@ Check for:
 
 Prefer:
 - permissionless contract entrypoints where possible
-- bounded emergency powers with timelocks, multisigs, expiry, and public rationale
+- emergency powers, if unavoidable, that are narrow in scope, controlled by a multisig, time-limited or removable, delayed by a timelock where practical, and publicly explained
 - documented fallback paths users can actually use
 - infrastructure choices that keep intermediaries replaceable
 
