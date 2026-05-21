@@ -1,11 +1,11 @@
 ---
 name: crops
-description: "CROPS architecture review for Ethereum apps and smart contract systems: Censorship Resistance, Open Source and Free, Privacy, and Security. Use when planning or reviewing dApps or contracts where custody, wallets, L2s, bridges, RPC/indexers, relayers, paymasters, frontend hosting, admin keys, upgrades, privacy, identity, stablecoins, agent permissions, or vendor dependencies affect user self-sovereignty and exit. Also use before shipping any app or contract that handles user funds or permissions."
+description: "CROPS architecture review for Ethereum apps and smart contract systems: Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security. Use when planning or reviewing dApps or contracts where custody, wallets, L2s, bridges, RPC/indexers, relayers, paymasters, frontend hosting, admin keys, upgrades, privacy, identity, stablecoins, agent permissions, or vendor dependencies affect user self-sovereignty and exit. Also use before shipping any app or contract that handles user funds or permissions."
 ---
 
 # CROPS Review
 
-CROPS is the Ethereum Foundation's shorthand for the properties Ethereum must preserve: **Censorship Resistance, Open Source and Free, Privacy, Security**. This skill turns those values into concrete dApp and smart contract architecture checks.
+CROPS is the Ethereum Foundation's shorthand for the properties Ethereum must preserve: **Censorship Resistance, Open Source and Free (as in Freedom), Privacy, Security**. This skill turns those values into concrete dApp and smart contract architecture checks.
 
 Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://blog.ethereum.org/2026/03/13/ef-mandate) and the [EF Mandate PDF](https://ethereum.foundation/ef-mandate.pdf).
 
@@ -17,13 +17,13 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 **You treat decentralization as only a contract property.** The contract may be permissionless while the app depends on a single hosted frontend, API, relayer, paymaster, sequencer, bridge, or wallet vendor. Users experience the whole stack.
 
-**You treat verified contracts as an open dApp.** Etherscan verification makes deployed contract source inspectable and tied to bytecode, which is good. But app-level openness also requires the frontend, indexer/backend, configs, and deployment docs to be forkable and self-hostable, with a license that permits it.
+**You treat verified contracts as an open dApp.** Etherscan verification makes deployed contract source inspectable and tied to bytecode, which is good. But *Open* requires the whole stack (frontend, indexer, backend, configs, deployment docs) to be public, not just the deployed contract. And *Free, as in Freedom* requires a real OSI-permissive or copyleft license — source-available-only licenses (BUSL, SSPL, custom "no commercial use") do not pass.
 
 **You check privacy after the architecture already leaks data.** Before choosing contracts, wallets, RPCs, analytics, indexers, or identity flows, tell the builder which addresses, balances, counterparties, timing data, IP metadata, wallet fingerprints, analytics events, and identity links could be exposed.
 
 **You treat security as only code bugs.** Reentrancy and oracle manipulation matter, but so do custody, upgrades, admin keys, recovery, emergency powers, approvals, and whether the app still works if the team or vendor disappears.
 
-**You present options as neutral lists.** "Use embedded wallet / Safe / EOA" or "use Vercel / IPFS" is not neutral. Each option shifts power. Label the CROPS impact and recommend the most CROPS-aligned default.
+**You list architecture options without their trust tradeoffs.** Choices like embedded wallet vs Safe vs EOA, or Vercel vs IPFS, change who can control access, custody, privacy, and user exit. Label each option’s CROPS impact and recommend the most CROPS-aligned default.
 
 ---
 
@@ -61,17 +61,25 @@ Prefer:
 - documented fallback paths users can actually use
 - infrastructure choices that keep intermediaries replaceable
 
-### Open Source and Free
+### Open Source and Free, as in Freedom
 
-Ask: **can someone inspect, fork, self-host, and continue without the original team?**
+Ask: **is the whole stack visible (Open), and does the license actually let a third party fork, modify, and run it (Free)?**
 
-Check for:
-- source-available-but-not-free licenses
+Check for — **Open** (visibility):
 - closed indexers, hosted APIs, backend business logic, proprietary SDK lock-in, or hidden model/risk engines
 - missing deployment docs, missing ABIs, missing contract addresses, or missing env var examples
 - frontends that cannot be rebuilt or pointed at alternate infrastructure
+- "open source" claim that only covers the deployed contract, not the surrounding stack
+
+Check for — **Free, as in Freedom** (license actually grants the freedoms):
+- source-available-only licenses: BUSL, SSPL, custom "no commercial use", "no derivatives"
+- license terms a third party cannot satisfy in practice (forced-disclosure-of-customer-data clauses, additional-grant-required clauses)
+- no pledge that the license will stay open — projects that reserve the right to change the license later
+- copyleft license paired with proprietary plugins or hosted-only dependencies that defeat the freedom in practice
 
 Prefer:
+- permissive (MIT, Apache 2.0) or copyleft (GPL, AGPL) licenses across the whole stack
+- explicit commitment not to relicense in the future
 - open-source contracts, frontend, indexer, deployment scripts, and docs
 - reproducible builds and verified contracts
 - self-host instructions for the full stack
@@ -131,9 +139,9 @@ Censorship Resistance:
 - Weakens:
 - Required fallback:
 
-Open Source and Free:
-- Strengthens:
-- Weakens:
+Open Source and Free, as in Freedom:
+- Open (visibility): <whole stack public, no black boxes>
+- Free (license): <OSI-permissive or copyleft, no source-available-only, no future relicensing>
 - Required docs/source:
 
 Privacy:

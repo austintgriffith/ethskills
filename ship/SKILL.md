@@ -15,7 +15,7 @@ description: End-to-end guide for AI agents — from a dApp idea to deployed pro
 
 **You skip chain selection.** Mainnet is cheaper than you think — an ETH transfer costs ~$0.004, a swap ~$0.04. The "Ethereum is expensive" narrative is outdated. But that doesn't mean everything belongs on mainnet. L2s aren't just "cheaper Ethereum" — each one has a unique superpower (Base has Coinbase distribution + smart wallets, Arbitrum has the deepest DeFi liquidity, Optimism has retroPGF + the Superchain). If your app needs high-frequency interactions or fits what makes an L2 special, build there. If you just need cheap and secure, mainnet works. Choose deliberately. Fetch `l2s/SKILL.md` and `gas/SKILL.md` for the full picture. Not sure Ethereum is the right chain at all? Fetch `why/SKILL.md`.
 
-**You optimize for "works" and skip self-sovereignty.** A dApp can compile, pass tests, and still hand users to a censorable frontend, a closed indexer, an invisible RPC dependency, a custodial wallet, or an admin key with total control. Before coding, check whether the design preserves Ethereum's CROPS properties: Censorship Resistance, Open Source and Free, Privacy, and Security.
+**You optimize for "works" and skip self-sovereignty.** A dApp can compile, pass tests, and still hand users to a censorable frontend, a closed indexer, an invisible RPC dependency, a custodial wallet, or an admin key with total control. Before coding, check whether the design preserves Ethereum's CROPS properties: Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security.
 
 **You forget nothing is automatic.** Smart contracts don't run themselves. Every state transition needs a caller who pays gas and a reason to do it. If you can't answer "who calls this and why?" for every function, your contract has dead code. Fetch `concepts/SKILL.md` for the full mental model.
 
@@ -27,12 +27,12 @@ Do this BEFORE writing any code. Every hour spent here saves ten hours of rewrit
 
 ### CROPS Gate
 
-Before choosing the architecture, run a CROPS check. CROPS means Censorship Resistance, Open Source and Free, Privacy, and Security. It is not a slogan. It is how you avoid shipping an app that works by normalizing capture, hidden trust, or user lock-in.
+Before choosing the architecture, run a CROPS check. CROPS means Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security. It is not a slogan. It is how you avoid shipping an app that works by normalizing capture, hidden trust, or user lock-in.
 
 Answer each with the concrete decision and tradeoff for this app:
 
 - **Censorship Resistance:** who can block valid users, transactions, relayers, RPC access, sequencers, bridges, frontends, or app access, including by gaining durable, non-competitive control of any critical mechanism?
-- **Open Source and Free:** is everything public, auditable, and forkable? Can users or other builders inspect, fork, self-host, integrate, and route around privileged infrastructure?
+- **Open Source and Free, as in Freedom:** *Open* — is the whole stack (contracts, frontend, indexer, infra config, docs) public and auditable, with no proprietary black boxes? *Free* — is it under an OSI-permissive or copyleft license, not source-available-only (BUSL, SSPL, "no commercial use")? Will the license stay that way?
 - **Privacy:** what addresses, balances, counterparties, behavior, metadata, or identity data leaks, is that disclosure necessary, and can users selectively negotiate it?
 - **Security:** who controls funds, approvals, upgrades, admin keys, recovery, emergency powers, and the user's exit path? Does the design pass the walkaway test if the team or a critical vendor disappears?
 

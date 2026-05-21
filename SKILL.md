@@ -30,7 +30,7 @@ End-to-end guide from idea to deployed dApp. Routes you through all other skills
 - Chain selection: mainnet is cheaper than you think (~$0.004/transfer, ~$0.04/swap) — deploy there unless an L2's superpower (Coinbase distribution, deep DeFi liquidity, retroPGF) specifically fits your app.
 
 ### [CROPS Review](https://ethskills.com/crops/SKILL.md)
-Architecture review for Ethereum values: Censorship Resistance, Open Source and Free, Privacy, Security.
+Architecture review for Ethereum values: Censorship Resistance, Open Source and Free (as in Freedom), Privacy, Security.
 - Use before finalizing or reviewing dApps and smart contract systems with custody, wallet, L2, bridge, RPC/indexer, relayer, paymaster, frontend hosting, admin, upgrade, privacy, identity, stablecoin, or agent-permission decisions.
 - Forces agents to label architecture options by CROPS impact instead of presenting neutral tradeoff lists.
 - Output must name the chosen default, accepted compromises, and the user's escape path.

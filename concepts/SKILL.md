@@ -19,14 +19,14 @@ description: The essential mental models for building onchain — focused on wha
 
 ## CROPS
 
-**CROPS** — Censorship Resistance, Open Source and Free, Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
+**CROPS** — Censorship Resistance, Open Source and Free (as in Freedom), Privacy, Security — is the Ethereum Foundation's shorthand for what makes Ethereum Ethereum.
 
 - **Censorship Resistance** — You scaffold `Pausable` + `onlyOwner` without flagging it. A single key that can freeze all users is a censorship vector.
-- **Open Source and Free** — You treat verified contracts as an open dApp. Etherscan verification makes deployed contract source inspectable, but the frontend, indexer/backend, configs, docs, and license also need to support forking and self-hosting.
+- **Open Source and Free, as in Freedom** — You treat verified contracts as an open dApp. *Open* means the whole stack is public and auditable (contracts, frontend, indexer, backend, configs, docs) — no proprietary black boxes. *Free* means the license actually grants the freedoms to fork, modify, redistribute, and run commercially, and won't be revoked later. Permissive (MIT, Apache) or copyleft (GPL, AGPL) licenses pass; source-available-only (BUSL, SSPL, "no commercial use") does not.
 - **Privacy** — You build apps where every address, amount, and counterparty is publicly visible on a block explorer and never mention it. At minimum, tell the builder what's exposed.
 - **Security** — You say "audited" and treat it as proof of security. An audit is a point-in-time review of a specific scope, not an ongoing guarantee.
 
-Four questions to catch yourself: can anyone be stopped from using it? Can someone fork and run the whole stack? What can an observer learn about users? What happens if the team disappears?
+Four questions to catch yourself: can anyone be stopped from using it? Is the whole stack visible and under a real OSI-permissive or copyleft license? What can an observer learn about users? What happens if the team disappears?
 
 Fetch `crops/SKILL.md` when you need a full architecture review of custody, infra, privacy, admin powers, or user exit.
 
