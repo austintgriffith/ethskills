@@ -37,6 +37,8 @@ Install directly from GitHub — no clone required:
 
 ## Skills
 
+<!-- Skill ordering in this table, .claude-plugin/plugin.json, index.html, and SKILL.md is intentional: roughly Plan (ship, crops) → Why/Protocol/Gas → Infrastructure (wallets, l2s) → Build (standards, tools, building-blocks, orchestration) → Reference (addresses, concepts, security, testing, indexing) → Frontend (frontend-ux, frontend-playbook) → Validate (qa, audit). Reordering one file requires syncing the others. -->
+
 | Skill | What LLMs Get Wrong |
 |-------|-------------------|
 | [CROPS Review](crops/SKILL.md) | Miss custody, privacy, exit paths, censorship resistance, and centralization risks in otherwise working apps/contracts |
