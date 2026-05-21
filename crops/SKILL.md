@@ -163,39 +163,39 @@ When presenting options, label each option with its CROPS impact and mark the mo
 
 ```md
 Option A: Vercel-only frontend
-- C: weakens; host can remove access
-- O: neutral if source is open, weakens if no self-host docs
-- P: depends on analytics/RPC behavior
-- S: simple ops, but vendor outage breaks app UX
+- C: weakens; one host can remove or block the main access path
+- O: weakens unless frontend source, build steps, env vars, and contract config are public
+- P: depends on analytics, RPC, and indexer choices; the host may see user IPs and app activity
+- S: simpler to operate, but a host outage or account suspension can break the app UX
 
 Option B: IPFS + ENS with Vercel mirror (recommended default)
-- C: strengthens; users have a route around host removal
-- O: strengthens if build and deploy docs are public
-- P: depends on RPC/indexer choices
-- S: adds deploy complexity but improves walkaway path
+- C: strengthens; users have a route around host removal if the IPFS build is pinned and ENS points to it
+- O: strengthens if frontend source, build/deploy docs, and config are public
+- P: still depends on analytics, RPC, and indexer choices; IPFS hosting alone does not make usage private
+- S: adds deployment complexity, but improves resilience because the app is not dependent on one frontend host
 ```
 
 ---
 
 ## Common Failure Modes
 
-**Censorable frontend:** Contracts are permissionless, but the only usable UI is a hosted frontend. Fix: publish source, document self-hosting, and offer IPFS/ENS or another durable route.
+**Censorable frontend:** Contracts are permissionless, but the only usable UI is hosted by one provider. Fix: publish source, document self-hosting, offer IPFS/ENS or another durable route, and document direct contract calls for critical actions.
 
-**Closed indexer:** The app cannot function without a proprietary API. Fix: make event schema public, document indexing, and allow alternate indexers.
+**Required private indexer/API:** The app cannot function without a private indexer or API whose code, schema, or event mapping is not public. Fix: publish the event schema, indexing code/config, and self-host or alternate-indexer path.
 
-**Invisible RPC dependency:** The frontend silently depends on one RPC provider. Fix: disclose the dependency, support configurable RPCs, and avoid hardcoded public fallbacks that rate-limit users.
+**Invisible RPC dependency:** The frontend silently depends on one RPC provider, which can fail, rate-limit, log users, or block requests. Fix: disclose the dependency, support configurable RPCs, and avoid hidden public fallbacks that make failures hard to diagnose.
 
-**Admin key with total control:** `onlyOwner` can pause, upgrade, seize, change fees, or redirect flows. Fix: minimize powers, use Safe + timelock, make powers explicit, and remove them when possible.
+**Admin key with total control:** `onlyOwner` or a privileged role can pause, upgrade, seize, change fees, redirect flows, or block users. Fix: minimize powers, use Safe/multisig plus timelock where practical, make powers explicit, and remove or expire them when possible.
 
-**Prompt-only agent policy:** An AI agent is told not to overspend, but nothing enforces that if the key or prompt is compromised. Fix: enforce caps, allowlists, expiries, and revocation in the wallet/contract layer.
+**Prompt-only delegated policy:** An agent, bot, session key, or automation is told not to overspend, but nothing enforces that if the key, backend, or prompt is compromised. Fix: enforce caps, allowlists, expiries, and revocation in the wallet/contract layer.
 
-**Custody hidden behind UX:** Embedded or custodial flows improve onboarding but blur who controls keys, recovery, and exit. Fix: explain custody, recovery, export, and migration paths before the user deposits value.
+**Custody hidden behind UX:** Embedded or custodial flows improve onboarding but blur who controls keys, recovery, account freezing, and exit. Fix: explain custody, recovery, key export, and migration paths before the user deposits value.
 
-**L2 trust assumptions omitted:** The app picks an L2 but never explains sequencer, bridge, withdrawal, DA, or censorship assumptions. Fix: fetch `l2s/SKILL.md` and disclose the real exit path.
+**L2 trust assumptions omitted:** The app picks an L2 but never explains sequencer, bridge, withdrawal, data availability, or censorship assumptions. Fix: fetch `l2s/SKILL.md` and disclose the canonical withdrawal, forced-transaction, or L1 escape path where applicable.
 
-**Stablecoin risks ignored:** Stablecoins can add issuer, freeze, compliance, bridge, and privacy risks. Fix: disclose freeze/custody assumptions and give users a reasoned token/chain choice.
+**Stablecoin risks ignored:** Stablecoins can add issuer freeze/blacklist, reserve custody, compliance, bridge, chain, and privacy risks. Fix: disclose the issuer and freeze assumptions, explain bridge/chain exposure, and give users a reasoned token/chain choice.
 
-**Privacy theater:** The app uses ZK branding but links deposits and actions through events, relayers, wallets, or frontend telemetry. Fix: threat-model observer knowledge and test linkability.
+**Privacy theater:** The app uses ZK/privacy branding but links deposits and actions through events, wallet reuse, relayer metadata, or frontend telemetry. Fix: threat-model observer knowledge and test linkability.
 
 ---
 
