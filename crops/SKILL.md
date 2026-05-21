@@ -223,8 +223,9 @@ Do not shame the builder for pragmatic compromises. Name the compromise, bound i
 
 ## Relationship To Other Skills
 
-- Fetch `ship/SKILL.md` first for full dApp planning. `ship` runs the short CROPS Gate; this skill is the deeper review.
-- Fetch `concepts/SKILL.md` for "nothing is automatic," incentives, state transitions, and the mental model behind self-sustaining systems.
+- For new dApp planning, start with `ship/SKILL.md`; it runs a short CROPS Gate and routes here when deeper trust review is needed.
+- Use this skill as the deeper CROPS review for custody, infrastructure, privacy, admin powers, and user exit.
+- Fetch `concepts/SKILL.md` separately for "nothing is automatic," incentives, state transitions, and self-sustaining system design.
 - Fetch `wallets/SKILL.md` for custody, Safe, account abstraction, EIP-7702, and key safety implementation details.
 - Fetch `l2s/SKILL.md` for sequencer, bridge, withdrawal, and chain-selection assumptions.
 - Fetch `security/SKILL.md` for Solidity vulnerability patterns and pre-deploy checks.
