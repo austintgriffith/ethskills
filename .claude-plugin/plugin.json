@@ -12,6 +12,7 @@
   "keywords": ["ethereum", "solidity", "defi", "web3", "blockchain", "scaffold-eth"],
   "skills": [
     "./ship",
+    "./crops",
     "./why",
     "./protocol",
     "./gas",

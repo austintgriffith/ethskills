@@ -10,6 +10,7 @@ Each skill is a markdown file. Give any URL to your AI agent — it reads it and
 https://ethskills.com/SKILL.md          ← table of contents
 https://ethskills.com/gas/SKILL.md      ← just gas & costs
 https://ethskills.com/why/SKILL.md      ← why ethereum
+https://ethskills.com/crops/SKILL.md    ← CROPS architecture review
 ```
 
 ### Add the top-level SKILL.md to your agent's context
@@ -38,6 +39,7 @@ Install directly from GitHub — no clone required:
 
 | Skill | What LLMs Get Wrong |
 |-------|-------------------|
+| [CROPS Review](crops/SKILL.md) | Treat "works" as enough; miss custody, privacy, exit, and capture risks |
 | [Why Ethereum](why/SKILL.md) | Pectra/Fusaka shipped, gas is cheap now, AI agent angle |
 | [Gas & Costs](gas/SKILL.md) | Think gas is 10-30 gwei — reality is 0.05-0.3 gwei |
 | [Wallets](wallets/SKILL.md) | EIP-7702 is live, Safe addresses, agent key safety |

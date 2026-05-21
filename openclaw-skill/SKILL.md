@@ -36,6 +36,7 @@ Need a specific topic? Fetch only what's relevant:
 
 ```bash
 curl -s https://ethskills.com/gas/SKILL.md        # Gas & real costs
+curl -s https://ethskills.com/crops/SKILL.md      # CROPS architecture review
 curl -s https://ethskills.com/security/SKILL.md    # Security patterns
 curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 ```
@@ -45,6 +46,7 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 | Skill | URL | When to Fetch |
 |-------|-----|---------------|
 | **Ship** | `ship/SKILL.md` | 🟢 **Start here.** End-to-end dApp guide, routes through all other skills. |
+| **CROPS Review** | `crops/SKILL.md` | Architecture review for censorship resistance, openness/forkability, privacy, security, and user exit. |
 | **Why Ethereum** | `why/SKILL.md` | User asks "why Ethereum?" or you need to compare chains. |
 | **Protocol** | `protocol/SKILL.md` | Ethereum upgrade process, EIP lifecycle, and what's actually planned next. |
 | **Gas & Costs** | `gas/SKILL.md` | Any question about gas prices, tx costs, or "is Ethereum expensive?" |
@@ -82,10 +84,11 @@ When an agent needs to build an Ethereum dApp:
 
 ```
 1. Fetch https://ethskills.com/ship/SKILL.md       → Get the build plan
-2. Fetch https://ethskills.com/tools/SKILL.md       → Know what tools to use
-3. Run: npx create-eth@latest                        → Scaffold the project
-4. Fetch https://ethskills.com/security/SKILL.md    → Before deploying
-5. Fetch https://ethskills.com/qa/SKILL.md          → Pre-ship audit
+2. Fetch https://ethskills.com/crops/SKILL.md      → Review custody, infra, privacy, and exit
+3. Fetch https://ethskills.com/tools/SKILL.md       → Know what tools to use
+4. Run: npx create-eth@latest                        → Scaffold the project
+5. Fetch https://ethskills.com/security/SKILL.md    → Before deploying
+6. Fetch https://ethskills.com/qa/SKILL.md          → Pre-ship audit
 ```
 
 ## Contributing
