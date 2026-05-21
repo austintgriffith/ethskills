@@ -39,7 +39,7 @@ Install directly from GitHub — no clone required:
 
 | Skill | What LLMs Get Wrong |
 |-------|-------------------|
-| [CROPS Review](crops/SKILL.md) | Reviews custody, privacy, exit paths, censorship resistance, and centralization risks |
+| [CROPS Review](crops/SKILL.md) | Miss custody, privacy, exit paths, censorship resistance, and centralization risks in otherwise working apps |
 | [Why Ethereum](why/SKILL.md) | Pectra/Fusaka shipped, gas is cheap now, AI agent angle |
 | [Gas & Costs](gas/SKILL.md) | Think gas is 10-30 gwei — reality is 0.05-0.3 gwei |
 | [Wallets](wallets/SKILL.md) | EIP-7702 is live, Safe addresses, agent key safety |
