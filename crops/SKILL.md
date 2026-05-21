@@ -50,15 +50,18 @@ Ask: **who can block valid use, and can users route around them?**
 
 Check for:
 - admin pause, blacklist, allowlist, upgrade, or kill-switch powers
-- relayers, paymasters, RPCs, sequencers, bridges, app stores, CDNs, frontends, or APIs that can block users
+- relayers, paymasters, bundlers, RPCs, sequencers, bridges, app stores, CDNs, frontends, or APIs that can block users
+- single bundler dependency for ERC-4337 / smart-account flows; no fallback bundler or self-host path
+- single hosted indexer (The Graph hosted, Goldsky, Subsquid, Ponder) with no documented self-host path, alternate indexer, or RPC-only fallback
 - any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it
-- missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1
+- missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1 where the L2 supports forced inclusion (verify against `l2s/SKILL.md`)
 
 Prefer:
-- permissionless contract entrypoints where possible
-- emergency powers, if unavoidable, that are narrow in scope, controlled by a multisig, time-limited or removable, delayed by a timelock where practical, and publicly explained
-- documented fallback paths users can actually use
-- infrastructure choices that keep intermediaries replaceable
+- permissionless contract entrypoints, callable directly without the frontend
+- emergency powers, if unavoidable, behind a Safe or multisig, narrowly scoped, and publicly documented
+- timelock of at least 24 hours on any admin power that can move funds or change authority
+- documented fallback paths users can actually use, including direct contract calls and alternate RPC or frontend
+- infrastructure choices that keep intermediaries (RPC, indexer, bundler, frontend host) replaceable or self-hostable
 
 ### Open Source and Free, as in Freedom
 
@@ -68,6 +71,7 @@ Check for — **Open** (visibility):
 - "open source" claim that only covers the deployed contract, not the surrounding stack
 - dependencies that make the app hard to inspect, fork, or self-host, such as private indexers required for the frontend, vendor-hosted APIs, backend-only business logic, proprietary SDK lock-in, or opaque AI/risk/scoring systems
 - frontend source that cannot be rebuilt from the repo because build steps, env vars, ABIs, contract addresses, or deployment instructions are missing
+- deployed frontend cannot be reproduced from a pinned commit and documented build steps; live URL auto-deploys from `main` without a frozen build artifact or pinned IPFS CID
 
 Check for — **Free, as in Freedom** (license actually grants the freedoms):
 - restricted, source-available, or permission-gated licenses that do not grant normal open-source freedoms, including BUSL, SSPL, custom "no commercial use", "no derivatives", or terms requiring approval from the original team to run, modify, redistribute, or operate a fork
@@ -75,11 +79,10 @@ Check for — **Free, as in Freedom** (license actually grants the freedoms):
 - "open core" designs where the core repo is open, but a useful production deployment depends on proprietary plugins or hosted-only services
 
 Prefer:
-- OSI-approved permissive or copyleft licenses for every repo needed to run the app, such as MIT, Apache-2.0, GPL, or AGPL
+- OSI-approved permissive or copyleft licenses for every repo needed to run the app (MIT, Apache-2.0, GPL, AGPL)
 - a clear license-stability commitment, or at minimum no stated plan to close or relicense core code later
-- open-source contracts, frontend, indexer/backend, deployment scripts, and docs needed to operate the app
-- verified contracts and reproducible build/deploy steps where practical
-- self-host instructions for the full stack, including required env vars, ABIs, contract addresses, and RPC/indexer setup
+- open-source contracts, frontend, indexer/backend, deployment scripts, and docs, plus self-host instructions with env vars, ABIs, addresses, and RPC config
+- verified contracts on the canonical block explorer (Etherscan, Blockscout) and a documented build script that reproduces the live deployment from a pinned commit
 - documented ABIs, events, metadata schemas, API formats, and export formats so other builders can build compatible frontends, indexers, wallets, or integrations without asking permission
 
 ### Privacy
@@ -89,13 +92,14 @@ Ask: **what can an observer learn, is the disclosure necessary, and did the user
 Check for:
 - public addresses, balances, counterparties, amounts, timing patterns, identity links, location/IP metadata, and wallet/browser fingerprints
 - analytics, RPC, indexer, or API calls that reveal user behavior to third parties offchain
+- telemetry shipped by default in wallet/UI dependencies (WalletConnect, RainbowKit, Privy, Alchemy SDK, Sentry); audit `package.json` for analytics, error reporting, and address-linking endpoints
 - identity or credential flows that collect more information than the app actually needs
 - UI that asks users to sign, transact, connect a wallet, or reveal identity without explaining what becomes public or linkable
 
 Prefer:
 - collect and publish the minimum data needed for the use case
 - selective disclosure instead of full identity disclosure
-- local-first reads, configurable RPCs, or privacy-preserving RPC/indexing where practical
+- user-configurable RPC URL in the UI, a documented self-host path for the indexer, and local-first reads for any non-broadcast data
 - clear UI copy for unavoidable public or third-party-visible data
 - ZK or commitment/nullifier patterns when the use case needs unlinkability or private membership/proof flows
 
@@ -107,6 +111,7 @@ Check for:
 - who controls user funds, token approvals, signer keys, upgrades, recovery, emergency powers, and exit paths
 - unbounded token approvals, unbounded agent spending, prompt-only spending rules, or safety checks enforced only by a backend
 - upgradeable contracts without documented upgrade authority, storage-layout discipline, timelocks, or user notice
+- single-source oracle (Chainlink only, Pyth only) with no fallback, no staleness check, or no manual-pause path if the feed breaks
 - dependencies that can silently break critical flows if a vendor, API, relayer, paymaster, wallet service, or indexer disappears
 - private keys, API keys, RPC keys, deployment credentials, or other operational secrets that could leak or become single points of failure
 
@@ -175,19 +180,23 @@ Option B: IPFS + ENS with Vercel mirror (recommended default)
 
 ## Common Failure Modes
 
-**Censorable frontend:** Contracts are permissionless, but the only usable UI is hosted by one provider. Fix: publish source, document self-hosting, offer IPFS/ENS or another durable route, and document direct contract calls for critical actions.
+**Censorable frontend:** Contracts are permissionless, but the only usable UI is hosted by one provider that can take it down, geofence users by IP, or filter wallet addresses against OFAC and compliance lists. Fix: publish source, document self-hosting, offer IPFS/ENS or another durable route, and document direct contract calls for critical actions.
 
 **Required private indexer/API:** The app cannot function without a private indexer or API whose code, schema, or event mapping is not public. Fix: publish the event schema, indexing code/config, and self-host or alternate-indexer path.
 
 **Invisible RPC dependency:** The frontend silently depends on one RPC provider, which can fail, rate-limit, log users, or block requests. Fix: disclose the dependency, support configurable RPCs, and avoid hidden public fallbacks that make failures hard to diagnose.
 
-**Admin key with total control:** `onlyOwner` or a privileged role can pause, upgrade, seize, change fees, redirect flows, or block users. Fix: minimize powers, use Safe/multisig plus timelock where practical, make powers explicit, and remove or expire them when possible.
+**Admin key with total control:** `onlyOwner` or a privileged role can pause, upgrade, seize, change fees, redirect flows, or block users. Fix: minimize powers, use Safe/multisig (≥2-of-3) plus timelock for any admin power that survives launch, make powers explicit, and remove or expire them when possible.
 
 **Prompt-only delegated policy:** An agent, bot, session key, or automation is told not to overspend, but nothing enforces that if the key, backend, or prompt is compromised. Fix: enforce caps, allowlists, expiries, and revocation in the wallet/contract layer.
 
 **Custody hidden behind UX:** Embedded or custodial flows improve onboarding but blur who controls keys, recovery, account freezing, and exit. Fix: explain custody, recovery, key export, and migration paths before the user deposits value.
 
+**Recovery surface masquerading as UX:** Social-recovery guardians (Privy, Magic, Coinbase Smart Wallet defaults) can refuse to sign, collude, be subpoenaed, or be compromised. Fix: document the guardian set, threshold, and the user's path to remove, replace, or rotate guardians without losing the account.
+
 **L2 trust assumptions omitted:** The app picks an L2 but never explains sequencer, bridge, withdrawal, data availability, or censorship assumptions. Fix: fetch `l2s/SKILL.md` and disclose the canonical withdrawal, forced-transaction, or L1 escape path where applicable.
+
+**Sequencer ordering and MEV extraction:** A centralized sequencer (most L2s today) or builder pool can reorder, sandwich, or selectively delay user transactions. Fix: disclose the sequencer's ordering policy and any planned decentralization. For trade-heavy flows, route through encrypted mempools (Flashbots Protect, MEV-Share) and call out the privacy tradeoff: the orderflow-auction operator sees the transaction even when the public mempool does not.
 
 **Stablecoin risks ignored:** Stablecoins can add issuer freeze/blacklist, reserve custody, compliance, bridge, chain, and privacy risks. Fix: disclose the issuer and freeze assumptions, explain bridge/chain exposure, and give users a reasoned token/chain choice.
 
