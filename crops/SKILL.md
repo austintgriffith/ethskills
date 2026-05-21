@@ -85,20 +85,20 @@ Prefer:
 
 ### Privacy
 
-Ask: **what can an observer learn, and did the user choose that disclosure?**
+Ask: **what can an observer learn, is the disclosure necessary, and did the user knowingly choose it?**
 
 Check for:
-- public addresses, balances, counterparties, amounts, timing, identity links, location/IP metadata, and wallet fingerprints
-- analytics, RPC, indexer, or API calls that leak user behavior offchain
-- identity or credential systems collecting more than the app actually needs
-- UI that hides the privacy cost of public onchain actions
+- public addresses, balances, counterparties, amounts, timing patterns, identity links, location/IP metadata, and wallet/browser fingerprints
+- analytics, RPC, indexer, or API calls that reveal user behavior to third parties offchain
+- identity or credential flows that collect more information than the app actually needs
+- UI that asks users to sign, transact, connect a wallet, or reveal identity without explaining what becomes public or linkable
 
 Prefer:
-- data minimization
+- collect and publish the minimum data needed for the use case
 - selective disclosure instead of full identity disclosure
-- local-first reads and privacy-preserving RPC/indexing where practical
-- clear UI copy for unavoidable public data
-- ZK or commitment/nullifier patterns when the use case genuinely needs privacy
+- local-first reads, configurable RPCs, or privacy-preserving RPC/indexing where practical
+- clear UI copy for unavoidable public or third-party-visible data
+- ZK or commitment/nullifier patterns when the use case needs unlinkability or private membership/proof flows
 
 ### Security
 
