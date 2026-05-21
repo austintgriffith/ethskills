@@ -170,7 +170,7 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 
 | I'm doing... | Fetch these skills |
 |--------------|-------------------|
-| Planning a new dApp | `ship/`, `crops/`, `concepts/`, `l2s/` |
+| Planning a new dApp | `ship/`, `crops/`, `concepts/`, `l2s/`, `gas/`, `why/` |
 | Reviewing an existing dApp, smart contract, or trust assumptions | `crops/`, `audit/`, `qa/`, `wallets/`, `l2s/`, `security/` |
 | Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
 | Testing contracts | `testing/` |

@@ -17,7 +17,7 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 **You treat decentralization as only a contract property.** The contract may be permissionless while the app depends on a single hosted frontend, API, relayer, paymaster, sequencer, bridge, or wallet vendor. Users experience the whole stack.
 
-**You treat verified contracts as an open dApp.** Etherscan verification makes deployed contract source inspectable and tied to bytecode, which is good. But *Open* requires the whole stack (frontend, indexer, backend, configs, deployment docs) to be public, not just the deployed contract. And *Free, as in Freedom* requires a real OSI-permissive or copyleft license — source-available-only licenses (BUSL, SSPL, custom "no commercial use") do not pass.
+**You treat verified contracts as an open dApp.** Etherscan verification ties bytecode to source for that contract only; *Open* needs the whole stack public, and *Free* needs a real OSI-permissive or copyleft license (EF Mandate p.13).
 
 **You check privacy after the architecture already leaks data.** Before choosing contracts, wallets, RPCs, analytics, indexers, or identity flows, tell the builder which addresses, balances, counterparties, timing data, IP metadata, wallet fingerprints, analytics events, and identity links could be exposed.
 
@@ -74,7 +74,7 @@ Check for — **Open** (visibility):
 - deployed frontend cannot be reproduced from a pinned commit and documented build steps; live URL auto-deploys from `main` without a frozen build artifact or pinned IPFS CID
 
 Check for — **Free, as in Freedom** (license actually grants the freedoms):
-- restricted, source-available, or permission-gated licenses that do not grant normal open-source freedoms, including BUSL, SSPL, custom "no commercial use", "no derivatives", or terms requiring approval from the original team to run, modify, redistribute, or operate a fork
+- restricted, source-available, or permission-gated licenses that do not grant normal open-source freedoms, including BUSL, SSPL, custom "no commercial use", "no derivatives", or terms requiring approval from the original team to run, modify, redistribute, or operate a fork (EF Mandate p.13: "merely source-available licenses are not tolerated")
 - future-license risk: current code is open, but future versions can be relicensed or closed, pulling users and builders toward a non-forkable upgrade path
 - "open core" designs where the core repo is open, but a useful production deployment depends on proprietary plugins or hosted-only services
 
@@ -120,7 +120,7 @@ Prefer:
 - capped permissions, allowlists, expiries, and clear revocation paths for delegated or automated actions
 - Safe/multisig ownership and timelocks for admin powers that cannot be removed
 - onchain or wallet-level enforcement for spending and permission policy, not prompt text or backend promises
-- simple designs with documented recovery and exit paths that can pass the walkaway test (if the team, vendor, host, or oracle disappears, can the user still access funds and exit?)
+- simple designs with documented recovery and exit paths that can pass the walkaway test (EF Mandate p.7); the test asks: if the team, vendor, host, or oracle disappears, can the user still access funds and exit?
 
 ---
 
@@ -173,7 +173,7 @@ Option B: IPFS + ENS with Vercel mirror (recommended default)
 - C: strengthens; users have a route around host removal if the IPFS build is pinned and ENS points to it
 - O: strengthens if frontend source, build/deploy docs, and config are public
 - P: still depends on analytics, RPC, and indexer choices; IPFS hosting alone does not make usage private
-- S: adds deployment complexity, but improves resilience because the app is not dependent on one frontend host
+- S: adds deployment complexity, but removes single-provider availability risk
 ```
 
 ---
@@ -222,6 +222,8 @@ When reporting a CROPS finding to the builder, name the power, bound the comprom
 - Fetch `concepts/SKILL.md` separately for "nothing is automatic," incentives, state transitions, and self-sustaining system design.
 - Fetch `wallets/SKILL.md` for custody, Safe, account abstraction, EIP-7702, and key safety implementation details.
 - Fetch `l2s/SKILL.md` for sequencer, bridge, withdrawal, and chain-selection assumptions.
+- Fetch `frontend-playbook/SKILL.md` for IPFS/ENS deployment, build pipeline, and frontend reproducibility (the Open and Censorship Resistance mitigations for the frontend live here).
+- Fetch `indexing/SKILL.md` for event schema design, self-host paths, and alternate-indexer fallbacks (the Open and Censorship Resistance mitigations for the data layer).
 - Fetch `security/SKILL.md` for Solidity vulnerability patterns and pre-deploy checks.
 - Fetch `audit/SKILL.md` for deep smart contract vulnerability review. This skill covers admin powers, trust assumptions, censorship paths, privacy leakage, and user exit.
 - Fetch `qa/SKILL.md` after the build for a fresh reviewer pass.
