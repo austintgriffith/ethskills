@@ -171,12 +171,12 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 | I'm doing... | Fetch these skills |
 |--------------|-------------------|
 | Planning a new dApp | `ship/`, `crops/`, `concepts/`, `l2s/` |
-| Reviewing architecture / trust assumptions | `crops/`, `wallets/`, `l2s/`, `security/` |
+| Reviewing an existing dApp / trust assumptions | `crops/`, `qa/`, `wallets/`, `l2s/`, `security/` |
 | Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
 | Testing contracts | `testing/` |
 | Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
 | Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
-| Reviewing a finished dApp | `qa/` |
+| Reviewing a finished dApp before shipping | `qa/`, `crops/` |
 | Auditing a smart contract | `audit/` |
 | Building a privacy/ZK app | `noir/`, `security/`, `testing/` |
 | Monitoring / analytics | `indexing/` |
