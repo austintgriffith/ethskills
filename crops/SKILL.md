@@ -19,7 +19,7 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 **You treat verified contracts as an open dApp.** Etherscan verification makes deployed contract source inspectable and tied to bytecode, which is good. But app-level openness also requires the frontend, indexer/backend, configs, and deployment docs to be forkable and self-hostable, with a license that permits it.
 
-**You mention privacy only after the leak.** Addresses, balances, counterparties, timing, IP metadata, wallet fingerprints, analytics, and identity data can become permanent surveillance defaults. Tell the builder what leaks before they choose the architecture.
+**You check privacy after the architecture already leaks data.** Before choosing contracts, wallets, RPCs, analytics, indexers, or identity flows, tell the builder which addresses, balances, counterparties, timing data, IP metadata, wallet fingerprints, analytics events, and identity links could be exposed.
 
 **You treat security as only code bugs.** Reentrancy and oracle manipulation matter, but so do custody, upgrades, admin keys, recovery, emergency powers, approvals, and whether the app still works if the team or vendor disappears.
 
