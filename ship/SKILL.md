@@ -38,7 +38,7 @@ Use the short gate to catch the main tradeoff:
 
 Name the chosen default, the main compromise, and the user's escape path.
 
-Fetch `crops/SKILL.md` before finalizing any dApp architecture. Fetch `concepts/SKILL.md` separately for incentive design and "nothing is automatic."
+Fetch `crops/SKILL.md` for the deep review of any dApp before finalizing architecture. Fetch `concepts/SKILL.md` separately for incentive design and "nothing is automatic."
 
 ### The Onchain Litmus Test
 
