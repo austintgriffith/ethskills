@@ -110,9 +110,9 @@ AI agents treat the scaffold as sacred and leave all default branding in place.
 
 ## Important: CROPS Review for Trust Assumptions
 
-- ❌ **FAIL:** The app has custody, admin, infra, privacy, L2, identity, stablecoin, or agent-permission tradeoffs but no explicit CROPS review.
+- ❌ **FAIL:** No `CROPS Review` block in the PR description or repo docs.
 - ❌ **FAIL:** The review lists generic values but does not name who can block users, what data leaks, who controls funds/upgrades/recovery, and how users exit.
-- ✅ **PASS:** Reviewer fetched `crops/SKILL.md` and reported the chosen default, accepted compromises, and user escape path.
+- ✅ **PASS:** A `CROPS Review` block is present and names the chosen default, accepted compromises, and the user's escape path.
 
 ---
 
