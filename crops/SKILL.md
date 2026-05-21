@@ -66,7 +66,7 @@ Prefer:
 Ask: **is the whole stack visible (Open), and does the license actually let a third party fork, modify, and run it (Free)?**
 
 Check for — **Open** (visibility):
-- closed indexers, hosted APIs, backend business logic, proprietary SDK lock-in, or hidden model/risk engines
+- dependencies that make the app hard to inspect, fork, or self-host, such as private indexers required for the frontend, vendor-hosted APIs, backend-only business logic, proprietary SDK lock-in, or opaque AI/risk/scoring systems
 - missing deployment docs, missing ABIs, missing contract addresses, or missing env var examples
 - frontends that cannot be rebuilt or pointed at alternate infrastructure
 - "open source" claim that only covers the deployed contract, not the surrounding stack
