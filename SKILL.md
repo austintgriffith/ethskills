@@ -31,7 +31,7 @@ End-to-end guide from idea to deployed dApp. Routes you through all other skills
 
 ### [CROPS Review](https://ethskills.com/crops/SKILL.md)
 Architecture review for Ethereum values: Censorship Resistance, Open Source and Free, Privacy, Security.
-- Use before finalizing custody, wallet, L2, bridge, RPC/indexer, relayer, paymaster, frontend hosting, admin, upgrade, privacy, identity, stablecoin, or agent-permission decisions.
+- Use before finalizing or reviewing dApps and smart contract systems with custody, wallet, L2, bridge, RPC/indexer, relayer, paymaster, frontend hosting, admin, upgrade, privacy, identity, stablecoin, or agent-permission decisions.
 - Forces agents to label architecture options by CROPS impact instead of presenting neutral tradeoff lists.
 - Output must name the chosen default, accepted compromises, and the user's escape path.
 
@@ -171,13 +171,13 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 | I'm doing... | Fetch these skills |
 |--------------|-------------------|
 | Planning a new dApp | `ship/`, `crops/`, `concepts/`, `l2s/` |
-| Reviewing an existing dApp / trust assumptions | `crops/`, `qa/`, `wallets/`, `l2s/`, `security/` |
+| Reviewing an existing dApp, smart contract, or trust assumptions | `crops/`, `audit/`, `qa/`, `wallets/`, `l2s/`, `security/` |
 | Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
 | Testing contracts | `testing/` |
 | Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
 | Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
 | Reviewing a finished dApp before shipping | `qa/`, `crops/` |
-| Auditing a smart contract | `audit/` |
+| Auditing a smart contract | `audit/`, `crops/` |
 | Building a privacy/ZK app | `noir/`, `security/`, `testing/` |
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |

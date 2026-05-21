@@ -1,11 +1,11 @@
 ---
 name: crops
-description: "CROPS architecture review for Ethereum apps: Censorship Resistance, Open Source and Free, Privacy, and Security. Use when planning or reviewing dApps where custody, wallets, L2s, bridges, RPC/indexers, relayers, paymasters, frontend hosting, admin keys, upgrades, privacy, identity, stablecoins, agent permissions, or vendor dependencies affect user self-sovereignty and exit. Also use before shipping any app that handles user funds or permissions."
+description: "CROPS architecture review for Ethereum apps and smart contract systems: Censorship Resistance, Open Source and Free, Privacy, and Security. Use when planning or reviewing dApps or contracts where custody, wallets, L2s, bridges, RPC/indexers, relayers, paymasters, frontend hosting, admin keys, upgrades, privacy, identity, stablecoins, agent permissions, or vendor dependencies affect user self-sovereignty and exit. Also use before shipping any app or contract that handles user funds or permissions."
 ---
 
 # CROPS Review
 
-CROPS is the Ethereum Foundation's shorthand for the properties Ethereum must preserve: **Censorship Resistance, Open Source and Free, Privacy, Security**. This skill turns those values into concrete app-layer architecture checks.
+CROPS is the Ethereum Foundation's shorthand for the properties Ethereum must preserve: **Censorship Resistance, Open Source and Free, Privacy, Security**. This skill turns those values into concrete dApp and smart contract architecture checks.
 
 Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://blog.ethereum.org/2026/03/13/ef-mandate) and the [EF Mandate PDF](https://ethereum.foundation/ef-mandate.pdf).
 
@@ -13,7 +13,7 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 ## What You Probably Got Wrong
 
-**"It works" is not enough.** A dApp can compile, pass tests, and demo cleanly while handing users to a censorable frontend, a closed indexer, an invisible RPC dependency, a custodial wallet, or an admin key with total control.
+**"It works" is not enough.** A dApp or smart contract can compile, pass tests, and demo cleanly while handing users to a censorable frontend, a closed indexer, an invisible RPC dependency, a custodial wallet, or an admin key with total control.
 
 **You treat decentralization as only a contract property.** The contract may be permissionless while the app depends on a single hosted frontend, API, relayer, paymaster, sequencer, bridge, or wallet vendor. Users experience the whole stack.
 
@@ -29,7 +29,7 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 ## When To Fetch This Skill
 
-Fetch this skill before finalizing architecture if the app involves:
+Fetch this skill before finalizing architecture, or when reviewing an existing dApp or smart contract, if the system involves:
 
 - user funds, custody, approvals, permissions, or spending limits
 - wallets, embedded wallets, account abstraction, session keys, or agent wallets
@@ -222,4 +222,5 @@ Do not shame the builder for pragmatic compromises. Name the compromise, bound i
 - Fetch `wallets/SKILL.md` for custody, Safe, account abstraction, EIP-7702, and key safety implementation details.
 - Fetch `l2s/SKILL.md` for sequencer, bridge, withdrawal, and chain-selection assumptions.
 - Fetch `security/SKILL.md` for Solidity vulnerability patterns and pre-deploy checks.
+- Fetch `audit/SKILL.md` for deep smart contract vulnerability review. This skill covers admin powers, trust assumptions, censorship paths, privacy leakage, and user exit.
 - Fetch `qa/SKILL.md` after the build for a fresh reviewer pass.
