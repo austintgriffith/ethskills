@@ -67,8 +67,7 @@ Ask: **is the whole stack visible (Open), and does the license actually let a th
 
 Check for — **Open** (visibility):
 - dependencies that make the app hard to inspect, fork, or self-host, such as private indexers required for the frontend, vendor-hosted APIs, backend-only business logic, proprietary SDK lock-in, or opaque AI/risk/scoring systems
-- missing deployment docs, missing ABIs, missing contract addresses, or missing env var examples
-- frontends that cannot be rebuilt or pointed at alternate infrastructure
+- frontend source that cannot be rebuilt from the repo because build steps, env vars, ABIs, contract addresses, or deployment instructions are missing
 - "open source" claim that only covers the deployed contract, not the surrounding stack
 
 Check for — **Free, as in Freedom** (license actually grants the freedoms):
