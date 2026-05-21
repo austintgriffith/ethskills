@@ -72,7 +72,7 @@ Check for — **Open** (visibility):
 
 Check for — **Free, as in Freedom** (license actually grants the freedoms):
 - source-available-only licenses: BUSL, SSPL, custom "no commercial use", "no derivatives"
-- license terms that still require special permission from the original team, block useful forks, or force operators to disclose private user/customer data
+- license terms that still require special permission from the original team or block useful independent forks
 - no pledge that the license will stay open — projects that reserve the right to change the license later
 - copyleft license paired with proprietary plugins or hosted-only dependencies that defeat the freedom in practice
 
