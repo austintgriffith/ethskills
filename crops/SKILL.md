@@ -81,7 +81,7 @@ Prefer:
 - open-source contracts, frontend, indexer, deployment scripts, and docs
 - reproducible builds and verified contracts
 - self-host instructions for the full stack
-- standards and data formats other builders can integrate without permission
+- documented ABIs, events, metadata schemas, API formats, and export formats so other builders can build compatible frontends, indexers, wallets, or integrations without asking permission
 
 ### Privacy
 
