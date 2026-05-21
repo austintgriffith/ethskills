@@ -27,18 +27,18 @@ Do this BEFORE writing any code. Every hour spent here saves ten hours of rewrit
 
 ### CROPS Gate
 
-Before choosing the architecture, run a CROPS check. CROPS means Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security. It is not a slogan. It is how you avoid shipping an app that works by normalizing capture, hidden trust, or user lock-in.
+Before finalizing architecture, run a CROPS check. CROPS means Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security.
 
-Answer each with the concrete decision and tradeoff for this app:
+Use the short gate to catch the main tradeoff:
 
-- **Censorship Resistance:** who can block valid users, transactions, relayers, RPC access, sequencers, bridges, frontends, or app access? Is any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it?
-- **Open Source and Free, as in Freedom:** *Open* — is the whole stack (contracts, frontend, indexer, infra config, docs) public and auditable, with no proprietary black boxes? *Free* — is it under an OSI-permissive or copyleft license, not source-available-only (BUSL, SSPL, "no commercial use")? Will the license stay that way?
-- **Privacy:** what addresses, balances, counterparties, behavior, metadata, or identity data leaks, is that disclosure necessary, and can users selectively negotiate it?
-- **Security:** who controls funds, approvals, upgrades, admin keys, recovery, emergency powers, and the user's exit path? Does the design pass the walkaway test if the team or a critical vendor disappears?
+- **Censorship Resistance:** who can block users or critical app paths?
+- **Open Source and Free:** can the full stack be inspected, forked, self-hosted, and legally reused?
+- **Privacy:** what user activity or identity data becomes public or visible to third parties?
+- **Security:** who controls funds, permissions, upgrades, emergency powers, recovery, and exit?
 
-Your output should name the chosen default, accepted compromises, and the user's escape path.
+Name the chosen default, the main compromise, and the user's escape path.
 
-Fetch `crops/SKILL.md` before finalizing architecture if the app involves custody, wallets, L2s, bridges, RPC/indexers, relayers, paymasters, admin keys, upgrades, privacy, identity, agent permissions, stablecoins, or frontend hosting dependencies. Fetch `concepts/SKILL.md` separately for incentive design and "nothing is automatic."
+Fetch `crops/SKILL.md` before finalizing any dApp architecture. Fetch `concepts/SKILL.md` separately for incentive design and "nothing is automatic."
 
 ### The Onchain Litmus Test
 
