@@ -71,8 +71,7 @@ Check for — **Open** (visibility):
 - frontend source that cannot be rebuilt from the repo because build steps, env vars, ABIs, contract addresses, or deployment instructions are missing
 
 Check for — **Free, as in Freedom** (license actually grants the freedoms):
-- restricted or source-available licenses that do not grant normal open-source freedoms, including BUSL, SSPL, custom "no commercial use", or "no derivatives" terms
-- license terms that require special permission from the original team before a third party can run, modify, redistribute, or operate a fork
+- restricted, source-available, or permission-gated licenses that do not grant normal open-source freedoms, including BUSL, SSPL, custom "no commercial use", "no derivatives", or terms requiring approval from the original team to run, modify, redistribute, or operate a fork
 - future-license risk: current code is open, but future versions can be relicensed or closed, pulling users and builders toward a non-forkable upgrade path
 - "open core" designs where the core repo is open, but a useful production deployment depends on proprietary plugins or hosted-only services
 
