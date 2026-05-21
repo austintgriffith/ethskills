@@ -53,7 +53,7 @@ Check for:
 - admin pause, blacklist, allowlist, upgrade, or kill-switch powers
 - relayers, paymasters, RPCs, sequencers, bridges, app stores, CDNs, frontends, or APIs that can block users
 - any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it
-- missing fallback paths for direct contract calls, alternate RPCs, self-hosted frontends, or L1 exits
+- missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1
 
 Prefer:
 - permissionless contract entrypoints where possible
