@@ -102,21 +102,21 @@ Prefer:
 
 ### Security
 
-Ask: **does the system do what it claims, no more and no less, even if the team disappears?**
+Ask: **who can cause loss, lock users in, or change the rules, and does the system still work if the team disappears?**
 
 Check for:
-- who controls funds, approvals, keys, upgrades, recovery, emergency powers, and user exit
-- unbounded approvals, unbounded agent spending, prompt-only policy, or backend-only enforcement
-- upgradeable contracts without storage discipline, timelocks, or clear governance
-- dependencies that silently break the app if a vendor disappears
-- operational secrets, private keys, API keys, and deployment credentials
+- who controls user funds, token approvals, signer keys, upgrades, recovery, emergency powers, and exit paths
+- unbounded token approvals, unbounded agent spending, prompt-only spending rules, or safety checks enforced only by a backend
+- upgradeable contracts without documented upgrade authority, storage-layout discipline, timelocks, or user notice
+- dependencies that can silently break critical flows if a vendor, API, relayer, paymaster, wallet service, or indexer disappears
+- private keys, API keys, RPC keys, deployment credentials, or other operational secrets that could leak or become single points of failure
 
 Prefer:
-- least authority by default
-- capped permissions, allowlists, expiries, and revocation for agents or automation
-- Safe/multisig and timelocks for real admin powers
-- onchain or wallet-level enforcement for spending policy, not prompt text
-- simple designs that can pass the walkaway test
+- least authority by default: every key, contract, backend, and agent gets only the permissions it needs
+- capped permissions, allowlists, expiries, and one-click revocation for agents or automation
+- Safe/multisig ownership and timelocks for admin powers that cannot be removed
+- onchain or wallet-level enforcement for spending and permission policy, not prompt text or backend promises
+- simple designs with documented recovery and exit paths that can pass the walkaway test
 
 ---
 
