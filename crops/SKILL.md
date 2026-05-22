@@ -75,13 +75,13 @@ Check for:
 - admin pause, blacklist, allowlist, upgrade, or kill-switch powers
 - relayers, paymasters, bundlers, RPCs, sequencers, bridges, app stores, CDNs, frontends, or APIs that can block users
 - single bundler dependency for ERC-4337 / smart-account flows; no fallback bundler or self-host path
-- single hosted indexer (The Graph hosted, Goldsky, Subsquid, Ponder) with no documented self-host path, alternate indexer, or RPC-only fallback
+- single hosted indexer (Goldsky, Subsquid Cloud, a single pinned Graph indexer) with no documented self-host path, alternate indexer, or RPC-only fallback
 - any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it
 - missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1 where the L2 supports forced inclusion (verify against `l2s/SKILL.md`)
 
 Prefer:
 - permissionless contract entrypoints, callable directly without the frontend
-- emergency powers, if unavoidable, behind a Safe or multisig, narrowly scoped, and publicly documented
+- emergency powers, if unavoidable, behind a multisig (Safe is the canonical implementation), narrowly scoped, and publicly documented
 - timelocks sized to the risk and user exit window for admin powers that can move funds or change authority; 24 hours is a floor for low-risk changes, while high-value or governance-sensitive systems usually need longer notice
 - documented fallback paths users can actually use, including direct contract calls and alternate RPC or frontend
 - infrastructure choices that keep intermediaries (RPC, indexer, bundler, frontend host) replaceable or self-hostable
@@ -105,7 +105,7 @@ Prefer:
 - OSI-approved permissive or copyleft licenses for every repo needed to run the app (MIT, Apache-2.0, GPL, AGPL)
 - a clear license-stability commitment, or at minimum no stated plan to close or relicense core code later
 - open-source contracts, frontend, indexer/backend, deployment scripts, and docs, plus self-host instructions with env vars, ABIs, addresses, and RPC config
-- verified contracts on the canonical block explorer (Etherscan, Blockscout) and a documented build script that reproduces the live deployment from a pinned commit
+- verified contracts via Sourcify (the EF-aligned, decentralized verification standard) and on a block explorer that surfaces verified source (Etherscan, Blockscout), plus a documented build script that reproduces the live deployment from a pinned commit
 - documented ABIs, events, metadata schemas, API formats, and export formats so other builders can build compatible frontends, indexers, wallets, or integrations without asking permission
 
 ### Privacy
@@ -142,7 +142,7 @@ Check for:
 Prefer:
 - least authority by default: every key, contract, backend, and agent gets only the permissions it needs
 - capped permissions, allowlists, expiries, and clear revocation paths for delegated or automated actions
-- Safe/multisig ownership and timelocks for admin powers that cannot be removed
+- multisig ownership (Safe is the canonical implementation) and timelocks for admin powers that cannot be removed
 - onchain or wallet-level enforcement for spending and permission policy, not prompt text or backend promises
 - simple designs with documented recovery and exit paths that can pass the walkaway test (EF Mandate p.7 introduces it, p.14 re-applies it under Security); the test asks: if the team, vendor, host, or oracle disappears, can the user still access funds and exit?
 
@@ -215,17 +215,17 @@ Option B: IPFS + ENS with Vercel mirror (recommended default)
 
 **Invisible RPC dependency:** The frontend silently depends on one RPC provider, which can fail, rate-limit, log users, or block requests. Fix: disclose the dependency, support configurable RPCs, and avoid hidden public fallbacks that make failures hard to diagnose.
 
-**Admin key with total control:** `onlyOwner` or a privileged role can pause, upgrade, seize, change fees, redirect flows, or block users. Fix: minimize powers, use Safe/multisig (≥2-of-3) plus timelock for any admin power that survives launch, make powers explicit, and remove or expire them when possible.
+**Admin key with total control:** `onlyOwner` or a privileged role can pause, upgrade, seize, change fees, redirect flows, or block users. Fix: minimize powers, use a multisig (Safe; ≥2-of-3) plus timelock for any admin power that survives launch, make powers explicit, and remove or expire them when possible.
 
 **Prompt-only delegated policy:** An agent, bot, session key, or automation is told not to overspend, but nothing enforces that if the key, backend, or prompt is compromised. Fix: enforce caps, allowlists, expiries, and revocation in the wallet/contract layer.
 
-**Custody hidden behind UX:** Embedded or custodial flows improve onboarding but blur who controls keys, recovery, account freezing, and exit. Fix: explain custody, recovery, key export, and migration paths before the user deposits value.
+**Custody hidden behind UX (vendor-custodied embedded wallets):** Embedded-wallet vendors (Privy, Magic, Web3Auth, Dynamic, Coinbase Smart Wallet's vendor layer) co-custody key material via MPC, key sharding, or delegated key management. The vendor can refuse logins, lose key shards, freeze accounts, or change ToS. Fix: explain the custody model, document the key/seed export path, and name the user's recourse if the vendor disappears.
 
-**Recovery surface masquerading as UX:** Social-recovery guardians (Privy, Magic, Coinbase Smart Wallet defaults) can refuse to sign, collude, be subpoenaed, or be compromised. Fix: document the guardian set, threshold, and the user's path to remove, replace, or rotate guardians without losing the account.
+**Recovery surface masquerading as UX (classic social recovery):** Wallets with user-configured guardian sets (Argent, Soul Wallet, Ambire, Coinbase Smart Wallet's guardian layer) shift trust to the guardians, who can refuse to sign, collude, be subpoenaed, or be compromised. Fix: document the guardian set, threshold, and the user's path to remove, replace, or rotate guardians without losing the account.
 
 **L2 trust assumptions omitted:** The app picks an L2 but never explains sequencer, bridge, withdrawal, data availability, or censorship assumptions. Fix: fetch `l2s/SKILL.md` and disclose the canonical withdrawal, forced-transaction, or L1 escape path where applicable.
 
-**Sequencer ordering and MEV extraction:** A centralized sequencer (most L2s today) or builder pool can reorder, sandwich, or selectively delay user transactions. Fix: disclose the sequencer's ordering policy and any planned decentralization. For trade-heavy flows, route through encrypted mempools (Flashbots Protect, MEV-Share) and call out the privacy tradeoff: the orderflow-auction operator sees the transaction even when the public mempool does not.
+**Sequencer ordering and MEV extraction:** A centralized sequencer (most L2s today) or builder pool can reorder, sandwich, or selectively delay user transactions. Fix: disclose the sequencer's ordering policy and any planned decentralization. For trade-heavy flows, route through private orderflow services (Flashbots Protect, MEV-Share; threshold-encrypted mempools like Shutter are a separate category) and call out the privacy tradeoff: the orderflow-auction operator sees the transaction even when the public mempool does not.
 
 **Stablecoin risks ignored:** Stablecoins can add issuer freeze/blacklist, reserve custody, compliance, bridge, chain, and privacy risks. Fix: disclose the issuer and freeze assumptions, explain bridge/chain exposure, and give users a reasoned token/chain choice.
 
