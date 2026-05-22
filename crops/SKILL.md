@@ -59,7 +59,7 @@ Check for:
 Prefer:
 - permissionless contract entrypoints, callable directly without the frontend
 - emergency powers, if unavoidable, behind a Safe or multisig, narrowly scoped, and publicly documented
-- timelock of at least 24 hours on any admin power that can move funds or change authority
+- timelocks sized to the risk and user exit window for admin powers that can move funds or change authority; 24 hours is a floor for low-risk changes, while high-value or governance-sensitive systems usually need longer notice
 - documented fallback paths users can actually use, including direct contract calls and alternate RPC or frontend
 - infrastructure choices that keep intermediaries (RPC, indexer, bundler, frontend host) replaceable or self-hostable
 
@@ -111,7 +111,8 @@ Check for:
 - who controls user funds, token approvals, signer keys, upgrades, recovery, emergency powers, and exit paths
 - unbounded token approvals, unbounded agent spending, prompt-only spending rules, or safety checks enforced only by a backend
 - upgradeable contracts without documented upgrade authority, storage-layout discipline, timelocks, or user notice
-- single-source oracle (Chainlink only, Pyth only) with no fallback, no staleness check, or no manual-pause path if the feed breaks
+- oracle use without baseline freshness and deviation checks; single-source feeds need an explicit threat model
+- oracle fallback or manual-pause paths whose authority, trigger conditions, arbitration, and user-exit impact are not documented and bounded
 - dependencies that can silently break critical flows if a vendor, API, relayer, paymaster, wallet service, or indexer disappears
 - private keys, API keys, RPC keys, deployment credentials, or other operational secrets that could leak or become single points of failure
 
