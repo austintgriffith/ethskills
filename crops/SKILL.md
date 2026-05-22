@@ -1,6 +1,6 @@
 ---
 name: crops
-description: "Deep CROPS architecture review (Censorship Resistance, Open Source and Free, Privacy, Security) for Ethereum apps and contracts. Run after the short CROPS Gate in ship/SKILL.md surfaces a real tradeoff: custody, admin powers, upgrades, hosted infra, identity, or agent permissions."
+description: "Use when an architecture choice could let one party block users, change the rules, leak user data, or close off the open-source freedoms users depend on (CROPS: Censorship Resistance, Open Source and Free, Privacy, Security). Triggers: custody, admin keys, pause or upgrade powers, hosted infra (RPC, indexer, paymaster, bundler, frontend host, oracle, sequencer), identity flows, agent permissions, stablecoin issuer risk, restrictive licenses (BUSL, SSPL)."
 ---
 
 # CROPS Review
@@ -29,16 +29,20 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 ## When To Fetch This Skill
 
-CROPS applies to every dApp. The short gate in `ship/SKILL.md` always runs first.
+CROPS applies to every dApp.
 
-Fetch this deeper template when the short gate surfaces a non-trivial answer on any pillar:
+For new dApp planning, start with `ship/SKILL.md`; it runs the short CROPS Gate. Then fetch this skill before finalizing architecture to turn the gate into the full CROPS record.
+
+During the deep review, focus especially on non-trivial answers on any pillar:
 
 - **C** — someone (admin, sequencer, host, relayer, bundler, paymaster, indexer, oracle, OFAC list) can block users.
 - **O** — part of the stack is closed, opaquely hosted, source-available-only licensed, or not reproducible from a public commit.
 - **P** — addresses, balances, identity, IP, or behavior leak in ways the user hasn't knowingly consented to.
 - **S** — admin keys, upgradeable contracts, embedded custody, social recovery, agent permissions, vendor liveness, or oracle dependence affect funds and exit.
 
-If the short gate landed cleanly on all four pillars (no admin powers, no hosted single points, no identity flows, no custody surface), the short gate is the CROPS record. No need to fetch this deeper template.
+For existing dApps or contracts, fetch this skill directly when the user asks for CROPS, trust assumptions, custody, admin powers, privacy, censorship resistance, user exit, or architecture review.
+
+If all four pillars look clean, still output a concise CROPS record that names the chosen default and why no deeper mitigation is needed.
 
 ---
 
