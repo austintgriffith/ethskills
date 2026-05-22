@@ -146,10 +146,15 @@ Censorship Resistance:
 - Mitigation: <what the design does, or commits to do, about it>
 - User escape: <how the user routes around if the mitigation fails>
 
-Open Source and Free, as in Freedom:
-- Risk: <closed code, hosted dependencies, source-available-only licenses, relicensing risk>
-- Mitigation: <open repos, OSI-permissive or copyleft license, self-host docs, ABI/schema exports>
+Open (visibility):
+- Risk: <closed code, hosted dependencies, opaque build pipeline, frontend not reproducible from a pinned commit>
+- Mitigation: <open repos for the whole stack, self-host docs with env vars and ABIs, pinned build artifact or IPFS CID>
 - User escape: <documented fork and self-host path, alternative client>
+
+Free, as in Freedom (license):
+- Risk: <source-available-only, BUSL, SSPL, "no commercial use", relicensing risk, open core with proprietary deps>
+- Mitigation: <OSI-permissive or copyleft license on every repo needed to run the app, license-stability commitment>
+- User escape: <users can legally fork, modify, and operate the system without team permission>
 
 Privacy:
 - Risk: <what addresses, balances, identity, behavior, IP, or metadata leak and to whom>
