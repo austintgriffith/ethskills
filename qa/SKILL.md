@@ -110,9 +110,10 @@ AI agents treat the scaffold as sacred and leave all default branding in place.
 
 ## Important: CROPS Review for Trust Assumptions
 
-- ❌ **FAIL:** No `CROPS Review` block in the PR description or repo docs.
+- ❌ **FAIL:** No `CROPS Review` block in the QA report.
+- ❌ **FAIL:** Production-relevant trust assumptions exist, but the CROPS Review is missing from the PR description or repo docs.
 - ❌ **FAIL:** The review lists generic values but does not name who can block users, what data leaks, who controls funds/upgrades/recovery, and how users exit.
-- ✅ **PASS:** A `CROPS Review` block is present and names the chosen default, accepted compromises, and the user's escape path.
+- ✅ **PASS:** The QA report includes a concrete `CROPS Review`, and production-relevant trust assumptions are also documented in the PR description or repo docs.
 
 ---
 
@@ -427,6 +428,7 @@ Report each as PASS or FAIL:
 - [ ] One button at a time (Connect → Network → Approve → Action)
 - [ ] Approve button locked through full cycle: `approvalSubmitting` (click→hash), `approveCooldown` (confirm→cache refresh) — both states required, both on the `disabled` prop
 - [ ] Contracts verified on block explorer (Etherscan/Basescan/Arbiscan) — source code readable by anyone
+- [ ] CROPS Review included when required: names the chosen default, accepted compromises, who can block users, what data leaks, who controls funds/upgrades/recovery, and the user's escape path
 - [ ] SE2 footer branding removed
 - [ ] SE2 tab title removed
 - [ ] SE2 README replaced
