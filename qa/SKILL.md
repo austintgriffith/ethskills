@@ -111,9 +111,9 @@ AI agents treat the scaffold as sacred and leave all default branding in place.
 ## Important: CROPS Review for Trust Assumptions
 
 - ❌ **FAIL:** No `CROPS Review` block in the QA report.
-- ❌ **FAIL:** Production-relevant trust assumptions exist, but the CROPS Review is missing from the PR description or repo docs.
-- ❌ **FAIL:** The review lists generic values but does not name who can block users, what data leaks, who controls funds/upgrades/recovery, and how users exit.
-- ✅ **PASS:** The QA report includes a concrete `CROPS Review`, and production-relevant trust assumptions are also documented in the PR description or repo docs.
+- ❌ **FAIL:** The CROPS Review lists generic values but does not name who can block users, what data leaks, who controls funds/upgrades/recovery, and how users exit.
+- ❌ **FAIL:** The app hits any trigger from the top of this skill (funds, approvals, custody, wallet permissions, L2/bridge, private data, identity, stablecoins, admin powers, hosted RPC/indexer/relayer/paymaster/frontend) but the report only ran the short CROPS Gate and never fetched `crops/SKILL.md` for the deep template.
+- ✅ **PASS:** A concrete `CROPS Review` block is present, names the chosen default, accepted compromises, and the user's escape path. Depth (short gate vs deep template) matches the triggers above.
 
 ---
 
@@ -428,7 +428,7 @@ Report each as PASS or FAIL:
 - [ ] One button at a time (Connect → Network → Approve → Action)
 - [ ] Approve button locked through full cycle: `approvalSubmitting` (click→hash), `approveCooldown` (confirm→cache refresh) — both states required, both on the `disabled` prop
 - [ ] Contracts verified on block explorer (Etherscan/Basescan/Arbiscan) — source code readable by anyone
-- [ ] CROPS Review included when required: names the chosen default, accepted compromises, who can block users, what data leaks, who controls funds/upgrades/recovery, and the user's escape path
+- [ ] CROPS Review present in the QA report: names the chosen default, accepted compromises, who can block users, what data leaks, who controls funds/upgrades/recovery, and the user's escape path
 - [ ] SE2 footer branding removed
 - [ ] SE2 tab title removed
 - [ ] SE2 README replaced
