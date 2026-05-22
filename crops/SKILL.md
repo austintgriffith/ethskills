@@ -1,6 +1,6 @@
 ---
 name: crops
-description: "Use when an architecture choice could let one party block users, change the rules, leak user data, or close off the open-source freedoms users depend on (CROPS: Censorship Resistance, Open Source and Free, Privacy, Security). Triggers: custody, admin keys, pause or upgrade powers, hosted infra (RPC, indexer, paymaster, bundler, frontend host, oracle, sequencer), identity flows, agent permissions, stablecoin issuer risk, restrictive licenses (BUSL, SSPL)."
+description: "Use for every Ethereum dApp architecture plan and for reviews of existing systems, trust assumptions, custody, admin keys, pause or upgrade powers, hosted infra (RPC, indexer, paymaster, bundler, frontend host, oracle, sequencer), privacy, identity flows, agent permissions, stablecoin issuer risk, censorship resistance, user exit, and restrictive licenses (BUSL, SSPL). CROPS means Censorship Resistance, Open Source and Free, Privacy, Security."
 ---
 
 # CROPS Review

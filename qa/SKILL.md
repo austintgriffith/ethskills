@@ -21,7 +21,7 @@ Give this to a fresh agent after the dApp is built. The reviewer should:
 2. Open the app in a browser and click through every flow
 3. Check every item below — report PASS/FAIL, don't fix
 
-If the app handles funds, approvals, custody, wallet permissions, L2/bridge flows, private user data, identity, stablecoins, admin powers, or depends on hosted RPC/indexer/relayer/paymaster/frontend infrastructure, fetch `crops/SKILL.md` first and include a CROPS review in the report.
+Fetch `crops/SKILL.md` first and include a CROPS Review in the report. Simple apps can get a concise baseline review; apps with funds, approvals, custody, wallet permissions, L2/bridge flows, private user data, identity, stablecoins, admin powers, or hosted RPC/indexer/relayer/paymaster/frontend infrastructure need the full four-pillar review.
 
 ---
 
@@ -112,8 +112,8 @@ AI agents treat the scaffold as sacred and leave all default branding in place.
 
 - ❌ **FAIL:** No `CROPS Review` block in the QA report.
 - ❌ **FAIL:** The CROPS Review lists generic values but does not name who can block users, what data leaks, who controls funds/upgrades/recovery, and how users exit.
-- ❌ **FAIL:** The app hits any trigger from the top of this skill (funds, approvals, custody, wallet permissions, L2/bridge, private data, identity, stablecoins, admin powers, hosted RPC/indexer/relayer/paymaster/frontend) but the report only ran the short CROPS Gate and never fetched `crops/SKILL.md` for the deep template.
-- ✅ **PASS:** A concrete `CROPS Review` block is present, names the chosen default, accepted compromises, and the user's escape path. Depth (short gate vs deep template) matches the triggers above.
+- ❌ **FAIL:** The app has production-relevant trust assumptions (funds, approvals, custody, wallet permissions, L2/bridge, private data, identity, stablecoins, admin powers, hosted RPC/indexer/relayer/paymaster/frontend) but the CROPS Review is only a short gate and never uses `crops/SKILL.md` for the deep template.
+- ✅ **PASS:** A concrete `CROPS Review` block is present, names the chosen default, accepted compromises, and the user's escape path. Depth matches the app's trust assumptions.
 
 ---
 

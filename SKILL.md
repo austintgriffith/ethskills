@@ -31,7 +31,7 @@ End-to-end guide from idea to deployed dApp. Routes you through all other skills
 
 ### [CROPS Review](https://ethskills.com/crops/SKILL.md)
 Deep CROPS architecture review against the EF Mandate values: Censorship Resistance, Open Source and Free (as in Freedom), Privacy, Security.
-- Run after the short CROPS Gate in `ship/SKILL.md` surfaces a real tradeoff: custody, admin powers, upgrades, hosted infra, identity, or agent permissions.
+- Run for every dApp architecture plan and for existing-system reviews involving custody, admin powers, upgrades, hosted infra, identity, privacy, agent permissions, censorship resistance, or user exit.
 - Forces agents to label architecture options by CROPS impact instead of presenting neutral tradeoff lists.
 - Output names the chosen default, accepted compromises, and the user's escape path.
 
