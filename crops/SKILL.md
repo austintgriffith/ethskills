@@ -46,6 +46,25 @@ If all four pillars look clean, still output a concise CROPS record that names t
 
 ---
 
+## Red Flags: Do Not Skip CROPS
+
+STOP if you catch yourself thinking any of these:
+
+- "This app is too simple to need CROPS."
+- "It's just an MVP, we'll add CROPS later."
+- "The user can self-host if they want to."
+- "Contracts are verified, so it's open."
+- "It's been audited, security is done."
+- "There are no admin keys, so nothing to review."
+- "We disclosed centralization in the README."
+- "The user is technical, they'll figure out the trust assumptions."
+
+Each one is the exact failure mode this skill exists to catch. Simple apps still hand users to a censorable frontend. "Add CROPS later" rarely happens. "User can self-host" is fiction unless build steps, ABIs, env vars, and indexer schema are public and reproducible. Verified contracts cover bytecode, not the whole stack. Audits are point-in-time and rarely cover custody, recovery, sequencer trust, or vendor liveness. Absent admin keys, the C, O, and P pillars still apply. Disclosure in a README is documentation, not mitigation.
+
+If you reach for any of these, produce a concrete CROPS Review anyway.
+
+---
+
 ## The Four CROPS Checks
 
 ### Censorship Resistance
