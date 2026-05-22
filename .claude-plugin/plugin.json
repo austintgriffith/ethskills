@@ -1,7 +1,7 @@
 {
   "name": "ethskills",
   "version": "1.1.0",
-  "description": "Ethereum development skills — corrects LLM blind spots on gas costs, L2s, DeFi protocols, security, and the current tool landscape.",
+  "description": "Ethereum development skills — corrects LLM blind spots on gas costs, L2s, CROPS trust review (Censorship Resistance, Open Source and Free, Privacy, Security), DeFi protocols, security, and the current tool landscape.",
   "author": {
     "name": "Austin Griffith",
     "url": "https://github.com/austintgriffith"
