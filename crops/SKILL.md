@@ -17,7 +17,7 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 **You treat decentralization as only a contract property.** The contract may be permissionless while the app depends on a single hosted frontend, API, relayer, paymaster, sequencer, bridge, or wallet vendor. Users experience the whole stack.
 
-**You treat verified contracts as an open dApp.** Etherscan verification ties bytecode to source for that contract only; *Open* needs the whole stack public, and *Free* needs a real OSI-permissive or copyleft license (EF Mandate p.13).
+**You treat verified contracts as an open dApp.** Etherscan verification ties bytecode to source for that contract only; *Open* needs the whole stack public, and *Free* needs a license the Mandate counts as actually free, not merely source-available (EF Mandate p.13). OSI-permissive or copyleft is the practical bar.
 
 **You check privacy after the architecture already leaks data.** Before choosing contracts, wallets, RPCs, analytics, indexers, or identity flows, tell the builder which addresses, balances, counterparties, timing data, IP metadata, wallet fingerprints, analytics events, and identity links could be exposed.
 
@@ -144,7 +144,7 @@ Prefer:
 - capped permissions, allowlists, expiries, and clear revocation paths for delegated or automated actions
 - Safe/multisig ownership and timelocks for admin powers that cannot be removed
 - onchain or wallet-level enforcement for spending and permission policy, not prompt text or backend promises
-- simple designs with documented recovery and exit paths that can pass the walkaway test (EF Mandate p.7); the test asks: if the team, vendor, host, or oracle disappears, can the user still access funds and exit?
+- simple designs with documented recovery and exit paths that can pass the walkaway test (EF Mandate p.7 introduces it, p.14 re-applies it under Security); the test asks: if the team, vendor, host, or oracle disappears, can the user still access funds and exit?
 
 ---
 
