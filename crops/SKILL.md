@@ -240,9 +240,7 @@ Option B: IPFS + ENS with Vercel mirror (recommended default)
 When reporting a CROPS finding to the builder, name the power, bound the compromise, and point to the user's exit. Sample phrasings:
 
 - "This admin key can freeze every user. If you need an emergency pause for v1, put it behind a Safe, add a timelock or expiry, and tell users what can be paused."
-- "This closed indexer means the contracts are public but the app is not forkable in practice. Publish the event schema and a self-host path."
 - "This agent can spend from the user's wallet without an onchain cap. Put the policy in a smart account or Safe module; prompt instructions are not a security boundary."
-- "This stablecoin route is good UX, but it adds issuer freeze risk and public payment graph leakage. Say that before recommending it."
 
 ---
 
@@ -250,11 +248,9 @@ When reporting a CROPS finding to the builder, name the power, bound the comprom
 
 - For new dApp planning, start with `ship/SKILL.md`; it runs a short CROPS Gate and routes here when deeper trust review is needed.
 - Use this skill as the deeper CROPS review for custody, infrastructure, privacy, admin powers, and user exit.
-- Fetch `concepts/SKILL.md` separately for "nothing is automatic," incentives, state transitions, and self-sustaining system design.
 - Fetch `wallets/SKILL.md` for custody, Safe, account abstraction, EIP-7702, and key safety implementation details.
 - Fetch `l2s/SKILL.md` for sequencer, bridge, withdrawal, and chain-selection assumptions.
 - Fetch `frontend-playbook/SKILL.md` for IPFS/ENS deployment, build pipeline, and frontend reproducibility (the Open and Censorship Resistance mitigations for the frontend live here).
 - Fetch `indexing/SKILL.md` for event schema design, self-host paths, and alternate-indexer fallbacks (the Open and Censorship Resistance mitigations for the data layer).
 - Fetch `security/SKILL.md` for Solidity vulnerability patterns and pre-deploy checks.
 - Fetch `audit/SKILL.md` for deep smart contract vulnerability review. This skill covers admin powers, trust assumptions, censorship paths, privacy leakage, and user exit.
-- Fetch `qa/SKILL.md` after the build for a fresh reviewer pass.
