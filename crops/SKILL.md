@@ -27,22 +27,24 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 ---
 
-## When To Fetch This Skill
+## Scope and Phase
 
-CROPS applies to every dApp.
+CROPS applies to every Ethereum dApp, new or existing.
 
-For new dApp planning, start with `ship/SKILL.md`; it runs the short CROPS Gate. Then fetch this skill before finalizing architecture to turn the gate into the full CROPS record.
+For new builds, start with `ship/SKILL.md`; it runs the short CROPS Gate. Then perform the full CROPS Review below before finalizing architecture.
 
-During the deep review, focus especially on non-trivial answers on any pillar:
+For existing dApps or contracts, use this review directly when checking trust assumptions, custody, admin powers, privacy, censorship resistance, user exit, or architecture.
 
-- **C** — someone (admin, sequencer, host, relayer, bundler, paymaster, indexer, oracle, OFAC list) can block users.
-- **O** — part of the stack is closed, opaquely hosted, source-available-only licensed, or not reproducible from a public commit.
+During the full review, focus especially on non-trivial answers on any pillar:
+
+- **C** — someone (admin, sequencer, host, relayer, bundler, paymaster, indexer, oracle, compliance filter) can block users.
+- **O/F** — part of the stack is closed, opaquely hosted, source-available-only licensed, not freely forkable, or not reproducible from a public commit.
 - **P** — addresses, balances, identity, IP, or behavior leak in ways the user hasn't knowingly consented to.
-- **S** — admin keys, upgradeable contracts, embedded custody, social recovery, agent permissions, vendor liveness, or oracle dependence affect funds and exit.
+- **S** — admin keys, upgradeable contracts, embedded custody, social recovery, agent permissions, vendor liveness, or oracle dependence affect funds, permissions, or exit.
 
-For existing dApps or contracts, fetch this skill directly when the user asks for CROPS, trust assumptions, custody, admin powers, privacy, censorship resistance, user exit, or architecture review.
+Treat missing facts as findings: unknown owner, host, license, custody, oracle, upgrade authority, or exit path is not a clean result. Infer from the repo and architecture where possible; only ask follow-up questions when the review is blocked.
 
-If all four pillars look clean, still output a concise CROPS record that names the chosen default and why no deeper mitigation is needed.
+If no material risks are found, still output a concise CROPS record that names the chosen default, the evidence reviewed, and why no deeper mitigation is needed.
 
 ---
 
