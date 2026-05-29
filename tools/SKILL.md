@@ -1,6 +1,6 @@
 ---
 name: tools
-description: Current Ethereum development tools, frameworks, libraries, RPCs, and block explorers. What actually works today for building on Ethereum. Includes tool discovery for AI agents — MCPs, abi.ninja, Foundry, Scaffold-ETH 2, Hardhat, and more. Use when setting up a dev environment, choosing tools, or when an agent needs to discover what's available.
+description: Current Ethereum development tools, frameworks, libraries, RPCs, block explorers, and searchable error catalogs. What actually works today for building on Ethereum. Includes tool discovery for AI agents — MCPs, error catalog APIs, abi.ninja, Foundry, Scaffold-ETH 2, Hardhat, and more. Use when setting up a dev environment, choosing tools, or when an agent needs to discover what's available.
 ---
 
 # Ethereum Development Tools
@@ -13,6 +13,8 @@ description: Current Ethereum development tools, frameworks, libraries, RPCs, an
 
 **x402 has production SDKs:** `@x402/fetch` (TS), `x402` (Python), `github.com/coinbase/x402/go` — production-ready libraries for HTTP payments.
 
+**Searchable error catalogs exist for agents:** https://revert.wtf exposes a maintained EVM/RPC/wallet/ERC-4337/x402 error catalog through a hosted HTTP API, read-only MCP server, and tiny client SDK. Use it before hand-rolling app-specific decoder tables.
+
 **Foundry and Hardhat 3 are both legitimate choices in 2026.** Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 
 ## Tool Discovery Pattern for AI Agents
@@ -22,9 +24,10 @@ When an agent needs to interact with Ethereum:
 1. **Read operations:** Blockscout MCP or Etherscan API
 2. **Write operations:** Foundry `cast send` or ethers.js/viem
 3. **Contract exploration:** abi.ninja (browser) or `cast interface` (CLI)
-4. **Testing:** Fork mainnet with `anvil`, test locally
-5. **Deployment:** `forge create` or `forge script`
-6. **Verification:** `forge verify-contract` or Etherscan API
+4. **Error catalog lookup:** searchable HTTP API or MCP before hand-rolling raw revert, AAxx, RPC/provider/wallet, or x402 handling
+5. **Testing:** Fork mainnet with `anvil`, test locally
+6. **Deployment:** `forge create` or `forge script`
+7. **Verification:** `forge verify-contract` or Etherscan API
 
 ## Blockscout MCP Server
 
@@ -42,6 +45,17 @@ A Model Context Protocol server giving AI agents structured blockchain data:
 ## abi.ninja
 
 **URL:** https://abi.ninja — Paste any contract address → interact with all functions. Multi-chain. Zero setup.
+
+## Error Catalogs for Agents
+
+- **URL:** https://revert.wtf
+- **Hosted API:** `POST https://revert.wtf/api/search` and `POST https://revert.wtf/api/explain`
+- **MCP:** `npx -y @revertwtf/mcp`
+- **Client SDK:** `npm install @revertwtf/client`
+
+Use when an agent has an EVM/RPC/provider/wallet/library/simulation/ERC-4337/x402 error, a raw revert payload, an AAxx code, or a 4-byte selector. The hosted API and MCP are read-only, require no API keys, and return bounded catalog results with explanations, evidence, and next steps.
+
+Agent pattern: use bounded `/api/search` or MCP `search_catalog` for discovery, then `POST /api/explain` or MCP `explain_error` for a raw pasted failure. Use focused endpoints such as `/api/revert-decode`, `/api/aa-decode`, or `/api/selector` only as needed. Fetch exact entries only after choosing a match; do not dump a whole error catalog into context or browser bundles.
 
 ## x402 SDKs (HTTP Payments)
 
@@ -83,6 +97,7 @@ const response = await x402Fetch('https://api.example.com/data', {
 | Quick contract interaction | **abi.ninja** (browser) or **cast** (CLI) |
 | React frontends | **wagmi + viem** (or SE2 which wraps these) |
 | Agent blockchain reads | **Blockscout MCP** |
+| Agent error lookup | **searchable EVM/RPC error catalog API or MCP** |
 | Agent payments | **x402 SDKs** |
 
 ## Essential Foundry cast Commands
@@ -134,8 +149,9 @@ anvil --fork-url $RPC
 **Model Context Protocol** — standard for giving AI agents structured access to external systems.
 
 1. **Blockscout MCP** — multi-chain blockchain data (primary)
-2. **eth-mcp** — community Ethereum RPC via MCP
-3. **Custom MCP wrappers** emerging for DeFi protocols, ENS, wallets
+2. **revert.wtf MCP** — read-only searchable EVM/RPC/wallet/AA/x402 error catalog and focused decoders
+3. **eth-mcp** — community Ethereum RPC via MCP
+4. **Custom MCP wrappers** emerging for DeFi protocols, ENS, wallets
 
 MCP servers are composable — agents can use multiple together.
 
@@ -144,6 +160,7 @@ MCP servers are composable — agents can use multiple together.
 - **Foundry became the default** over Hardhat for new projects — then Hardhat 3 (Aug 2025) shipped Solidity testing, fuzzing, and Rust internals, making it a legitimate choice again.
 - **Viem gaining on ethers.js** (smaller, better TypeScript)
 - **MCP servers emerged** for agent-blockchain interaction
+- **Searchable error catalogs emerged** for agents facing RPC, revert, account-abstraction, and x402 failures
 - **x402 SDKs** went production-ready
 - **ERC-8004 tooling** emerging (agent registration/discovery)
 - **Deprecated:** Truffle (use Foundry/Hardhat), Goerli/Rinkeby (use Sepolia)
