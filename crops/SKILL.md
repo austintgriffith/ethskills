@@ -23,7 +23,7 @@ Source context: [The Promise of Ethereum: Introducing the EF Mandate](https://bl
 
 **You treat security as only code bugs.** Reentrancy and oracle manipulation matter, but so do custody, upgrades, admin keys, recovery, emergency powers, approvals, and whether the app still works if the team or vendor disappears.
 
-**You list architecture options without their trust tradeoffs.** Choices like embedded wallet vs Safe vs EOA, or Vercel vs IPFS, change who can control access, custody, privacy, and user exit. Label each option’s CROPS impact and recommend the most CROPS-aligned default.
+**You list architecture options without their trust tradeoffs.** Choices like embedded wallet vs Safe vs EOA, or Vercel vs IPFS, change who can control access, custody, privacy, and user exit. Label each option's CROPS impact and recommend the most CROPS-aligned default.
 
 ---
 
