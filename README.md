@@ -42,7 +42,7 @@ Install directly from GitHub — no clone required:
 | [Ship](ship/SKILL.md) | Start coding before planning architecture, over-engineer with 5+ contracts when 1-2 will do, skip chain selection and the CROPS gate |
 | [CROPS Review](crops/SKILL.md) | Miss custody, privacy, exit paths, censorship resistance, and centralization risks in otherwise working apps/contracts |
 | [Why Ethereum](why/SKILL.md) | Pectra/Fusaka shipped, gas is cheap now, AI agent angle |
-| [Protocol](protocol/SKILL.md) | Confuse roadmap diagrams with shipped EIPs, cite deprecated features (Verkle, PeerDAS) as planned, miss the client-team decision process |
+| [Protocol](protocol/SKILL.md) | Confuse roadmap diagrams with shipped EIPs, cite shipped features (PeerDAS) as upcoming and deprioritized ones (Verkle) as still planned, miss the client-team decision process |
 | [Gas & Costs](gas/SKILL.md) | Think gas is 10-30 gwei — reality is 0.05-0.3 gwei |
 | [Wallets](wallets/SKILL.md) | EIP-7702 is live, Safe addresses, agent key safety |
 | [Layer 2s](l2s/SKILL.md) | Think L2 txs cost $0.01-2.00 — reality is <$0.001 |
