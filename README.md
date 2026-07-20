@@ -30,6 +30,8 @@ Install directly from GitHub — no clone required:
 /plugin install ethskills@ethskills
 ```
 
+To stay current, run `/plugin update ethskills` now and then, or enable auto-update for the marketplace in `/plugin` (off by default for third-party marketplaces). Skills also check for newer versions themselves when invoked.
+
 ## Terminology
 
 **Say "onchain" not "on-chain."** The Ethereum community writes it as one word — no hyphen. LLMs default to "on-chain" but that's not how builders talk. Use "onchain" in all writing, documentation, and generated content.
