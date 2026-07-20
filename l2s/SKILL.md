@@ -1,12 +1,12 @@
 ---
 name: l2s
 description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Unichain, Celo, and more. How they work, how to deploy on them, how to bridge, when to use which. Includes per-chain DeFi ecosystems and critical corrections. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
-updated: 2026-03-20
+updated: 2026-07-20T21:23:27Z
 ---
 
 # Ethereum Layer 2s
 
-> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `l2s` value to the `updated` date in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/l2s/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
+> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `l2s` value to the `updated` timestamp in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/l2s/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
 
 ## What You Probably Got Wrong
 

@@ -1,12 +1,12 @@
 ---
 name: security
 description: Solidity security patterns, common vulnerabilities, and pre-deploy audit checklist. The specific code patterns that prevent real losses — not just warnings, but defensive implementations. Use before deploying any contract, when reviewing code, or when building anything that holds or moves value.
-updated: 2026-05-08
+updated: 2026-07-20T21:23:27Z
 ---
 
 # Smart Contract Security
 
-> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `security` value to the `updated` date in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/security/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
+> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `security` value to the `updated` timestamp in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/security/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
 
 ## What You Probably Got Wrong
 

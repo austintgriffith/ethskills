@@ -8,12 +8,12 @@ metadata:
       "requires": { "bins": ["curl"] }
     }
   }
-updated: 2026-04-14
+updated: 2026-07-20T21:23:27Z
 ---
 
 # ETHSkills ⟠
 
-> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `openclaw-skill` value to the `updated` date in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/openclaw-skill/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
+> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `openclaw-skill` value to the `updated` timestamp in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/openclaw-skill/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
 
 > The missing knowledge between AI agents and production Ethereum.
 

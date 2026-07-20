@@ -26,8 +26,9 @@ jobs:
           # Redirect stubs that never need refreshing
           SKIP="contracts defi l2 layer2"
 
-          # Last commit that touched the file, ignoring stamp-only commits
-          date_for() { git log -1 --format=%cs --invert-grep --grep='\[stamp\]' -- "$1"; }
+          # UTC timestamp of the last commit that touched the file, ignoring
+          # stamp-only commits. Full timestamps keep two same-day edits distinct.
+          date_for() { TZ=UTC0 git log -1 --format=%cd --date=format-local:'%Y-%m-%dT%H:%M:%SZ' --invert-grep --grep='\[stamp\]' -- "$1"; }
 
           stamp() { # $1 = file, $2 = versions.json key
             d=$(date_for "$1")
