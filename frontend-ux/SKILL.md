@@ -1,9 +1,12 @@
 ---
 name: frontend-ux
 description: Frontend UX rules for Ethereum dApps that prevent the most common AI agent UI bugs. Mandatory patterns for onchain buttons, approval flows, address UX, USD context, RPC reliability, theming, and pre-publish metadata. Use whenever you are building a frontend for an Ethereum dApp.
+updated: 2026-05-08
 ---
 
 # Frontend UX Rules
+
+> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `frontend-ux` value to the `updated` date in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/frontend-ux/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access.
 
 ## What You Probably Got Wrong
 

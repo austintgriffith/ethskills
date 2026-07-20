@@ -1,9 +1,12 @@
 ---
 name: ship
 description: End-to-end guide for AI agents — from a dApp idea to deployed production app. Fetch this FIRST, it routes you through all other skills.
+updated: 2026-05-08
 ---
 
 # Ship a dApp
+
+> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `ship` value to the `updated` date in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/ship/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access.
 
 ## What You Probably Got Wrong
 

@@ -1,0 +1,53 @@
+name: Update Skill Versions
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'SKILL.md'
+      - '*/SKILL.md'
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  stamp:
+    runs-on: ubuntu-latest
+    # The auto-commit below re-triggers this workflow; skip that run instead of
+    # using [skip ci], which would also stop Vercel from deploying the commit.
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # per-file git log dates need full history
+
+      - name: Restamp frontmatter and regenerate versions.json
+        run: |
+          # Redirect stubs that never need refreshing
+          SKIP="contracts defi l2 layer2"
+
+          # Last commit that touched the file, ignoring stamp-only commits
+          date_for() { git log -1 --format=%cs --invert-grep --grep='\[stamp\]' -- "$1"; }
+
+          stamp() { # $1 = file, $2 = versions.json key
+            d=$(date_for "$1")
+            sed -i "s/^updated: .*/updated: $d/" "$1"
+            printf '%s\t%s\n' "$2" "$d"
+          }
+
+          {
+            stamp SKILL.md root
+            for f in */SKILL.md; do
+              skill=$(dirname "$f")
+              case " $SKIP " in *" $skill "*) continue ;; esac
+              stamp "$f" "$skill"
+            done
+          } | jq -Rn 'reduce inputs as $line ({}; . + ($line | split("\t") | {(.[0]): .[1]}))' > versions.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || {
+            git add versions.json SKILL.md */SKILL.md
+            git commit -m "auto-update skill version stamps [stamp]"
+            git push
+          }
