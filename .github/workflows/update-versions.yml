@@ -11,8 +11,10 @@ on:
 jobs:
   stamp:
     runs-on: ubuntu-latest
-    # The auto-commit below re-triggers this workflow; skip that run instead of
-    # using [skip ci], which would also stop Vercel from deploying the commit.
+    permissions:
+      contents: write # the auto-commit below pushes to master
+    # GITHUB_TOKEN pushes don't trigger workflows, so the auto-commit below
+    # can't loop; this guard is a second layer in case the push method changes.
     if: github.actor != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
