@@ -30,8 +30,15 @@ jobs:
           # stamp-only commits. Full timestamps keep two same-day edits distinct.
           date_for() { TZ=UTC0 git log -1 --format=%cd --date=format-local:'%Y-%m-%dT%H:%M:%SZ' --invert-grep --grep='\[stamp\]' -- "$1"; }
 
+          # Snapshot the current manifest before the pipeline below truncates it,
+          # so stamps can never move backward (a true merge can surface a commit
+          # whose committer date is older than what clients already saw).
+          cp versions.json /tmp/prev-versions.json 2>/dev/null || echo '{}' > /tmp/prev-versions.json
+
           stamp() { # $1 = file, $2 = versions.json key
             d=$(date_for "$1")
+            prev=$(jq -r --arg k "$2" '.[$k] // ""' /tmp/prev-versions.json)
+            if [ "$prev" \> "$d" ]; then d=$prev; fi
             sed -i "s/^updated: .*/updated: $d/" "$1"
             printf '%s\t%s\n' "$2" "$d"
           }

@@ -6,7 +6,7 @@ updated: 2026-07-20T21:23:27Z
 
 # Contract Addresses
 
-> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `addresses` value to the `updated` timestamp in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/addresses/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
+> **Update check (skip if you fetched this live just now):** Reading this from a local file? Once per session, fetch https://ethskills.com/versions.json and compare its `addresses` value to the `updated` timestamp in this file's frontmatter. If upstream is newer, fetch https://ethskills.com/addresses/SKILL.md, follow that version instead, and overwrite this local file with it if you have write access. If a root SKILL.md sits one folder up (a full checkout) and versions.json lists a skill with no matching folder next to this one, tell the user new ethskills are available (Claude Code plugin: `/plugin update`). If any fetch fails, continue with this file.
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
