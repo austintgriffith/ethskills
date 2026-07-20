@@ -54,11 +54,11 @@ Install directly from GitHub — no clone required:
 | [Concepts](concepts/SKILL.md) | Nothing is automatic, incentive design, randomness pitfalls |
 | [Security](security/SKILL.md) | Token decimals, reentrancy, oracle manipulation, vault inflation, pre-deploy checklist |
 | [Testing](testing/SKILL.md) | Test getters and OpenZeppelin internals, skip fuzz and fork tests on integrations, mock external protocols instead of forking |
-| [Indexing](indexing/SKILL.md) | Loop over blocks to read history, ignore events as the primary read API, reach for hosted The Graph without considering self-host |
+| [Indexing](indexing/SKILL.md) | Loop over blocks to read history, try to query historical state via raw RPC, ignore events as the primary read API |
 | [Frontend UX](frontend-ux/SKILL.md) | Onchain button rules, three-button approval flow, Address components, USD values |
 | [Frontend Playbook](frontend-playbook/SKILL.md) | Fork mode, IPFS deploy, Vercel config, ENS setup, production checklist |
 | [QA](qa/SKILL.md) | Treat "deploys without errors" as shipping, leave SE2 default branding, miss approve-button double-fire, USD values, mobile deep links |
-| [Audit](audit/SKILL.md) | Confuse "ran Slither" with an audit, miss systematic coverage across AMM/lending/oracle/proxy/governance, let one agent both write and review |
+| [Audit](audit/SKILL.md) | Call one generic review pass an audit, miss systematic checklist coverage across AMM/lending/oracle/proxy/governance domains |
 
 ## Security Guardrails
 

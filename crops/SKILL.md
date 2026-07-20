@@ -44,7 +44,7 @@ During the full review, focus especially on non-trivial answers on any pillar:
 
 Treat missing facts as findings: unknown owner, host, license, custody, oracle, upgrade authority, or exit path is not a clean result. Infer from the repo and architecture where possible; only ask follow-up questions when the review is blocked.
 
-If no material risks are found, still output a concise CROPS record that names the chosen default, the evidence reviewed, and why no deeper mitigation is needed.
+If no material risks are found, still output a concise CROPS record that names the chosen default, the evidence reviewed, accepted compromises (or states there are none), and why no deeper mitigation is needed.
 
 ---
 
@@ -79,7 +79,7 @@ Check for:
 - single bundler dependency for ERC-4337 / smart-account flows; no fallback bundler or self-host path
 - single hosted indexer (Goldsky, Subsquid Cloud, a single pinned Graph indexer) with no documented self-host path, alternate indexer, or RPC-only fallback
 - any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it
-- missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1 where the L2 supports forced inclusion (verify against `l2s/SKILL.md`)
+- missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1 where the L2 supports forced inclusion (verify the specific chain's forced-inclusion support on [l2beat.com](https://l2beat.com))
 
 Prefer:
 - permissionless contract entrypoints, callable directly without the frontend
@@ -107,7 +107,7 @@ Prefer:
 - OSI-approved permissive or copyleft licenses for every repo needed to run the app (MIT, Apache-2.0, GPL, AGPL)
 - a clear license-stability commitment, or at minimum no stated plan to close or relicense core code later
 - open-source contracts, frontend, indexer/backend, deployment scripts, and docs, plus self-host instructions with env vars, ABIs, addresses, and RPC config
-- verified contracts via Sourcify (the EF-aligned, decentralized verification standard) and on a block explorer that surfaces verified source (Etherscan, Blockscout), plus a documented build script that reproduces the live deployment from a pinned commit
+- verified contracts via Sourcify (open-source, open-data verification, run by the EF spinout Argot Collective) and on a block explorer that surfaces verified source (Etherscan, Blockscout), plus a documented build script that reproduces the live deployment from a pinned commit
 - documented ABIs, events, metadata schemas, API formats, and export formats so other builders can build compatible frontends, indexers, wallets, or integrations without asking permission
 
 ### Privacy
@@ -117,7 +117,7 @@ Ask: **what can an observer learn, is the disclosure necessary, and did the user
 Check for:
 - public addresses, balances, counterparties, amounts, timing patterns, identity links, location/IP metadata, and wallet/browser fingerprints
 - analytics, RPC, indexer, or API calls that reveal user behavior to third parties offchain
-- telemetry shipped by default in wallet/UI dependencies (WalletConnect, RainbowKit, Privy, Alchemy SDK, Sentry); audit `package.json` for analytics, error reporting, and address-linking endpoints
+- analytics and telemetry in wallet/UI dependencies (WalletConnect, RainbowKit, Privy, Alchemy SDK) and error-reporting SDKs (Sentry); defaults change between versions (RainbowKit turned connector telemetry off by default in 2.2.10), so audit `package.json` and actual network calls instead of assuming
 - identity or credential flows that collect more information than the app actually needs
 - UI that asks users to sign, transact, connect a wallet, or reveal identity without explaining what becomes public or linkable
 
@@ -146,7 +146,7 @@ Prefer:
 - capped permissions, allowlists, expiries, and clear revocation paths for delegated or automated actions
 - multisig ownership (Safe is the canonical implementation) and timelocks for admin powers that cannot be removed
 - onchain or wallet-level enforcement for spending and permission policy, not prompt text or backend promises
-- simple designs with documented recovery and exit paths that can pass the walkaway test (EF Mandate p.7 introduces it, p.14 re-applies it under Security); the test asks: if the team, vendor, host, or oracle disappears, can the user still access funds and exit?
+- simple designs with documented recovery and exit paths that can pass the walkaway test (EF Mandate p.7 introduces it for the protocol, p.14 re-applies it to users under Security). Applied to a dApp, the test asks: if the team, vendor, host, or oracle disappears, can the user still access funds and exit?
 
 ---
 
@@ -154,7 +154,7 @@ Prefer:
 
 When using this skill, output a concrete review for the user's app. Do not repeat generic CROPS definitions.
 
-Use this shape for the chosen architecture:
+Use this shape for the chosen architecture. For a clean low-risk app, the concise record from Scope and Phase is enough, as long as it still names the chosen default and accepted compromises (or states there are none):
 
 ```md
 ## CROPS Review
@@ -196,13 +196,13 @@ When comparing multiple architecture options against each other (e.g., Vercel-on
 ```md
 Option A: Vercel-only frontend
 - C: weakens; one host can remove or block the main access path
-- O: weakens unless frontend source, build steps, env vars, and contract config are public
+- O/F: weakens unless frontend source, build steps, env vars, and contract config are public under an OSI-permissive or copyleft license
 - P: depends on analytics, RPC, and indexer choices; the host may see user IPs and app activity
 - S: simpler to operate, but a host outage or account suspension can break the app UX
 
 Option B: IPFS + ENS with Vercel mirror (recommended default)
 - C: strengthens; users have a route around host removal if the IPFS build is pinned and ENS points to it
-- O: strengthens if frontend source, build/deploy docs, and config are public
+- O/F: strengthens if frontend source, build/deploy docs, and config are public under an OSI-permissive or copyleft license
 - P: still depends on analytics, RPC, and indexer choices; IPFS hosting alone does not make usage private
 - S: adds deployment complexity, but removes single-provider availability risk
 ```
@@ -225,9 +225,9 @@ Option B: IPFS + ENS with Vercel mirror (recommended default)
 
 **Passkey custody dependency (platform-authenticator smart wallets):** Passkey-based smart wallets (Coinbase Smart Wallet and others using WebAuthn/secp256r1 signers) hold the signing key in a platform authenticator, typically a synced passkey in iCloud Keychain or Google Password Manager, not a vendor MPC layer. That passkey is end-to-end encrypted and not extractable by the platform, so the risk is availability, not seizure. Access then depends on the user's Apple/Google account staying reachable, passkey sync working, and the platform's ToS, while a device-bound passkey (such as a YubiKey) instead fails if that single device is lost. Fix: tell users their access depends on their Apple/Google account, and register a backup owner on a different platform (another passkey or a plain Ethereum key) so losing one account does not lock them out.
 
-**Recovery surface masquerading as UX (classic social recovery):** Wallets with user-configured guardian sets (Argent, Soul Wallet, Ambire, Coinbase Smart Wallet's guardian layer) shift trust to the guardians, who can refuse to sign, collude, be subpoenaed, or be compromised. Fix: document the guardian set, threshold, and the user's path to remove, replace, or rotate guardians without losing the account.
+**Recovery surface masquerading as UX (classic social recovery):** Wallets with user-configured guardian sets (Ready, formerly Argent; Elytro, formerly Soul Wallet) shift trust to the guardians, who can refuse to sign, collude, be subpoenaed, or be compromised. The vendor's own 2FA service often sits in the guardian set by default, quietly reintroducing vendor dependence. Fix: document the guardian set, threshold, and the user's path to remove, replace, or rotate guardians without losing the account.
 
-**L2 trust assumptions omitted:** The app picks an L2 but never explains sequencer, bridge, withdrawal, data availability, or censorship assumptions. Fix: fetch `l2s/SKILL.md` and disclose the canonical withdrawal, forced-transaction, or L1 escape path where applicable.
+**L2 trust assumptions omitted:** The app picks an L2 but never explains sequencer, bridge, withdrawal, data availability, or censorship assumptions. Fix: fetch `l2s/SKILL.md` for chain selection and bridge facts, check the chain's sequencer, forced-inclusion, and exit assumptions on [l2beat.com](https://l2beat.com), and disclose the canonical withdrawal or L1 escape path where applicable.
 
 **Sequencer ordering and MEV extraction:** A centralized sequencer (most L2s today) or builder pool can reorder, sandwich, or selectively delay user transactions. Fix: disclose the sequencer's ordering policy and any planned decentralization. For trade-heavy flows, route through private orderflow services (Flashbots Protect, MEV-Share; threshold-encrypted mempools like Shutter are a separate category) and call out the privacy tradeoff: the orderflow-auction operator sees the transaction even when the public mempool does not.
 
@@ -251,8 +251,8 @@ When reporting a CROPS finding to the builder, name the power, bound the comprom
 - For new dApp planning, start with `ship/SKILL.md`; it runs a short CROPS Gate and routes here when deeper trust review is needed.
 - Use this skill as the deeper CROPS review for custody, infrastructure, privacy, admin powers, and user exit.
 - Fetch `wallets/SKILL.md` for custody, Safe, account abstraction, EIP-7702, and key safety implementation details.
-- Fetch `l2s/SKILL.md` for sequencer, bridge, withdrawal, and chain-selection assumptions.
+- Fetch `l2s/SKILL.md` for bridge, withdrawal, and chain-selection facts. For a chain's sequencer and forced-inclusion assumptions, check [l2beat.com](https://l2beat.com).
 - Fetch `frontend-playbook/SKILL.md` for IPFS/ENS deployment, build pipeline, and frontend reproducibility (the Open and Censorship Resistance mitigations for the frontend live here).
-- Fetch `indexing/SKILL.md` for event schema design, self-host paths, and alternate-indexer fallbacks (the Open and Censorship Resistance mitigations for the data layer).
+- Fetch `indexing/SKILL.md` for event schema design and the indexer landscape (the data-layer side of Open and Censorship Resistance).
 - Fetch `security/SKILL.md` for Solidity vulnerability patterns and pre-deploy checks.
-- Fetch `audit/SKILL.md` for deep smart contract vulnerability review. This skill covers admin powers, trust assumptions, censorship paths, privacy leakage, and user exit.
+- Fetch `audit/SKILL.md` for deep smart contract vulnerability review. CROPS itself covers admin powers, trust assumptions, censorship paths, privacy leakage, and user exit.
