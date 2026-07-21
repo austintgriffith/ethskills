@@ -29,6 +29,12 @@ End-to-end guide from idea to deployed dApp. Routes you through all other skills
 - Solidity is for ownership, transfers, and commitments. Not a database, not a backend.
 - Chain selection: mainnet is cheaper than you think (~$0.004/transfer, ~$0.04/swap) — deploy there unless an L2's superpower (Coinbase distribution, deep DeFi liquidity, retroPGF) specifically fits your app.
 
+### [CROPS Review](https://ethskills.com/crops/SKILL.md)
+Deep CROPS architecture review against the EF Mandate values: Censorship Resistance, Open Source and Free (as in Freedom), Privacy, Security.
+- Run for every dApp architecture plan and during pre-ship QA.
+- Forces agents to label architecture options by CROPS impact instead of presenting neutral tradeoff lists.
+- Output names the chosen default, accepted compromises, and the user's escape path.
+
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
 Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
 - Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
@@ -164,13 +170,14 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 
 | I'm doing... | Fetch these skills |
 |--------------|-------------------|
-| Planning a new dApp | `ship/`, `concepts/`, `l2s/` |
+| Planning a new dApp | `ship/`, `crops/`, `concepts/`, `l2s/`, `gas/`, `why/` |
+| Reviewing an existing dApp, smart contract, or trust assumptions | `crops/`, `audit/`, `qa/`, `wallets/`, `l2s/`, `security/` |
 | Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
 | Testing contracts | `testing/` |
 | Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
 | Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
-| Reviewing a finished dApp | `qa/` |
-| Auditing a smart contract | `audit/` |
+| Reviewing a finished dApp before shipping | `qa/`, `crops/` |
+| Auditing a smart contract | `audit/`, `crops/` |
 | Building a privacy/ZK app | `noir/`, `security/`, `testing/` |
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |

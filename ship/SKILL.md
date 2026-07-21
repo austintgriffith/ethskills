@@ -15,6 +15,8 @@ description: End-to-end guide for AI agents — from a dApp idea to deployed pro
 
 **You skip chain selection.** Mainnet is cheaper than you think — an ETH transfer costs ~$0.004, a swap ~$0.04. The "Ethereum is expensive" narrative is outdated. But that doesn't mean everything belongs on mainnet. L2s aren't just "cheaper Ethereum" — each one has a unique superpower (Base has Coinbase distribution + smart wallets, Arbitrum has the deepest DeFi liquidity, Optimism has retroPGF + the Superchain). If your app needs high-frequency interactions or fits what makes an L2 special, build there. If you just need cheap and secure, mainnet works. Choose deliberately. Fetch `l2s/SKILL.md` and `gas/SKILL.md` for the full picture. Not sure Ethereum is the right chain at all? Fetch `why/SKILL.md`.
 
+**You stop at "it works" and skip CROPS tradeoffs.** A dApp can compile, pass tests, and still hand users to a censorable frontend, private indexer/API, invisible RPC dependency, custodial wallet, or admin key with total control. Before coding, check how the design affects Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security.
+
 **You forget nothing is automatic.** Smart contracts don't run themselves. Every state transition needs a caller who pays gas and a reason to do it. If you can't answer "who calls this and why?" for every function, your contract has dead code. Fetch `concepts/SKILL.md` for the full mental model.
 
 ---
@@ -22,6 +24,21 @@ description: End-to-end guide for AI agents — from a dApp idea to deployed pro
 ## Phase 0 — Plan the Architecture
 
 Do this BEFORE writing any code. Every hour spent here saves ten hours of rewrites.
+
+### CROPS Gate
+
+Before finalizing architecture, run a CROPS check. CROPS means Censorship Resistance, Open Source and Free (as in Freedom), Privacy, and Security.
+
+Use the short gate to catch the main tradeoff:
+
+- **Censorship Resistance:** who can block users or critical app paths?
+- **Open Source and Free:** can the full stack be inspected, forked, self-hosted, and legally reused?
+- **Privacy:** what user activity or identity data becomes public or visible to third parties?
+- **Security:** who controls funds, permissions, upgrades, emergency powers, recovery, and exit?
+
+Name the chosen default, the main compromise, and the user's escape path.
+
+Fetch `crops/SKILL.md` for the deep review of any dApp before finalizing architecture. Fetch `concepts/SKILL.md` separately for incentive design and "nothing is automatic."
 
 ### The Onchain Litmus Test
 
@@ -283,6 +300,7 @@ Fetch `frontend-playbook/SKILL.md` for the full pipeline:
 
 ## Quick-Start Checklist
 
+- [ ] Run the CROPS Gate before finalizing architecture (censorship, openness, privacy, security)
 - [ ] Identify what goes onchain vs offchain (use the Litmus Test above)
 - [ ] Count your contracts (aim for 1-2 for MVP)
 - [ ] Pick your chain (mainnet is cheap now — pick an L2 only if its superpower fits your app)
@@ -303,7 +321,7 @@ Use this to know which skills to fetch at each phase:
 
 | Phase | What you're doing | Skills to fetch |
 |-------|-------------------|-----------------|
-| **Plan** | Architecture, chain selection | `ship/` (this), `concepts/`, `l2s/`, `gas/`, `why/` |
+| **Plan** | CROPS gate, architecture, chain selection | `ship/` (this), `crops/`, `concepts/`, `l2s/`, `gas/`, `why/` |
 | **Contracts** | Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
 | **Test** | Testing contracts | `testing/` |
 | **Audit** | Security review (fresh agent) | `audit/` |

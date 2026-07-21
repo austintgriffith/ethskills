@@ -21,6 +21,8 @@ Give this to a fresh agent after the dApp is built. The reviewer should:
 2. Open the app in a browser and click through every flow
 3. Check every item below — report PASS/FAIL, don't fix
 
+Fetch `crops/SKILL.md` first and include a CROPS Review in the report. Simple apps can get a concise baseline review; apps with funds, approvals, custody, wallet permissions, L2/bridge flows, private user data, identity, stablecoins, admin powers, or hosted RPC/indexer/relayer/paymaster/frontend infrastructure need the full four-pillar review.
+
 ---
 
 ## 🚨 Critical: Wallet Flow — Button Not Text
@@ -103,6 +105,15 @@ AI agents treat the scaffold as sacred and leave all default branding in place.
 - [ ] **Tab title:** Must be the app name, NOT "Scaffold-ETH 2" or "SE-2 App" or "App Name | Scaffold-ETH 2"
 - [ ] **README:** Must describe THIS project. Not the SE2 template README. Remove "Built with Scaffold-ETH 2" sections and SE2 doc links
 - [ ] **Favicon:** Must not be the SE2 default
+
+---
+
+## Important: CROPS Review for Trust Assumptions
+
+- ❌ **FAIL:** No `CROPS Review` block in the QA report.
+- ❌ **FAIL:** The CROPS Review lists generic values but does not name who can block users, what data leaks, who controls funds/upgrades/recovery, and how users exit.
+- ❌ **FAIL:** The app has production-relevant trust assumptions (funds, approvals, custody, wallet permissions, L2/bridge, private data, identity, stablecoins, admin powers, hosted RPC/indexer/relayer/paymaster/frontend) but the CROPS Review is only a short gate and never uses `crops/SKILL.md` for the deep template.
+- ✅ **PASS:** A concrete `CROPS Review` block is present, names the chosen default, accepted compromises, and the user's escape path. Depth matches the app's trust assumptions.
 
 ---
 
@@ -417,6 +428,7 @@ Report each as PASS or FAIL:
 - [ ] One button at a time (Connect → Network → Approve → Action)
 - [ ] Approve button locked through full cycle: `approvalSubmitting` (click→hash), `approveCooldown` (confirm→cache refresh) — both states required, both on the `disabled` prop
 - [ ] Contracts verified on block explorer (Etherscan/Basescan/Arbiscan) — source code readable by anyone
+- [ ] CROPS Review present in the QA report: names the chosen default, accepted compromises, who can block users, what data leaks, who controls funds/upgrades/recovery, and the user's escape path
 - [ ] SE2 footer branding removed
 - [ ] SE2 tab title removed
 - [ ] SE2 README replaced
