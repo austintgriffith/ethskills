@@ -23,6 +23,13 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 
 ## Skills
 
+### [Why Ethereum](https://ethskills.com/why/SKILL.md)
+Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
+- Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
+- ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
+- Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
+- ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
+
 ### [Ship](https://ethskills.com/ship/SKILL.md) — Start here
 End-to-end guide from idea to deployed dApp. Routes you through all other skills.
 - Most dApps need 0-2 contracts, not 5-10. Three is the upper bound for an MVP.
@@ -34,13 +41,6 @@ Deep CROPS architecture review against the EF Mandate values: Censorship Resista
 - Run for every dApp architecture plan and during pre-ship QA.
 - Forces agents to label architecture options by CROPS impact instead of presenting neutral tradeoff lists.
 - Output names the chosen default, accepted compromises, and the user's escape path.
-
-### [Why Ethereum](https://ethskills.com/why/SKILL.md)
-Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
-- Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
-- ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
-- Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
-- ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
 
 ### [Protocol](https://ethskills.com/protocol/SKILL.md)
 How Ethereum evolves — EIP lifecycle, fork process, tracking upcoming changes.

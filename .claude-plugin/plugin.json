@@ -11,9 +11,9 @@
   "license": "MIT",
   "keywords": ["ethereum", "solidity", "defi", "web3", "blockchain", "scaffold-eth"],
   "skills": [
+    "./why",
     "./ship",
     "./crops",
-    "./why",
     "./protocol",
     "./gas",
     "./wallets",

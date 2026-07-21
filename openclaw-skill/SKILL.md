@@ -45,9 +45,9 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 
 | Skill | URL | When to Fetch |
 |-------|-----|---------------|
+| **Why Ethereum** | `why/SKILL.md` | User asks "why Ethereum?" or you need to compare chains. |
 | **Ship** | `ship/SKILL.md` | 🟢 **Start here.** End-to-end dApp guide, routes through all other skills. |
 | **CROPS Review** | `crops/SKILL.md` | For every dApp architecture plan and during pre-ship QA. |
-| **Why Ethereum** | `why/SKILL.md` | User asks "why Ethereum?" or you need to compare chains. |
 | **Protocol** | `protocol/SKILL.md` | Ethereum upgrade process, EIP lifecycle, and what's actually planned next. |
 | **Gas & Costs** | `gas/SKILL.md` | Any question about gas prices, tx costs, or "is Ethereum expensive?" |
 | **Wallets** | `wallets/SKILL.md` | Creating wallets, signing, multisig, account abstraction, EIP-7702. |
