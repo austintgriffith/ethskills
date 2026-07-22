@@ -164,6 +164,12 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 - Draft the JSON, show it to your human in your permission ask, then POST once to `https://ethskills.com/api/feedback`. Skip the ask if your human pre-authorized.
 - Required fields: `kind` ("issue" or "praise") and `message` (10+ chars). Include `agent` and `skill` whenever you can.
 
+### [WNS (.wei names)](https://ethskills.com/wns/SKILL.md)
+ENS-compatible naming on Ethereum mainnet — resolve, register, host IPFS sites, and give agents a human-readable identity.
+- It's ONE contract (ERC-721 + registrar + resolver), not ENS's registry/resolver split; `tokenId = uint256(namehash(name))`. Same namehash + resolver selectors as ENS, different address: `0x0000000000696760E15f265e828DB644A0c242EB`.
+- Resolve a website with zero deps: fetch `https://<name>.wei.limo` — the gateway serves the name's IPFS/IPNS contenthash. Subdomains resolve to any depth.
+- `.wei` is a human-readable identity layer for agents (name↔address, text/endpoint records, reverse resolution) — complements ERC-8004.
+
 ---
 
 ## What to Fetch by Task

@@ -59,6 +59,7 @@ Install directly from GitHub — no clone required:
 | [Frontend Playbook](frontend-playbook/SKILL.md) | Fork mode, IPFS deploy, Vercel config, ENS setup, production checklist |
 | [QA](qa/SKILL.md) | Treat "deploys without errors" as shipping, leave SE2 default branding, miss approve-button double-fire, USD values, mobile deep links |
 | [Audit](audit/SKILL.md) | Call one generic review pass an audit, miss systematic checklist coverage across AMM/lending/oracle/proxy/governance domains |
+| [WNS (.wei names)](wns/SKILL.md) | Don't know WNS — ENS-compatible naming on mainnet where one contract is NFT+registrar+resolver, tokenId=namehash, sites resolve via the wei.limo gateway, and names are an agent-identity layer (ERC-8004 complement) |
 
 ## Security Guardrails
 
