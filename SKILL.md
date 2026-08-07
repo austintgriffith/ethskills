@@ -80,6 +80,12 @@ Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
 
+### [Batch Payments](https://ethskills.com/batch-payments/SKILL.md)
+Multi-recipient token distributions — batch contracts, gas optimization, x402-gated batch APIs.
+- Don't loop `transfer()`. Batch contracts save 60%+ gas for multi-recipient sends.
+- Production batch infrastructure exists on Base, Ethereum, Arbitrum. You don't need to write your own.
+- x402-gated batch APIs let agents pay a service fee to trigger distributions without managing contracts.
+
 ### [Building Blocks (DeFi)](https://ethskills.com/building-blocks/SKILL.md)
 Uniswap, Aave, flash loans, protocol composability.
 - Uniswap V4 hooks: custom logic attached to pools (dynamic fees, TWAMM, limit orders).
