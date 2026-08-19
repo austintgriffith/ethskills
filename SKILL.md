@@ -66,6 +66,7 @@ L2 landscape, bridging, deployment differences.
 - Base is the cheapest major L2. Arbitrum has the deepest DeFi liquidity.
 - Celo is NOT an L1 anymore — migrated to OP Stack L2 in March 2025.
 - Polygon zkEVM is being shut down. Do not build on it.
+- Robinhood Chain launched July 2026 — Orbit L2 with 24/7 tokenized stocks (non-US only). Its tx filtering can censor even force-included transactions.
 - The dominant DEX on each L2 is NOT Uniswap (Aerodrome on Base, Velodrome on Optimism).
 
 ### [Standards](https://ethskills.com/standards/SKILL.md)

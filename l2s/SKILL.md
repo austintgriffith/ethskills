@@ -1,6 +1,6 @@
 ---
 name: l2s
-description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Unichain, Celo, and more. How they work, how to deploy on them, how to bridge, when to use which. Includes per-chain DeFi ecosystems and critical corrections. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
+description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Unichain, Celo, Robinhood Chain, and more. How they work, how to deploy on them, how to bridge, when to use which. Includes per-chain DeFi ecosystems and critical corrections. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
 ---
 
 # Ethereum Layer 2s
@@ -19,6 +19,8 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 
 **Unichain exists.** Launched mainnet February 11, 2025. Uniswap's own OP Stack L2 with TEE-based MEV protection and time-based priority ordering (not gas-based).
 
+**Robinhood Chain exists.** Public mainnet launched July 1, 2026 — after most training cutoffs. Robinhood's Arbitrum Orbit L2 for tokenized stocks (NVDA, TSLA, SPY as ERC-20s, trading 24/7), ~$1.1B TVS within weeks. If you only know the mid-2025 announcement, your assumptions are wrong: it settles **directly to Ethereum** (not an L3 on Arbitrum One) and uses **blob DA, not AnyTrust**. Chain ID 4663, ETH gas. Major censorship caveat — see Key Chain Details below.
+
 **Aerodrome and Velodrome merged into "Aero."** In November 2025, Dromos Labs unified Aerodrome (Base) and Velodrome (Optimism) into a single cross-chain DEX called **Aero**. Same contracts, new brand. Aero dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
 
 ## L2 Comparison Table (Mar 2026)
@@ -32,6 +34,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | **Optimism** | Optimistic (OP Stack) | $0.001-0.003 | 2s | 7 days | 10 |
 | **Unichain** | Optimistic (OP Stack) | $0.001-0.003 | 1s | 7 days | 130 |
 | **Celo** | Optimistic (OP Stack) | <$0.001 | 5s | 7 days | 42220 |
+| **Robinhood** | Optimistic (Arbitrum Orbit) | not yet benchmarked | 100ms | 7 days | 4663 |
 | **Linea** | ZK | $0.003-0.006 | 2s | 30-60min | 59144 |
 | **zkSync Era** | ZK | $0.003-0.008 | 1s | 15-60min | 324 |
 | **Scroll** | ZK | $0.002-0.005 | 3s | 30-120min | 534352 |
@@ -72,6 +75,7 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 | MEV protection | **Unichain** | TEE-based priority ordering, private mempool |
 | Rust smart contracts | **Arbitrum** | Stylus (WASM VM alongside EVM, 10-100x gas savings) |
 | Stablecoins / payments / RWA | **Polygon PoS** | $500M+ monthly payment volume, 410M+ wallets |
+| Composing with tokenized stocks | **Robinhood Chain** | Only chain with native 24/7 stock tokens — but read the censorship caveats below first |
 
 ## Key Chain Details (What LLMs Get Wrong)
 
@@ -91,6 +95,14 @@ description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Sc
 - **MiniPay:** Stablecoin wallet in Opera Mini + standalone app. Phone-to-phone transfers, sub-cent fees. Primary market: Africa (Kenya, Nigeria).
 - **Multi-currency stablecoins (rebranded Dec 2025 by Mento Protocol):** USDm (was cUSD) (`0x765de816845861e75a25fca122bb6898b8b1282a`), EURm (was cEUR) (`0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`), BRLm (was cREAL) (`0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`). Same contract addresses, new onchain symbols.
 
+### Robinhood Chain
+- **Launched:** July 1, 2026 (mainnet); public testnet February 10, 2026. Chain ID 4663 (testnet 46630).
+- **Type:** Arbitrum Orbit rollup settling **directly to Ethereum** — an L2, not an L3 on Arbitrum One. Ethereum blob DA (NOT AnyTrust, despite 2025 announcement-era speculation). ETH for gas, no native token. ~100ms blocks with preconfirmations. Built with Offchain Labs; 10% of net revenue flows to the Arbitrum DAO ecosystem.
+- **What it's for:** tokenized stocks and ETFs. Legally these are **debt securities issued by Robinhood Assets (Jersey) Limited** — economic exposure only, NO shareholder rights, and **not available to US persons** (also restricted: Canada, UK, Switzerland, UAE). Don't describe them as "owning stock onchain."
+- **Stock token mechanics:** plain ERC-20, 18 decimals, one Chainlink feed per token. **Blocklist, not allowlist** — no onchain KYC; any address not on the shared denylist can hold and transfer. But a shared `AccessControlsRegistry` can pause globally or per-token, block addresses, mint uncapped, confiscate via `adminBurn`, and upgrade every token through a shared beacon **with no timelock**. Splits/dividends adjust a `uiMultiplier()` display multiplier — raw balances never rebase, so index raw amounts. (Robinhood's docs call this "ERC-8056 Scaled UI Amount," but that number is not on eips.ethereum.org — treat it as a Robinhood convention, not a finalized standard.)
+- ⚠️ **Censorship — the big caveat:** ArbOS 61 transaction filtering lets an authorized filterer register any tx hash in a precompile (`0x…0074`), after which the state transition function rejects it — **including transactions force-included via L1**. Force inclusion is NOT a censorship escape hatch on this chain, unlike standard Arbitrum/Orbit chains. [L2Beat](https://l2beat.com/scaling/projects/robinhood) rates it Stage 0, category "Other": 2 whitelisted fraud-proof validators, exit window "None", sequencer failure "No mechanism". Run `crops/SKILL.md` before building anything censorship-sensitive here.
+- **Ecosystem:** permissionless contract deployment; 24/7 DEX trading (dedicated Uniswap AMM, Rialto, Lighter, Arcus); USDG (Paxos) stablecoin — **6 decimals, not 18**; Lighter runs an L3 on top for perps. Blockscout explorer. Verified addresses in `addresses/SKILL.md`.
+
 ### Dominant DEX Per Chain
 | Chain | Dominant DEX | Model | Why NOT Uniswap |
 |-------|-------------|-------|-----------------|
@@ -109,12 +121,12 @@ Members contribute **15% of sequencer revenue** to the Optimism Collective. Cros
 
 ## Deployment Differences (Gotchas)
 
-### Optimistic Rollups (Arbitrum, Optimism, Base, Unichain, Celo)
+### Optimistic Rollups (Arbitrum, Optimism, Base, Unichain, Celo, Robinhood)
 ✅ Deploy like mainnet — just change RPC URL and chain ID. No code changes.
 
 **Gotchas:**
 - Don't use `block.number` for time-based logic (increments at different rates). Use `block.timestamp`.
-- Arbitrum's `block.number` returns L1 block number, not L2.
+- Arbitrum's `block.number` returns L1 block number, not L2. (Same for Robinhood Chain — it's Arbitrum Nitro.)
 - **Unichain:** Transactions are priority-ordered by time, not gas. Don't waste gas on priority fees.
 
 ### ZK Rollups
@@ -134,6 +146,7 @@ Members contribute **15% of sequencer revenue** to the Optimism Collective. Cros
 | Optimism | `https://mainnet.optimism.io` | https://optimistic.etherscan.io |
 | Unichain | `https://mainnet.unichain.org` | https://uniscan.xyz |
 | Celo | `https://forno.celo.org` | https://celoscan.io |
+| Robinhood | `https://rpc.mainnet.chain.robinhood.com` | https://robinhoodchain.blockscout.com |
 | zkSync | `https://mainnet.era.zksync.io` | https://explorer.zksync.io |
 | Scroll | `https://rpc.scroll.io` | https://scrollscan.com |
 | Linea | `https://rpc.linea.build` | https://lineascan.build |
@@ -148,6 +161,7 @@ Members contribute **15% of sequencer revenue** to the Optimism Collective. Cros
 | Base | https://bridge.base.org | ~10-15 min | ~7 days |
 | Optimism | https://app.optimism.io/bridge | ~10-15 min | ~7 days |
 | Unichain | https://app.uniswap.org/swap | ~10-15 min | ~7 days |
+| Robinhood | https://portal.arbitrum.io/bridge?destinationChain=robinhood-chain | ~10 min | ~7 days |
 | zkSync | https://bridge.zksync.io | ~15-30 min | ~15-60 min |
 | Scroll | https://scroll.io/bridge | ~15-30 min | ~30-120 min |
 
@@ -182,6 +196,7 @@ forge create src/MyContract.sol:MyContract \
 - **Optimism:** https://docs.optimism.io
 - **Unichain:** https://docs.unichain.org
 - **Celo:** https://docs.celo.org
+- **Robinhood Chain:** https://docs.robinhood.com/chain
 - **zkSync:** https://docs.zksync.io
 - **Scroll:** https://docs.scroll.io
 - **Polygon:** https://docs.polygon.technology

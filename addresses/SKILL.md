@@ -1,6 +1,6 @@
 ---
 name: addresses
-description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, Lido, Rocket Pool, 1inch, Permit2, MakerDAO/sDAI, EigenLayer, Across, Chainlink CCIP, Yearn V3, USDC, USDT, DAI, ENS, Safe, Chainlink, and more. Always verify addresses against a block explorer before sending transactions.
+description: Verified contract addresses for major Ethereum protocols across mainnet and L2s. Use this instead of guessing or hallucinating addresses. Includes Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Camelot, SyncSwap, Lido, Rocket Pool, 1inch, Permit2, MakerDAO/sDAI, EigenLayer, Across, Chainlink CCIP, Yearn V3, USDC, USDT, DAI, ENS, Safe, Chainlink, Robinhood Chain stock tokens, and more. Always verify addresses against a block explorer before sending transactions.
 ---
 
 # Contract Addresses
@@ -457,6 +457,48 @@ The leading native DEX on zkSync Era. Multiple router and factory versions.
 
 Source: [docs.syncswap.xyz](https://docs.syncswap.xyz/syncswap/smart-contracts/smart-contracts)
 
+### Robinhood Chain — Stock Tokens & Core Contracts
+
+Robinhood's Arbitrum Orbit L2 (chain ID 4663, mainnet July 2026). Tokenized stocks trade 24/7 as ERC-20s. See `l2s/SKILL.md` for the chain's trust model before building here.
+
+> ⚠️ Stock tokens are **debt securities** (Robinhood Assets Jersey Ltd), not equity, and are **not available to US persons**. All are 18 decimals with a shared admin registry that can pause, block, mint, confiscate, and upgrade with no timelock. Splits/dividends move a `uiMultiplier()` display multiplier — raw balances never rebase.
+
+**On Robinhood Chain (4663)** — verified via Blockscout API (`symbol` + `name` + `decimals`), August 19, 2026:
+
+| Token | Address | Status |
+|-------|---------|--------|
+| NVDA | `0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC` | ✅ Verified |
+| TSLA | `0x322F0929c4625eD5bAd873c95208D54E1c003b2d` | ✅ Verified |
+| AAPL | `0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9` | ✅ Verified |
+| MSFT | `0xe93237C50D904957Cf27E7B1133b510C669c2e74` | ✅ Verified |
+| AMZN | `0x12f190a9F9d7D37a250758b26824B97CE941bF54` | ✅ Verified |
+| GOOGL | `0x2e0847E8910a9732eB3fb1bb4b70a580ADAD4FE3` | ✅ Verified |
+| META | `0xc0D6457C16Cc70d6790Dd43521C899C87ce02f35` | ✅ Verified |
+| COIN | `0x6330D8C3178a418788dF01a47479c0ce7CCF450b` | ✅ Verified |
+| SPCX (SpaceX) | `0x4a0E65A3EcceC6dBe60AE065F2e7bb85Fae35eEa` | ✅ Verified |
+| SPY | `0x117cc2133c37B721F49dE2A7a74833232B3B4C0C` | ✅ Verified |
+| QQQ | `0xD5f3879160bc7c32ebb4dC785F8a4F505888de68` | ✅ Verified |
+| USDG (**6 decimals!**) | `0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168` | ✅ Verified |
+| WETH | `0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73` | ✅ Verified |
+| AccessControlsRegistry | `0xe10b6f6B275de231345c20D14Ab812db62151b00` | ✅ Verified |
+
+Full live token catalog (generated from the onchain registry): [docs.robinhood.com/chain/contracts](https://docs.robinhood.com/chain/contracts)
+
+**On Ethereum mainnet (canonical bridge + rollup core)** — verified via Blockscout (proxy implementation names match), August 19, 2026:
+
+| Contract | Address | Status |
+|----------|---------|--------|
+| Bridge | `0xDf8755334ce7A73cCF6b581C02eA649AE3E864b3` | ✅ Verified |
+| RollupProxy | `0x23A19d23e89166adedbDcB432518AB01e4272D94` | ✅ Verified |
+| SequencerInbox | `0xBd0D173EEb87D57A09521c24388a12789F33ba96` | ✅ Verified |
+| Inbox (deposits) | `0x1A07cc4BD17E0118BdB54D70990D2158AbAD7a2D` | ✅ Verified |
+| Outbox (withdrawals) | `0xf0ce991ea4A0d2400A4AB49b20ae333f6Dce3DE9` | ✅ Verified |
+| L1GatewayRouter | `0x6a2E3a1e16FC29f27Ce61429746D558d656975bB` | ✅ Verified |
+| L1ERC20Gateway | `0x85001CC4867C5e1C22dA4B79BB8852B9e2a06da0` | ✅ Verified |
+| L1WethGateway | `0xF7e12b9614b509C747ab4423bC4ACF923759Cf1B` | ✅ Verified |
+
+Source: [L2Beat discovery](https://github.com/l2beat/l2beat/tree/master/packages/config/src/projects/robinhood), cross-checked on Blockscout. Bridge UI: [portal.arbitrum.io/bridge](https://portal.arbitrum.io/bridge?destinationChain=robinhood-chain&sourceChain=ethereum) (~10 min deposits, ~7 day withdrawals).
+
 ### Morpho Blue (Base)
 
 Permissionless lending protocol. Deployed on Base and Ethereum, but **NOT on Arbitrum** as of February 2026 (despite the vanity CREATE2 address).
@@ -521,6 +563,7 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 - **Camelot:** https://docs.camelot.exchange/contracts/arbitrum/one-mainnet
 - **SyncSwap:** https://docs.syncswap.xyz/syncswap/smart-contracts/smart-contracts
 - **Morpho:** https://docs.morpho.org/get-started/resources/addresses/
+- **Robinhood Chain:** https://docs.robinhood.com/chain/contracts
 - **Lido:** https://docs.lido.fi/deployed-contracts/
 - **Rocket Pool:** https://docs.rocketpool.net/overview/contracts-integrations
 - **1inch:** https://docs.1inch.io/docs/aggregation-protocol/introduction

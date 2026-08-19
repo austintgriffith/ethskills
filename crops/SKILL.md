@@ -79,7 +79,7 @@ Check for:
 - single bundler dependency for ERC-4337 / smart-account flows; no fallback bundler or self-host path
 - single hosted indexer (Goldsky, Subsquid Cloud, a single pinned Graph indexer) with no documented self-host path, alternate indexer, or RPC-only fallback
 - any critical component controlled by one party where users cannot realistically switch providers, self-host, or route around it
-- missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1 where the L2 supports forced inclusion (verify the specific chain's forced-inclusion support on [l2beat.com](https://l2beat.com))
+- missing fallback paths such as calling contracts directly, switching RPC providers, using a self-hosted frontend, or exiting an L2/bridge path back to Ethereum L1 where the L2 supports forced inclusion (verify the specific chain's forced-inclusion support on [l2beat.com](https://l2beat.com) — and whether it can be nullified: Robinhood Chain's ArbOS 61 transaction filtering rejects even force-included transactions, so forced inclusion there is not an escape hatch)
 
 Prefer:
 - permissionless contract entrypoints, callable directly without the frontend
