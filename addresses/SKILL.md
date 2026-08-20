@@ -7,7 +7,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
-**Last Verified:** March 3, 2026 (all addresses verified onchain via `eth_getCode` + `eth_call` + `symbol()` + `latestAnswer()`)
+**Last Verified:** March 3, 2026 (all addresses verified onchain via `eth_getCode` + `eth_call` + `symbol()` + `latestAnswer()`). Exception: the Robinhood Chain section was added and verified August 19, 2026 via Blockscout REST API — re-check it with `cast` at the next verification sweep.
 
 ---
 
@@ -497,7 +497,7 @@ Full live token catalog (generated from the onchain registry): [docs.robinhood.c
 | L1ERC20Gateway | `0x85001CC4867C5e1C22dA4B79BB8852B9e2a06da0` | ✅ Verified |
 | L1WethGateway | `0xF7e12b9614b509C747ab4423bC4ACF923759Cf1B` | ✅ Verified |
 
-Source: [L2Beat discovery](https://github.com/l2beat/l2beat/tree/master/packages/config/src/projects/robinhood), cross-checked on Blockscout. Bridge UI: [portal.arbitrum.io/bridge](https://portal.arbitrum.io/bridge?destinationChain=robinhood-chain&sourceChain=ethereum) (~10 min deposits, ~7 day withdrawals).
+Source: [L2Beat discovery](https://github.com/l2beat/l2beat/tree/main/packages/config/src/projects/robinhood), cross-checked on Blockscout. Bridge UI: [portal.arbitrum.io/bridge](https://portal.arbitrum.io/bridge?destinationChain=robinhood-chain&sourceChain=ethereum) (~10 min deposits, ~7 day withdrawals).
 
 ### Morpho Blue (Base)
 
