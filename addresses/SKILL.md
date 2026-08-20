@@ -7,7 +7,7 @@ description: Verified contract addresses for major Ethereum protocols across mai
 
 > **CRITICAL:** Never hallucinate a contract address. Wrong addresses mean lost funds. If an address isn't listed here, look it up on the block explorer or the protocol's official docs before using it.
 
-**Last Verified:** March 3, 2026 (all addresses verified onchain via `eth_getCode` + `eth_call` + `symbol()` + `latestAnswer()`). Exception: the Robinhood Chain section was added and verified August 19, 2026 via Blockscout REST API — re-check it with `cast` at the next verification sweep.
+**Last Verified:** March 3, 2026 (all addresses verified onchain via `eth_getCode` + `eth_call` + `symbol()` + `latestAnswer()`). Exception: the Robinhood Chain section was added August 19, 2026 and verified onchain via `cast call`/`cast code` (Alchemy RPC) August 20, 2026.
 
 ---
 
@@ -463,7 +463,7 @@ Robinhood's Arbitrum Orbit L2 (chain ID 4663, mainnet July 2026). Tokenized stoc
 
 > ⚠️ Stock tokens are **debt securities** (Robinhood Assets Jersey Ltd), not equity, and are **not available to US persons**. All are 18 decimals with a shared admin registry that can pause, block, mint, confiscate, and upgrade with no timelock. Splits/dividends move a `uiMultiplier()` display multiplier — raw balances never rebase.
 
-**On Robinhood Chain (4663)** — verified via Blockscout API (`symbol` + `name` + `decimals`), August 19, 2026:
+**On Robinhood Chain (4663)** — verified via Blockscout API (Aug 19, 2026) and onchain via `cast call` `symbol()`/`decimals()` (Aug 20, 2026):
 
 | Token | Address | Status |
 |-------|---------|--------|
@@ -484,7 +484,7 @@ Robinhood's Arbitrum Orbit L2 (chain ID 4663, mainnet July 2026). Tokenized stoc
 
 Full live token catalog (generated from the onchain registry): [docs.robinhood.com/chain/contracts](https://docs.robinhood.com/chain/contracts)
 
-**On Ethereum mainnet (canonical bridge + rollup core)** — verified via Blockscout (proxy implementation names match), August 19, 2026:
+**On Ethereum mainnet (canonical bridge + rollup core)** — verified via Blockscout (proxy implementation names match, Aug 19, 2026) and onchain via `cast code` (Aug 20, 2026):
 
 | Contract | Address | Status |
 |----------|---------|--------|
@@ -583,7 +583,7 @@ cast code 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --rpc-url https://eth.llama
 
 ---
 
-✅ **All addresses verified onchain via `eth_getCode` + `eth_call` — March 3, 2026 (Robinhood Chain section: August 19, 2026 via Blockscout REST API, pending `cast` re-check). Bytecode confirmed present, identity confirmed via symbol/name/cross-reference calls. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
+✅ **All addresses verified onchain via `eth_getCode` + `eth_call` — March 3, 2026 (Robinhood Chain section: August 20, 2026 via `cast call`/`cast code` over Alchemy RPC). Bytecode confirmed present, identity confirmed via symbol/name/cross-reference calls. Does NOT guarantee safety — always verify on block explorer before sending transactions.**
 
 ---
 
