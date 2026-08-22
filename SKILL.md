@@ -76,10 +76,11 @@ ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
 - EIP-3009: gasless token transfers — what makes x402 work. USDC implements it.
 
 ### [Tools](https://ethskills.com/tools/SKILL.md)
-Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
+Foundry, Scaffold-ETH 2, Blockscout MCP, searchable error catalogs, x402 SDKs.
 - Foundry and Hardhat 3 are both legitimate choices in 2026. Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
+- Search a maintained error catalog before hand-rolling EVM/RPC/wallet/AA/x402 decoders.
 
 ### [Building Blocks (DeFi)](https://ethskills.com/building-blocks/SKILL.md)
 Uniswap, Aave, flash loans, protocol composability.

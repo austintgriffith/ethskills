@@ -53,7 +53,7 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-20, ERC-721, etc.
 | **Wallets** | `wallets/SKILL.md` | Creating wallets, signing, multisig, account abstraction, EIP-7702. |
 | **Layer 2s** | `l2s/SKILL.md` | Deploying to L2s, bridging, choosing between Base/Arbitrum/Optimism. |
 | **Standards** | `standards/SKILL.md` | ERC-20, ERC-721, ERC-1155, ERC-8004 (agent identity), x402 payments. |
-| **Tools** | `tools/SKILL.md` | Foundry, Scaffold-ETH 2, Blockscout MCP, abi.ninja, x402 SDKs. |
+| **Tools** | `tools/SKILL.md` | Foundry, Scaffold-ETH 2, Blockscout MCP, searchable error catalogs, abi.ninja, x402 SDKs. |
 | **Money Legos** | `building-blocks/SKILL.md` | DeFi composability — Uniswap, Aave, flash loans, protocol integration. |
 | **Orchestration** | `orchestration/SKILL.md` | Three-phase build system for SE2 dApps (localhost → live contracts → production). |
 | **Addresses** | `addresses/SKILL.md` | Verified contract addresses. **Stop hallucinating addresses.** |
