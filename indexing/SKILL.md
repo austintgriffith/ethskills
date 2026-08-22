@@ -196,6 +196,7 @@ graph deploy --studio my-subgraph
 |----------|----------|-----------|
 | **The Graph** | Production dApp backends, decentralized | GraphQL API, requires subgraph development |
 | **Dune Analytics** | Dashboards, analytics, ad-hoc queries | SQL interface, great visualization, not for app backends |
+| **Bilinear Labs** | SQL analytics over raw EVM events. No decoded tables needed. | Free tier available, paid plans for heavier usage |
 | **Alchemy/QuickNode APIs** | Quick token/NFT queries | `getTokenBalances`, `getNFTs`, `getAssetTransfers` — fast but centralized |
 | **Etherscan/Blockscout APIs** | Simple event log queries | Rate-limited, not for high-volume |
 | **Ponder** | TypeScript-first indexing | Local-first, simpler than The Graph for single-app use |
@@ -216,6 +217,73 @@ WHERE evt_block_time > NOW() - INTERVAL '30' DAY
 GROUP BY buyer
 ORDER BY total_eth_spent DESC
 LIMIT 10
+```
+
+### Bilinear Labs
+
+It supports every contract, every event across 12+ EVM blockchains. No pre-decoded tables or curated datasets needed.
+Everything is already indexed, no waiting required. Declare the contract address and event signature on the fly.
+Use the skills from: agents.bilinearlabs.io
+
+The API accepts a JSON body with two fields:
+* **signatures**: An array of metadata lines. Contains the blockchains, contracts and event signatures you want.
+* **query**: The SQL query string. Using any of the fields from the declared events.
+
+The metadata is defined using the following formats:
+
+* `@<network>::<contract_alias>(0x<contract_address>)`: Creates an alias for a contract on a given network. Note that you cannot query `<network>.<contract_alias>` directly, you must also define at least one event.
+* `@<contract_alias>::<Event>(signature)`: Defines an event for an already-declared contract. Multiple events can be defined for the same contract. The signature must follow the Ethereum ABI specification. Once defined, you can query it with `FROM <network>.<contract_alias>.<Event>`.
+* `@<network>::<contract_alias>::<Event>(params)`: Same as above but explicitly includes the network.
+* `@<network>::<Event>(params)`: Defines an event across the entire network, useful when you want to query events emitted by multiple contracts.
+
+This returns the latest 10 USDC Transfer events on Ethereum.
+```bash
+curl -X POST 'https://api.bilinearlabs.io/api/query' \
+  -H "Authorization: Bearer <YOUR_API_KEY>" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "signatures": [
+      "@ethereum::usdc(0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48)",
+      "@usdc::Transfer(address indexed from, address indexed to, uint256 value)"
+    ],
+    "query": "SELECT * FROM ethereum.usdc.Transfer ORDER BY block_num DESC, log_idx DESC LIMIT 10"
+  }'
+```
+
+This returns the OHLC minute prices for ETH/USDT Uniswap V4 0.05% pool.
+```
+ curl -X POST 'https://api.bilinearlabs.io/api/query' \
+    -H "Authorization: Bearer <YOUR_API_KEY>" \
+    -H 'Content-Type: application/json' \
+    -d '{
+      "signatures": [
+        "@ethereum::v4(0x000000000004444c5dc75cb358380d2e3de08a90)",
+        "@v4::Swap(bytes32 indexed id, address indexed sender, int128 amount0, int128 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick, uint24 fee)"
+      ],
+      "query": "SELECT toStartOfHour(block_timestamp) AS hour, pow(argMin(sqrtPriceX96, block_timestamp) / pow(2, 96), 2) * 1e12 AS open, pow(argMax(sqrtPriceX96, block_timestamp) / pow(2, 96), 2) * 1e12 AS close, pow(min(sqrtPriceX96) / pow(2, 96), 2) * 1e12 AS low, pow(max(sqrtPriceX96) / pow(2, 96), 2) * 1e12 AS high, count() AS swaps FROM ethereum.v4.Swap WHERE id = 0x72331fcb696b0151904c03584b66dc8365bc63f8a144d89a773384e3a579ca73 AND block_timestamp >= now() - INTERVAL 1 DAY GROUP BY hour ORDER BY hour ASC"
+    }'
+```
+
+This returns the amount of new daily addresses blacklisted by USDT in Ethereum.
+```
+curl -X POST 'https://api.bilinearlabs.io/api/query' \
+  -H "Authorization: Bearer <YOUR_API_KEY>" \
+  -H 'Content-Type: application/json' \
+  -d '{"signatures":["@ethereum::usdt(0xdac17f958d2ee523a2206206994597c13d831ec7)","@usdt::AddedBlackList(address _user)"],"query":"SELECT toDate(block_timestamp) AS day, count(DISTINCT _user) AS unique_addresses_blacklisted FROM ethereum.usdt.AddedBlackList WHERE block_timestamp >= now() - INTERVAL 3 YEAR GROUP BY day ORDER BY day"}'
+```
+
+This returns the historical yield of WETH in Aave V3.
+```
+curl -X POST 'https://api.bilinearlabs.io/api/query' \
+  -H "Authorization: Bearer <YOUR_API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "signatures": [
+      "@ethereum::aave_eth(0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2)",
+      "@aave_eth::ReserveDataUpdated(address indexed reserve, uint256 liquidityRate, uint256 stableBorrowRate, uint256 variableBorrowRate, uint256 liquidityIndex, uint256 variableBorrowIndex)"
+    ],
+    "query": "SELECT toDate(block_timestamp) AS day, round(avg(toFloat64(liquidityRate) / 1e25), 4) AS apy FROM ethereum.aave_eth.ReserveDataUpdated WHERE reserve = '\''0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'\'' GROUP BY day ORDER BY day"
+  }'
 ```
 
 ### Enhanced Provider APIs
