@@ -247,11 +247,11 @@ contract SwapTest is Test {
 ### Running Fork Tests
 
 ```bash
-# Fork from RPC URL
-forge test --fork-url https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY
+# Fork from RPC URL (use any dedicated provider — Alchemy, Infura, QuickNode, etc.)
+forge test --fork-url $MAINNET_RPC_URL
 
 # Fork at specific block (reproducible)
-forge test --fork-url https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY --fork-block-number 19000000
+forge test --fork-url $MAINNET_RPC_URL --fork-block-number 19000000
 
 # Set in foundry.toml to avoid CLI flags
 # [rpc_endpoints]
