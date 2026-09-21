@@ -76,10 +76,11 @@ ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
 - EIP-3009: gasless token transfers — what makes x402 work. USDC implements it.
 
 ### [Tools](https://ethskills.com/tools/SKILL.md)
-Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
+Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs, price and icon libraries.
 - Foundry and Hardhat 3 are both legitimate choices in 2026. Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - abi.ninja: paste any contract address, interact with all functions. Zero setup.
+- Prices, logos, and avatars come from libraries, not API keys: eth-prices quotes any asset against any other straight from RPC; eth-icons, eth-avatars, and blo cover token logos, avatar records, and identicons.
 
 ### [Building Blocks (DeFi)](https://ethskills.com/building-blocks/SKILL.md)
 Uniswap, Aave, flash loans, protocol composability.
@@ -145,6 +146,7 @@ Frontend UX patterns for Ethereum dApps.
 - Every onchain button needs its own loader + disabled state. No shared isLoading.
 - Three-button flow: Switch Network → Approve → Execute. One at a time.
 - Every address display uses `<Address/>`, every input uses `<AddressInput/>`.
+- Avatar records (`ipfs://`, `eip155:`) must be resolved before `<img src>`. Logos, avatars, and identicons are three separate sources.
 - Show USD values next to every token amount.
 
 ### [Frontend Playbook](https://ethskills.com/frontend-playbook/SKILL.md)

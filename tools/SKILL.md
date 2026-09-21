@@ -15,6 +15,10 @@ description: Current Ethereum development tools, frameworks, libraries, RPCs, an
 
 **Foundry and Hardhat 3 are both legitimate choices in 2026.** Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
 
+**Token price data can be fetched directly from the RPC:** `eth-prices` (TS/Rust) routes Uniswap V2/V3, Chainlink, ERC-4626, and ECB quotes at a pinned block and prices any asset against any other, so the display currency is a parameter. No price-API key.
+
+**Avatars and logos are not plain image URLs:** ENS `avatar` records are frequently `ipfs://`, `ar://`, or `eip155:` NFT pointers. `eth-avatars` (TS/Rust) resolves them to image bytes usable in `<img src>`, `eth-icons` (TS/Rust) does the same for token and network logos, and `blo` (TS) draws an identicon for any address.
+
 ## Tool Discovery Pattern for AI Agents
 
 When an agent needs to interact with Ethereum:
@@ -74,6 +78,30 @@ const response = await x402Fetch('https://api.example.com/data', {
 - **UI Components:** https://ui.scaffoldeth.io/
 - **Docs:** https://docs.scaffoldeth.io/
 
+## Prices: Fetch Price Data Directly From the RPC
+
+The pools and feeds are already onchain, so price data can be read from the RPC you are already connected to — no key, no rate limit, and a number you can reproduce at a block.
+
+**`eth-prices`** (TS/Rust) — https://github.com/v3xlabs/eth-prices
+
+Routes over Uniswap V2/V3 pools, ERC-4626 vaults, Chainlink feeds, fixed pegs, and ECB fiat rates to quote any asset against any other at a pinned block. The display currency is a parameter, not a hardcoded USD. Its autorouter discovers pools and vaults when you do not know the addresses.
+
+## Icons and Avatars
+
+Neither token logos nor avatar hosting is part of any standard.
+
+**`eth-icons`** (TS/Rust) — https://github.com/v3xlabs/eth-icons
+
+Fetches network, native asset, and ERC-20 logos, returning every icon it finds so the caller can choose.
+
+**`eth-avatars`** (TS/Rust) — https://github.com/v3xlabs/eth-avatars
+
+Resolves `ipfs://`, `ar://`, `bzz://`, and `eip155:` avatar records — NFT metadata included — into image bytes.
+
+**`blo`** (TS) — https://github.com/bpierre/blo
+
+Deterministic identicon for any address, no network call.
+
 ## Choosing Your Stack (2026)
 
 | Need | Tool |
@@ -84,6 +112,10 @@ const response = await x402Fetch('https://api.example.com/data', {
 | React frontends | **wagmi + viem** (or SE2 which wraps these) |
 | Agent blockchain reads | **Blockscout MCP** |
 | Agent payments | **x402 SDKs** |
+| Token prices from RPC | **eth-prices** |
+| Token and network icons | **eth-icons** |
+| ENS avatar URI resolution | **eth-avatars** |
+| Identicon for any address | **blo** |
 
 ## Essential Foundry cast Commands
 

@@ -47,7 +47,7 @@ Install directly from GitHub — no clone required:
 | [Wallets](wallets/SKILL.md) | EIP-7702 is live, Safe addresses, agent key safety |
 | [Layer 2s](l2s/SKILL.md) | Think L2 txs cost $0.01-2.00 — reality is <$0.001 |
 | [Standards](standards/SKILL.md) | Don't know ERC-8004, EIP-7702 status, EIP-3009 for x402 |
-| [Tools](tools/SKILL.md) | Don't know x402, Blockscout MCP, current tool landscape |
+| [Tools](tools/SKILL.md) | Don't know x402, Blockscout MCP, current tool landscape, RPC-native price/icon/avatar libraries |
 | [Money Legos](building-blocks/SKILL.md) | Stale on current DeFi state, Uniswap V4 status |
 | [Orchestration](orchestration/SKILL.md) | Don't know SE2 three-phase build system |
 | [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses — these are verified onchain |
@@ -55,7 +55,7 @@ Install directly from GitHub — no clone required:
 | [Security](security/SKILL.md) | Token decimals, reentrancy, oracle manipulation, vault inflation, pre-deploy checklist |
 | [Testing](testing/SKILL.md) | Test getters and OpenZeppelin internals, skip fuzz and fork tests on integrations, mock external protocols instead of forking |
 | [Indexing](indexing/SKILL.md) | Loop over blocks to read history, try to query historical state via raw RPC, ignore events as the primary read API |
-| [Frontend UX](frontend-ux/SKILL.md) | Onchain button rules, three-button approval flow, Address components, USD values |
+| [Frontend UX](frontend-ux/SKILL.md) | Onchain button rules, three-button approval flow, Address components, icon/avatar sources, USD values |
 | [Frontend Playbook](frontend-playbook/SKILL.md) | Fork mode, IPFS deploy, Vercel config, ENS setup, production checklist |
 | [QA](qa/SKILL.md) | Treat "deploys without errors" as shipping, leave SE2 default branding, miss approve-button double-fire, USD values, mobile deep links |
 | [Audit](audit/SKILL.md) | Call one generic review pass an audit, miss systematic checklist coverage across AMM/lending/oracle/proxy/governance domains |
