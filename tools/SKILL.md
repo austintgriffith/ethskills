@@ -1,172 +1,44 @@
 ---
 name: tools
-description: Current Ethereum development tools, frameworks, libraries, RPCs, and block explorers. What actually works today for building on Ethereum. Includes tool discovery for AI agents — MCPs, abi.ninja, Foundry, Scaffold-ETH 2, Hardhat, and more. Use when setting up a dev environment, choosing tools, or when an agent needs to discover what's available.
+description: "Use when picking or installing packages, versions, or a scaffold for an Ethereum project, when wiring an agent to read onchain data, or when asking what to install for pay-per-call HTTP payments. Checks what is current before recommending it. Not for choosing which standard to build on (`/standards`)."
 ---
 
 # Ethereum Development Tools
 
-## What You Probably Got Wrong
+Treat tool names, package versions, and exported APIs as live data. Check the
+official package registry or documentation before recommending or importing
+them; do not resolve dependency conflicts by silently falling back to a stale
+major version.
 
-**Blockscout MCP server exists:** https://mcp.blockscout.com/mcp — gives AI agents structured blockchain data via Model Context Protocol. This is cutting-edge infra as of Feb 2026.
+For a new Scaffold-ETH 2 app, the live scaffold package is `create-eth`:
+`npx create-eth@latest`. Check that it resolves before handing it over. Pinning
+the version `latest` currently resolves to is fine once you have verified it —
+what is not fine is `create-eth-app` or `create-scaffold-eth`, which are dead
+package names rather than older spellings of this one.
 
-**abi.ninja is essential:** https://abi.ninja — paste any verified contract address, get a UI to call any function. Zero setup. Supports mainnet + all major L2s. Perfect for agent-driven contract exploration.
+## Give agents structured onchain data
 
-**x402 has production SDKs:** `@x402/fetch` (TS), `x402` (Python), `github.com/coinbase/x402/go` — production-ready libraries for HTTP payments.
+Prefer the Blockscout MCP server at `https://mcp.blockscout.com/mcp` when the AI
+agent itself needs ready-to-consume transactions, transfers, balances, or
+contract data. This is the agent-native option that is easy to miss.
 
-**Foundry and Hardhat 3 are both legitimate choices in 2026.** Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
+Use a documented Blockscout or explorer REST API when application code—not the
+agent—is the consumer, or when MCP is unavailable. Do not scrape explorer HTML
+or hand-decode raw logs when an indexed interface fits the task.
 
-## Tool Discovery Pattern for AI Agents
+## Add inline HTTP payments
 
-When an agent needs to interact with Ethereum:
+For x402 TypeScript projects, use the scoped `@x402/*` packages — `@x402/core`,
+`@x402/evm`, `@x402/express`, `@x402/fetch` — and keep the whole implementation on
+one major. The unscoped `x402`, `x402-fetch`, and `x402-express` packages are
+frozen at 1.2.0 and are not the maintained line, whatever a version range resolves
+them to; do not fall back to them to clear a dependency conflict. `@coinbase/x402`
+is the Coinbase facilitator config, which sits alongside the scoped family rather
+than replacing it. Inspect the installed exports before writing the integration.
 
-1. **Read operations:** Blockscout MCP or Etherscan API
-2. **Write operations:** Foundry `cast send` or ethers.js/viem
-3. **Contract exploration:** abi.ninja (browser) or `cast interface` (CLI)
-4. **Testing:** Fork mainnet with `anvil`, test locally
-5. **Deployment:** `forge create` or `forge script`
-6. **Verification:** `forge verify-contract` or Etherscan API
-
-## Blockscout MCP Server
-
-**URL:** https://mcp.blockscout.com/mcp
-
-A Model Context Protocol server giving AI agents structured blockchain data:
-- Transaction, address, contract queries
-- Token info and balances
-- Smart contract interaction helpers
-- Multi-chain support
-- Standardized interface optimized for LLM consumption
-
-**Why this matters:** Instead of scraping Etherscan or making raw API calls, agents get structured, type-safe blockchain data via MCP.
-
-## abi.ninja
-
-**URL:** https://abi.ninja — Paste any contract address → interact with all functions. Multi-chain. Zero setup.
-
-## x402 SDKs (HTTP Payments)
-
-**TypeScript:**
-```bash
-npm install @x402/core @x402/evm @x402/fetch @x402/express
-```
-
-```typescript
-import { x402Fetch } from '@x402/fetch';
-import { createWallet } from '@x402/evm';
-
-const wallet = createWallet(privateKey);
-const response = await x402Fetch('https://api.example.com/data', {
-  wallet,
-  preferredNetwork: 'eip155:8453' // Base
-});
-```
-
-**Python:** `pip install x402`
-**Go:** `go get github.com/coinbase/x402/go`
-**Docs:** https://www.x402.org | https://github.com/coinbase/x402
-
-## Scaffold-ETH 2
-
-- **Setup:** `npx create-eth@latest`
-- **What:** Full-stack Ethereum toolkit: Solidity + Next.js + Foundry
-- **Key feature:** Auto-generates TypeScript types from contracts. Scaffold hooks make contract interaction trivial.
-- **Deploy to IPFS:** `yarn ipfs` (BuidlGuidl IPFS)
-- **UI Components:** https://ui.scaffoldeth.io/
-- **Docs:** https://docs.scaffoldeth.io/
-
-## Choosing Your Stack (2026)
-
-| Need | Tool |
-|------|------|
-| Rapid prototyping / full dApps | **Scaffold-ETH 2** |
-| Contract-focused dev | **Foundry** (forge + cast + anvil) · or **Hardhat 3** if TypeScript-first |
-| Quick contract interaction | **abi.ninja** (browser) or **cast** (CLI) |
-| React frontends | **wagmi + viem** (or SE2 which wraps these) |
-| Agent blockchain reads | **Blockscout MCP** |
-| Agent payments | **x402 SDKs** |
-
-## Essential Foundry cast Commands
-
-```bash
-# Read contract
-cast call 0xAddr "balanceOf(address)(uint256)" 0xWallet --rpc-url $RPC
-
-# Send transaction
-cast send 0xAddr "transfer(address,uint256)" 0xTo 1000000 --private-key $KEY --rpc-url $RPC
-
-# Gas price
-cast gas-price --rpc-url $RPC
-
-# Decode calldata
-cast 4byte-decode 0xa9059cbb...
-
-# ENS resolution
-cast resolve-name vitalik.eth --rpc-url $RPC
-
-# Fork mainnet locally
-anvil --fork-url $RPC
-```
-
-## RPC Providers
-
-**Free (testing):**
-- `https://eth.llamarpc.com` — LlamaNodes, no key
-- `https://rpc.ankr.com/eth` — Ankr, free tier
-
-**Paid (production):**
-- **Alchemy** — most popular, generous free tier (300M CU/month)
-- **Infura** — established, MetaMask default
-- **QuickNode** — performance-focused
-
-**Community:** `rpc.buidlguidl.com`
-
-## Block Explorers
-
-| Network | Explorer | API |
-|---------|----------|-----|
-| Mainnet | https://etherscan.io | https://api.etherscan.io |
-| Arbitrum | https://arbiscan.io | Etherscan-compatible |
-| Base | https://basescan.org | Etherscan-compatible |
-| Optimism | https://optimistic.etherscan.io | Etherscan-compatible |
-
-## MCP Servers for Agents
-
-**Model Context Protocol** — standard for giving AI agents structured access to external systems.
-
-1. **Blockscout MCP** — multi-chain blockchain data (primary)
-2. **eth-mcp** — community Ethereum RPC via MCP
-3. **Custom MCP wrappers** emerging for DeFi protocols, ENS, wallets
-
-MCP servers are composable — agents can use multiple together.
-
-## What Changed in 2025-2026
-
-- **Foundry became the default** over Hardhat for new projects — then Hardhat 3 (Aug 2025) shipped Solidity testing, fuzzing, and Rust internals, making it a legitimate choice again.
-- **Viem gaining on ethers.js** (smaller, better TypeScript)
-- **MCP servers emerged** for agent-blockchain interaction
-- **x402 SDKs** went production-ready
-- **ERC-8004 tooling** emerging (agent registration/discovery)
-- **Deprecated:** Truffle (use Foundry/Hardhat), Goerli/Rinkeby (use Sepolia)
-
-## Testing Essentials
-
-**Fork mainnet locally:**
-```bash
-anvil --fork-url https://eth.llamarpc.com
-# Now test against real contracts with fake ETH at http://localhost:8545
-```
-
-**Primary testnet:** Sepolia (Chain ID: 11155111). Goerli and Rinkeby are deprecated.
-
-### Testnet ETH Faucets
-
-| Network | Faucet |
-|---------|--------|
-| Sepolia | https://sepolia-faucet.pk910.de/ |
-| Sepolia | https://www.infura.io/faucet/sepolia |
-| Multiple | https://www.alchemy.com/faucets |
-| Multiple | https://cloud.google.com/application/web3/faucet/ethereum |
-| Multiple | https://faucet.quicknode.com/drip |
-| Multiple | https://getblock.io/faucet/ |
-
-Once you have Sepolia ETH you can bridge it to any L2 using each L2's testnet bridge then you will have ETH on that L2 testnet.
+`x402Fetch` and `createWallet` do not exist in the scoped packages at all, and
+passing a wallet or account straight to `wrapFetchWithPayment` is the frozen v1
+call shape — the scoped `@x402/fetch` wrappers take an x402 client or a scheme
+config. Read the installed types instead of a remembered snippet. For Go, use
+`github.com/x402-foundation/x402/go/v2`; the old `github.com/coinbase/x402/go`
+path does not error, it silently resolves to a stale pre-Foundation commit.

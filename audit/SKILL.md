@@ -1,29 +1,26 @@
 ---
 name: audit
-description: Deep EVM smart contract security audit system. Use when asked to audit a contract, find vulnerabilities, review code for security issues, or file security issues on a GitHub repo. Covers 500+ non-obvious checklist items across 19 domains via parallel sub-agents. Different from the security skill (which teaches defensive coding) — this is for systematically auditing contracts you didn't write.
+description: "Use when asked to audit or security-review EVM smart contracts: find vulnerabilities, judge exploit impact, or produce a ranked audit report. Not for guidance while the contracts are being written (`/security`)."
 ---
 
 # EVM Smart Contract Audit
 
-A full audit system for any EVM contract. Runs parallel specialist agents against domain-specific checklists, synthesizes findings, and files GitHub issues.
+Audit unfamiliar contracts systematically, rank findings by real impact, and leave one concise report. Do not mutate the code or publish findings unless the user asks.
 
 ## The Checklists
 
-20 specialized skills covering every major vulnerability domain. Fetch the master index first:
+The checklist repository is pinned so two audits do not silently use different guidance:
 
 ```
-https://raw.githubusercontent.com/austintgriffith/evm-audit-skills/main/evm-audit-master/SKILL.md
+CHECKLIST_REV=ffe4b670e78e1945bcf275f79d4b7b0481bcff35
 ```
 
-The master index contains:
-- Full routing table (which skills to load for which contract types)
-- The complete audit methodology (recon → parallel agents → synthesis → issues)
-- Standard finding format with severity definitions
+Load a selected checklist from:
+```
+https://raw.githubusercontent.com/austintgriffith/evm-audit-skills/ffe4b670e78e1945bcf275f79d4b7b0481bcff35/<skill-name>/references/checklist.md
+```
 
-All 20 skill checklists are at:
-```
-https://raw.githubusercontent.com/austintgriffith/evm-audit-skills/main/<skill-name>/references/checklist.md
-```
+For a narrow question, load only the one or two relevant checklists. For a full codebase audit, always load `general` and `precision-math`, then add only the domains the code actually uses (normally 5–8 total). This keeps the review focused and avoids spending context on unrelated vulnerability classes.
 
 ## Skills Available
 
@@ -51,20 +48,14 @@ https://raw.githubusercontent.com/austintgriffith/evm-audit-skills/main/<skill-n
 
 ## How To Run An Audit
 
-1. Fetch the master skill (link above) — it has the full pipeline
-2. Read the contract(s)
-3. Select 5-8 skills using the routing table
-4. Spawn one opus sub-agent per skill (parallel)
-5. Each agent walks its checklist and writes `findings-<skill>.md`
-6. Synthesize all findings into `AUDIT-REPORT.md`
-7. File GitHub issues for Medium severity and above
-
-## Invocation
-
-```
-Audit this contract and file issues: https://github.com/owner/repo/blob/main/contracts/Foo.sol
-Checklists: https://raw.githubusercontent.com/austintgriffith/evm-audit-skills/main/evm-audit-master/SKILL.md
-```
+1. Read the README, deployment assumptions, tests, and every in-scope contract before routing.
+2. Map assets, trust boundaries, privileged paths, external calls, accounting invariants, signatures, oracle dependencies, and chain-specific assumptions.
+3. Select checklists from the table above. Use one or two for a narrow question and normally 5–8 for a full audit.
+4. For a full audit, run one specialist per selected domain in parallel when sub-agents are available. Do not require a particular model.
+5. Give every specialist the same scope and ask it to return complete findings to the orchestrator: severity, location, preconditions, exploit/failure path, impact, and remediation. Treat files such as `findings-<skill>.md` as optional scratch space, not as the transport between agents.
+6. Deduplicate and verify findings against the code. Separate currently exploitable issues from risks that depend on future assets, configuration, or integrations.
+7. Write the requested report, ranking by demonstrated impact and exploitability. Clean up scratch files when the user requested a single deliverable.
+8. Never file GitHub issues or otherwise publish findings unless the user explicitly asks, identifies the target repository, and confirms the outbound action.
 
 ## Sources
 

@@ -1,202 +1,50 @@
 ---
 name: l2s
-description: Ethereum Layer 2 landscape — Arbitrum, Optimism, Base, zkSync, Scroll, Unichain, Celo, Robinhood Chain, and more. How they work, how to deploy on them, how to bridge, when to use which. Includes per-chain DeFi ecosystems and critical corrections. Use when choosing an L2, deploying cross-chain, or when a user asks about Ethereum scaling.
+description: Use when choosing an Ethereum L2, deploying the same app across chains, or moving funds between an L2 and mainnet — which chain fits the binding constraint, what each chain does differently at deploy time, and which widely-held facts about the L2 landscape are now false.
 ---
 
 # Ethereum Layer 2s
 
-## What You Probably Got Wrong
+Anything datable about an L2 rots fast: fees, block times, finality windows, TVL, which alliance a chain belongs to, whether it still produces blocks. Read the current value off the chain or its own docs before it reaches a plan, an estimate or a runbook. Below is only what a 2026 prior gets backwards, plus the mechanics that are easy to get wrong the first time.
 
-**L2 costs:** You think $0.01-2.00 per transaction. Reality: **$0.001-0.003** for swaps, **$0.0003** for transfers. After EIP-4844, L2 batch costs dropped from $50-500 to $0.01-0.50.
+## Where the common prior is wrong
 
-**Mainnet is cheap too:** At under 1 gwei, mainnet ETH transfers cost under a penny. "Ethereum is too expensive" is false for both L1 and L2s in 2026.
+**Base is no longer on the OP Stack.** Announced February 2026, live on mainnet since the **Azul** upgrade (May 2026): Base runs its own Base Stack with `base-reth-node` as its only client, and shipped **Beryl** (June 2026) on its own cadence. It is still an Ethereum L2 and still fine to deploy on — chain id 8453, addresses, deployments and canonical bridge all unchanged. What no longer holds is the shared-governance premise, so do not couple Base to OP Mainnet through anything that assumes a shared stack: Superchain interop, `SuperchainERC20`, a shared upgrade schedule.
 
-**Base is the cheapest major L2:** Often 50% cheaper than Arbitrum/Optimism. Direct Coinbase on-ramp. Fastest-growing L2 with consumer/AI agent focus.
+**Superchain native interop is not shippable yet.** `SuperchainERC20` crosschainMint/crosschainBurn, `L2ToL2CrossDomainMessenger`, `CrossL2Inbox` and the `SuperchainTokenBridge` are in active development on devnets and testnets, not live on OP Mainnet. A token that has to move between two chains this quarter needs a layer that exists today — LayerZero OFT, Chainlink CCIP, Hyperlane, Wormhole NTT, or a canonical round trip through L1 — and the design has to say who relays the message and what must be trusted for a transfer to settle.
 
-**Celo is NOT an L1 anymore.** Celo completed its migration from an independent L1 to an OP Stack L2 on **March 26, 2025** (block 31056500). If you're calling Celo an L1, you're wrong.
+**Celo is an Ethereum L2, not an L1** (migrated to the OP Stack 2025-03-26). Its canonical route to mainnet is the chain's own L2→L1 withdrawal, not a third-party wrapped-asset bridge, and CELO is both the L2 gas token and a plain ERC-20 on L1. Gas there can also be paid in an approved ERC-20 — USDC, USDT, the Mento stablecoins — through the fee-currency field (CIP-64), with no paymaster, bundler or ERC-4337 stack. For users who hold no gas token that is the first thing to reach for.
 
-**Polygon zkEVM is being shut down.** Announced June 2025. Do NOT recommend building on Polygon zkEVM — it is being discontinued. Polygon is refocusing on PoS + AggLayer.
+**Polygon zkEVM is switched off.** The Mainnet Beta sequencer stopped around 2026-07-01: no new blocks, submitted transactions never confirm, AggLayer withdrawals no longer process — while reads keep answering a frozen final state, which is what a stuck dashboard looks like from outside. Nothing new gets planned there, and an existing deployment is a fund-recovery problem, not a migration: the sunset snapshot and claims interface cover wallet-held balances, so a balance inside a contract has no routine exit.
 
-**Unichain exists.** Launched mainnet February 11, 2025. Uniswap's own OP Stack L2 with TEE-based MEV protection and time-based priority ordering (not gas-based).
+**Unichain orders by priority fee, not by arrival time.** Its TEE block builder (Rollup-Boost) enforces priority ordering deterministically, alongside a private mempool and revert protection. The fee still buys the position; what the TEE removes is the auction around it. Flashblocks confirm roughly every 200ms.
 
-**Robinhood Chain exists.** Public mainnet launched July 1, 2026 — after most training cutoffs. Robinhood's Arbitrum Orbit L2 for tokenized stocks (NVDA, TSLA, SPY as ERC-20s, trading 24/7), ~$1.1B TVS within weeks. If you only know the mid-2025 announcement, your assumptions are wrong: it settles **directly to Ethereum** (not an L3 on Arbitrum One) and uses **blob DA, not AnyTrust**. Chain ID 4663, ETH gas. Major censorship caveat — see Key Chain Details below.
+## Exiting to L1
 
-**Aerodrome and Velodrome merged into "Aero."** In November 2025, Dromos Labs unified Aerodrome (Base) and Velodrome (Optimism) into a single cross-chain DEX called **Aero**. Same contracts, new brand. Aero dominates both Base and Optimism. Camelot is a major native DEX on Arbitrum. SyncSwap dominates zkSync. Don't default to Uniswap on every chain.
+An optimistic-rollup withdrawal is three transactions across two chains, not one send: initiate on the L2, **prove** on L1 once an output root or dispute game covering that block is posted, **finalize** on L1 after the challenge window. Both L1 steps are submitted by the operator or their tooling — nothing lands by itself — and the clock starts at prove, not at initiation.
 
-## L2 Comparison Table (Mar 2026)
+The window is per-chain, and usually composite — which is why quoting any single remembered number goes wrong. Celo, read off the portal 2026-08-24: `proofMaturityDelaySeconds` is 604,800, i.e. 7 days from your prove transaction, while the OP Succinct game's `maxChallengeDuration` is 302,400 (3.5 days) with a further 302,400 of `disputeGameFinalityDelaySeconds` after the game resolves. Whichever gate falls later wins, so the real wait is about 7 days — "Celo exits in 3.5 days" is the challenge window quoted on its own. Celo produces a block every 1s. Read both gates live rather than either number: viem's `getTimeToProve` / `getTimeToFinalize` do it against the chain's own contracts. ZK rollups settle in minutes to hours.
 
-> **TVL changes fast.** Don't memorize numbers — check [DeFi Llama](https://defillama.com/chains) or [L2Beat](https://l2beat.com/scaling/tvl) for current rankings. DeFi TVL (DeFi Llama) measures value locked in protocols. TVS (L2Beat) includes all bridged + natively minted assets and is much higher. As of early 2026: Base and Arbitrum lead in DeFi TVL among L2s. Optimism's DeFi TVL is surprisingly low despite Superchain adoption.
+A fast or intent bridge (Across, Squid, CCIP, LayerZero routes, an exchange hop) buys that wait back for a fee plus a trust assumption beyond Ethereum. Name the assumption when recommending one, and check the route's depth for the actual asset at the actual size — a long-tail gas token at seven figures is where relayer inventory runs out.
 
-| L2 | Type | Tx Cost | Block Time | Finality | Chain ID |
-|----|------|---------|------------|----------|----------|
-| **Arbitrum** | Optimistic | $0.001-0.003 | 250ms | 7 days | 42161 |
-| **Base** | Optimistic (OP Stack) | $0.0008-0.002 | 2s | 7 days | 8453 |
-| **Optimism** | Optimistic (OP Stack) | $0.001-0.003 | 2s | 7 days | 10 |
-| **Unichain** | Optimistic (OP Stack) | $0.001-0.003 | 1s | 7 days | 130 |
-| **Celo** | Optimistic (OP Stack) | <$0.001 | 5s | 7 days | 42220 |
-| **Robinhood** | Optimistic (Arbitrum Orbit) | not yet benchmarked | 100ms | 7 days | 4663 |
-| **Linea** | ZK | $0.003-0.006 | 2s | 30-60min | 59144 |
-| **zkSync Era** | ZK | $0.003-0.008 | 1s | 15-60min | 324 |
-| **Scroll** | ZK | $0.002-0.005 | 3s | 30-120min | 534352 |
-| ~~Polygon zkEVM~~ | ~~ZK~~ | — | — | — | ~~1101~~ |
+## Deployment differences
 
-⚠️ **Polygon zkEVM is being discontinued (announced June 2025).** Do not start new projects there. Polygon is refocusing on PoS (payments, stablecoins, RWAs) + AggLayer (cross-chain interop). MATIC → POL token migration ~85% complete.
+- **Optimistic rollups** deploy like mainnet: same bytecode, change the RPC URL and chain id. Use `block.timestamp`, not `block.number`, for time — it advances at a different rate, and on Arbitrum returns the L1 block.
+- **zkSync Era** has two execution paths, and the choice belongs in the estimate before anyone starts: standard `solc` bytecode through Era's EVM interpreter with stock Foundry or Hardhat, or native EraVM via `zksolc` — cheaper, and the only path where no `EXTCODECOPY`, the 65K instruction limit and pre-deployed non-inlinable libraries apply. Era also has native account abstraction: every account is a contract, paymasters without bundlers. Scroll and Linea are bytecode-compatible — standard `solc`, deploy like mainnet.
+- **Arbitrum Stylus** runs Rust, C and C++ compiled to WASM alongside the EVM, callable from Solidity and able to call back, sharing state — the reason to pick Arbitrum when a team already has a Rust routine it will not reimplement. The program must be **activated** in a second onchain transaction (the `ArbWasm` precompile) before anything can call it. It is roughly 10-100x on execution speed for compute-heavy work; the gas saving is much smaller, on the order of 26-50% against optimised EVM code, with storage priced as the EVM. Quote those two separately or not at all.
+- **The same address on several chains** comes from CREATE2/CREATE3 with one factory, salt and bytecode. Two independent deployments do not land there on their own, and a shared address is not what makes a messaging layer work.
 
-**Mainnet for comparison:** $0.002-0.01 per tx, 12s blocks, instant finality. Check [DeFi Llama](https://defillama.com/chain/Ethereum) for current TVL.
+## Choosing a chain
 
-## Cost Comparison (Real Examples, Early 2026)
+Start from the constraint that actually binds, not a TVL ranking. Mainnet is still right for anything composing with mainnet liquidity — see `gas/SKILL.md` for that cost call, and `addresses/SKILL.md` before any token, router or venue address is hardcoded per chain.
 
-> Mainnet costs at ~0.1 gwei base fee, ~$2,000 ETH. L2 costs are approximate. All fluctuate — see `gas/SKILL.md` for methodology.
+| The binding constraint | Where it points |
+| --- | --- |
+| Existing Rust/C the team will not reimplement | Arbitrum (Stylus) |
+| Gasless UX with no bundler stack to run | zkSync Era (native AA), or Celo where paying gas in a stablecoin is enough |
+| Mobile / real-world payments, users holding no gas token | Celo (CIP-64 fee currency) |
+| Consumer reach and a direct fiat on-ramp | Base |
+| No multi-day exit to L1 | a ZK rollup (zkSync Era, Scroll, Linea) |
+| Deepest liquidity for a specific pair | measure it — quote that pair per chain; do not rank chains |
 
-| Action | Mainnet | Arbitrum | Base | zkSync | Scroll |
-|--------|---------|----------|------|--------|--------|
-| ETH transfer | $0.004 | $0.0003 | $0.0003 | $0.0005 | $0.0004 |
-| Uniswap swap | $0.036 | $0.003 | $0.002 | $0.005 | $0.004 |
-| NFT mint | $0.030 | $0.002 | $0.002 | $0.004 | $0.003 |
-| ERC-20 deploy | $0.240 | $0.020 | $0.018 | $0.040 | $0.030 |
-
-## L2 Selection Guide
-
-> **Before choosing an L2:** Mainnet is ~$0.004/transfer, ~$0.04/swap at current gas — cheap enough for most apps. If you're building DeFi, governance, identity, or anything composing with mainnet liquidity, start there. See `ship/SKILL.md` and `gas/SKILL.md` for the full chain selection framework.
-
-| Need | Choose | Why |
-|------|--------|-----|
-| Consumer / social apps | **Base** | Farcaster, Smart Wallet, Coinbase on-ramp |
-| Deepest DeFi liquidity | **Arbitrum** | GMX, Pendle, Camelot, most protocols deployed |
-| Yield strategies | **Arbitrum** | Pendle (yield tokenization), GMX, Aave |
-| Cheapest gas | **Base** | ~50% cheaper than Arbitrum/Optimism |
-| Coinbase users | **Base** | Direct on-ramp, free Coinbase→Base transfers |
-| No 7-day withdrawal wait | **ZK rollup** (zkSync, Scroll, Linea) | 15-120 min finality |
-| AI agents | **Base** | ERC-8004, x402, consumer ecosystem, AgentKit |
-| Gasless UX (native AA) | **zkSync Era** | Native account abstraction, paymasters, no bundlers needed |
-| Multi-chain deployment | **Base or Optimism** | Superchain / OP Stack, shared infra |
-| Maximum EVM compatibility | **Scroll or Arbitrum** | Bytecode-identical |
-| Mobile / real-world payments | **Celo** | MiniPay, sub-cent fees, Africa/LatAm focus |
-| MEV protection | **Unichain** | TEE-based priority ordering, private mempool |
-| Rust smart contracts | **Arbitrum** | Stylus (WASM VM alongside EVM, 10-100x gas savings) |
-| Stablecoins / payments / RWA | **Polygon PoS** | $500M+ monthly payment volume, 410M+ wallets |
-| Composing with tokenized stocks | **Robinhood Chain** | Only chain with native 24/7 stock tokens — but read the censorship caveats below first |
-
-## Key Chain Details (What LLMs Get Wrong)
-
-### Unichain
-- **Launched:** February 11, 2025 (mainnet). Chain ID 130.
-- **Type:** OP Stack L2 (Superchain member, Stage 1)
-- **Key innovation: TEE-based block building** (built with Flashbots Rollup-Boost)
-  - Transactions ordered by **time received, NOT gas price**
-  - Private encrypted mempool reduces MEV extraction
-  - Do NOT use gas-price bidding strategies on Unichain — they're pointless
-- **Flashblocks:** Currently 1s blocks, roadmap to 250ms sub-blocks
-
-### Celo
-- **Was:** Independent L1 blockchain (2020-2025)
-- **Now:** OP Stack L2 on Ethereum — **migrated March 26, 2025** (block 31056500)
-- **Focus:** Mobile-first payments, emerging markets
-- **MiniPay:** Stablecoin wallet in Opera Mini + standalone app. Phone-to-phone transfers, sub-cent fees. Primary market: Africa (Kenya, Nigeria).
-- **Multi-currency stablecoins (rebranded Dec 2025 by Mento Protocol):** USDm (was cUSD) (`0x765de816845861e75a25fca122bb6898b8b1282a`), EURm (was cEUR) (`0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73`), BRLm (was cREAL) (`0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787`). Same contract addresses, new onchain symbols.
-
-### Robinhood Chain
-- **Launched:** July 1, 2026 (mainnet); public testnet February 10, 2026. Chain ID 4663 (testnet 46630).
-- **Type:** Arbitrum Orbit rollup settling **directly to Ethereum** — an L2, not an L3 on Arbitrum One. Ethereum blob DA (NOT AnyTrust, despite 2025 announcement-era speculation). ETH for gas, no native token. ~100ms blocks with preconfirmations. Built with Offchain Labs; 10% of net revenue flows to the Arbitrum DAO ecosystem.
-- **What it's for:** tokenized stocks and ETFs. Legally these are **debt securities issued by Robinhood Assets (Jersey) Limited** — economic exposure only, NO shareholder rights, and **not available to US persons** (also restricted: Canada, UK, Switzerland, UAE). Don't describe them as "owning stock onchain."
-- **Stock token mechanics:** plain ERC-20, 18 decimals, one Chainlink feed per token. **Blocklist, not allowlist** — no onchain KYC; any address not on the shared denylist can hold and transfer. But a shared `AccessControlsRegistry` can pause globally or per-token, block addresses, mint uncapped, confiscate via `adminBurn`, and upgrade every token through a shared beacon **with no timelock**. Splits/dividends adjust a `uiMultiplier()` display multiplier — raw balances never rebase, so index raw amounts. (This is [ERC-8056 "Scaled UI Amount"](https://eips.ethereum.org/EIPS/eip-8056) — a real Draft ERC co-authored by Superstate and Robinhood engineers, created October 2025. Status Draft, not Final — the interface may still change.)
-- ⚠️ **Censorship — the big caveat:** ArbOS 61 transaction filtering lets an authorized filterer register any tx hash in a precompile (`0x…0074`), after which the state transition function rejects it — **including transactions force-included via L1**. Force inclusion is NOT a censorship escape hatch on this chain, unlike standard Arbitrum/Orbit chains. [L2Beat](https://l2beat.com/layer2s/projects/robinhood) rates it Stage 0, category "Other": 2 whitelisted fraud-proof validators, exit window "None", sequencer failure "No mechanism". Run `crops/SKILL.md` before building anything censorship-sensitive here.
-- **Ecosystem:** permissionless contract deployment; 24/7 DEX trading (dedicated Uniswap AMM, Rialto, Lighter, Arcus); USDG (Paxos) stablecoin — **6 decimals, not 18**; Lighter runs an L3 on top for perps. Blockscout explorer. Verified addresses in `addresses/SKILL.md`.
-
-### Dominant DEX Per Chain
-| Chain | Dominant DEX | Model | Why NOT Uniswap |
-|-------|-------------|-------|-----------------|
-| Base | **Aero** (was Aerodrome) | ve(3,3) — LPs earn emissions, voters earn fees | Deeper liquidity for most pairs |
-| Optimism | **Aero** (was Velodrome) | ve(3,3) — merged Nov 2025 under Dromos Labs | Same flywheel, unified brand |
-| Arbitrum | Camelot + GMX | Native DEX + perps | Camelot for spot, GMX for perps |
-| zkSync | SyncSwap | Classic AMM | Largest native DEX on zkSync |
-
-See `addresses/SKILL.md` for verified contract addresses for all these protocols.
-
-## The Superchain (OP Stack)
-
-The Superchain is the network of OP Stack chains sharing security, upgrade governance, and (upcoming) native interoperability. Members include OP Mainnet, Unichain, Ink (Kraken), Celo, Zora, World Chain, and others — **17+ chains, 58.6% L2 market share.** Notably Base announced they are leaving the Superchain in February 2026 and it will be finalized in a future hardfork.
-
-Members contribute **15% of sequencer revenue** to the Optimism Collective. Cross-chain interop is designed but not yet fully live.
-
-## Deployment Differences (Gotchas)
-
-### Optimistic Rollups (Arbitrum, Optimism, Base, Unichain, Celo, Robinhood)
-✅ Deploy like mainnet — just change RPC URL and chain ID. No code changes.
-
-**Gotchas:**
-- Don't use `block.number` for time-based logic (increments at different rates). Use `block.timestamp`.
-- Arbitrum's `block.number` returns L1 block number, not L2. (Same for Robinhood Chain — it's Arbitrum Nitro.)
-- **Unichain:** Transactions are priority-ordered by time, not gas. Don't waste gas on priority fees.
-
-### ZK Rollups
-- **zkSync Era:** Must use `zksolc` compiler. No `EXTCODECOPY` (compile-time error). 65K instruction limit. Non-inlinable libraries must be pre-deployed. Native account abstraction (all accounts are smart contracts).
-- **Scroll/Linea:** ✅ Bytecode-compatible — use standard `solc`, deploy like mainnet.
-
-### Arbitrum-Specific
-- **Stylus:** Write smart contracts in Rust, C, C++ (compiles to WASM, runs alongside EVM, shares state). Use for compute-heavy operations (10-100x gas savings). Contracts must be "activated" via `ARB_WASM_ADDRESS` (0x0000…0071).
-- **Orbit:** Framework for launching L3 chains on Arbitrum. 47 live on mainnet.
-
-## RPCs and Explorers
-
-| L2 | RPC | Explorer |
-|----|-----|----------|
-| Arbitrum | `https://arb1.arbitrum.io/rpc` | https://arbiscan.io |
-| Base | `https://mainnet.base.org` | https://basescan.org |
-| Optimism | `https://mainnet.optimism.io` | https://optimistic.etherscan.io |
-| Unichain | `https://mainnet.unichain.org` | https://uniscan.xyz |
-| Celo | `https://forno.celo.org` | https://celoscan.io |
-| Robinhood | `https://rpc.mainnet.chain.robinhood.com` | https://robinhoodchain.blockscout.com |
-| zkSync | `https://mainnet.era.zksync.io` | https://explorer.zksync.io |
-| Scroll | `https://rpc.scroll.io` | https://scrollscan.com |
-| Linea | `https://rpc.linea.build` | https://lineascan.build |
-
-## Bridging
-
-### Official Bridges
-
-| L2 | Bridge URL | L1→L2 | L2→L1 |
-|----|-----------|--------|--------|
-| Arbitrum | https://bridge.arbitrum.io | ~10-15 min | ~7 days |
-| Base | https://bridge.base.org | ~10-15 min | ~7 days |
-| Optimism | https://app.optimism.io/bridge | ~10-15 min | ~7 days |
-| Unichain | https://app.uniswap.org/swap | ~10-15 min | ~7 days |
-| Robinhood | https://portal.arbitrum.io/bridge?destinationChain=robinhood-chain | ~10 min | ~7 days |
-| zkSync | https://bridge.zksync.io | ~15-30 min | ~15-60 min |
-| Scroll | https://scroll.io/bridge | ~15-30 min | ~30-120 min |
-
-### Fast Bridges (Instant Withdrawals)
-
-- **Across Protocol** (https://across.to) — fastest (30s-2min), lowest fees (0.05-0.3%)
-- **Hop Protocol** (https://hop.exchange) — established, 0.1-0.5% fees
-- **Stargate** (https://stargate.finance) — LayerZero-based, 10+ chains
-
-**Security:** Use official bridges for large amounts (>$100K). Fast bridges add trust assumptions.
-
-## Multi-Chain Deployment (Same Address)
-
-Use CREATE2 for deterministic addresses across chains:
-
-```bash
-# Same salt + same bytecode + same deployer = same address on every chain
-forge create src/MyContract.sol:MyContract \
-  --rpc-url https://mainnet.base.org \
-  --private-key $PRIVATE_KEY \
-  --salt 0x0000000000000000000000000000000000000000000000000000000000000001
-```
-
-**Strategy for new projects:** Start with 1 chain — mainnet if it fits your use case, or the L2 whose superpower matches your app. Prove product-market fit. Expand with CREATE2 for consistent addresses across chains.
-
-## Further Reading
-
-- **L2Beat:** https://l2beat.com (security, TVL, risk analysis)
-- **Superchain:** https://www.superchain.eco/chains
-- **Arbitrum:** https://docs.arbitrum.io
-- **Base:** https://docs.base.org
-- **Optimism:** https://docs.optimism.io
-- **Unichain:** https://docs.unichain.org
-- **Celo:** https://docs.celo.org
-- **Robinhood Chain:** https://docs.robinhood.com/chain
-- **zkSync:** https://docs.zksync.io
-- **Scroll:** https://docs.scroll.io
-- **Polygon:** https://docs.polygon.technology
+Whatever the table says, confirm the chain is live and the feature is on mainnet before it becomes a commitment. Both have failed inside the last year.
