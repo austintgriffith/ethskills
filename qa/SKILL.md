@@ -47,7 +47,7 @@ Read the code, then click through every flow — with no wallet, with a wallet o
 
 ## Branding
 
-The scaffold's defaults are template scaffolding, not product decisions. Check all five: tab title in `layout.tsx` (not "Scaffold-ETH 2 App"), the metadata description, the footer (BuidlGuidl / fork-me / support links), the README, and the default favicon.
+The scaffold's defaults are template scaffolding, not product decisions. Check all five: tab title in `layout.tsx` (not "Scaffold-ETH 2 App"), the metadata description, the footer (BuidlGuidl / fork-me / support links), the README, and the default favicon. The OG image in `layout.tsx` metadata is an absolute URL (`https://yourdomain.com/thumbnail.jpg`); a relative path breaks link previews everywhere.
 
 ## Config
 
@@ -56,7 +56,7 @@ The scaffold's defaults are template scaffolding, not product decisions. Check a
 
 ## Mobile
 
-- On WalletConnect, tapping a transaction button must get the user to their wallet app with something to sign. Test it on a phone: if nothing happens and the user has to switch apps by hand, that is a finding. Any redirect fires the write first, since navigating away before the write call means the transaction never fires. It targets the wallet the user actually connected with, and it is skipped inside a wallet's in-app browser.
+- On WalletConnect, tapping a transaction button must get the user to their wallet app with something to sign. Test it on a phone: if nothing happens and the user has to switch apps by hand, that is a finding. Any redirect fires the write first, since navigating away before the write call means the transaction never fires. It targets the wallet the user actually connected with, and it is skipped inside a wallet's in-app browser (`window.ethereum` present). wagmi's `connector.id` only says `"walletConnect"` — find the real wallet in the `wc@2:client` session in localStorage. Use bare schemes (`rainbow://`, `metamask://`); `rainbow://dapp/...` reloads the page.
 - Phantom is not in SE-2's default RainbowKit wallet list, so Phantom users cannot connect at all. Add `phantomWallet` to `wagmiConnectors.tsx`.
 
 ## If it is deployed

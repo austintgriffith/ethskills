@@ -1,6 +1,6 @@
 <img width="759" height="198" alt="image" src="https://github.com/user-attachments/assets/19afbd29-29cd-4b9a-bb67-c914cc5d9576" />
 
-LLMs think gas is 30 gwei. It's 0.05. They've never heard of ERC-8004 or x402. They hallucinate contract addresses. This site fixes that.
+LLMs think gas is 30 gwei. It's far lower — and they quote it from memory. They've never heard of ERC-8004 or x402. They hallucinate contract addresses. This site fixes that.
 
 ## How It Works
 
@@ -42,21 +42,21 @@ Install directly from GitHub — no clone required:
 | [Why Ethereum](why/SKILL.md) | Pectra/Fusaka shipped, gas is cheap now, AI agent angle |
 | [Ship](ship/SKILL.md) | Start coding before planning architecture, over-engineer with 5+ contracts when 1-2 will do, skip chain selection and the CROPS gate |
 | [CROPS Review](crops/SKILL.md) | Miss custody, privacy, exit paths, censorship resistance, and centralization risks in otherwise working apps/contracts |
-| [Protocol](protocol/SKILL.md) | Confuse roadmap diagrams with shipped EIPs, cite shipped features (PeerDAS) as upcoming and deprioritized ones (Verkle) as still planned, miss the client-team decision process |
-| [Gas & Costs](gas/SKILL.md) | Think gas is 10-30 gwei — reality is 0.05-0.3 gwei |
-| [Wallets](wallets/SKILL.md) | EIP-7702 is live, Safe addresses, agent key safety |
-| [Layer 2s](l2s/SKILL.md) | Think L2 txs cost $0.01-2.00 — reality is <$0.001 |
+| [Protocol](protocol/SKILL.md) | Answer fork status from memory, read EIP status as fork inclusion, give unscheduled features ship dates |
+| [Gas & Costs](gas/SKILL.md) | Quote gas costs from memory, mix up wei and gwei, forget the L1 data fee on L2s |
+| [Wallets](wallets/SKILL.md) | EIP-7702 is live, signer authority limits, burned keys |
+| [Layer 2s](l2s/SKILL.md) | Think Base is still OP Stack, Polygon zkEVM still runs, Superchain interop is live |
 | [Standards](standards/SKILL.md) | Don't know ERC-8004, EIP-7702 status, EIP-3009 for x402 |
 | [Tools](tools/SKILL.md) | Don't know x402, Blockscout MCP, current tool landscape |
-| [Money Legos](building-blocks/SKILL.md) | Stale on current DeFi state, Uniswap V4 status |
+| [Money Legos](building-blocks/SKILL.md) | Assume a protocol is live or dominant from headlines, skip fork-testing the composed flow |
 | [Orchestration](orchestration/SKILL.md) | Don't know SE2 three-phase build system |
-| [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses — these are verified onchain |
+| [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses, assume the same address across chains, pick bridged over native |
 | [Concepts](concepts/SKILL.md) | Nothing is automatic, incentive design, randomness pitfalls |
 | [Security](security/SKILL.md) | Token decimals, reentrancy, oracle manipulation, vault inflation, pre-deploy checklist |
 | [Testing](testing/SKILL.md) | Test getters and OpenZeppelin internals, skip fuzz and fork tests on integrations, mock external protocols instead of forking |
 | [Indexing](indexing/SKILL.md) | Loop over blocks to read history, try to query historical state via raw RPC, ignore events as the primary read API |
 | [Frontend UX](frontend-ux/SKILL.md) | Onchain button rules, three-button approval flow, Address components, USD values |
-| [Frontend Playbook](frontend-playbook/SKILL.md) | Fork mode, IPFS deploy, Vercel config, ENS setup, production checklist |
+| [Frontend Playbook](frontend-playbook/SKILL.md) | Fork mode, fork demos, IPFS static export, ENS content hash |
 | [QA](qa/SKILL.md) | Treat "deploys without errors" as shipping, leave SE2 default branding, miss approve-button double-fire, USD values, mobile deep links |
 | [Audit](audit/SKILL.md) | Call one generic review pass an audit, miss systematic checklist coverage across AMM/lending/oracle/proxy/governance domains |
 

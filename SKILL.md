@@ -13,7 +13,7 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 
 ## Start Here
 
-**Building a dApp?** Fetch [ship/SKILL.md](https://ethskills.com/ship/SKILL.md) first. It routes you through all other skills phase by phase — from architecture planning to production deployment.
+**Building a dApp?** Fetch [ship/SKILL.md](https://ethskills.com/ship/SKILL.md) first. It plans the smallest shippable slice and points to other skills as each phase needs them.
 
 **Need a specific topic?** Each skill below is standalone. Fetch only the ones relevant to your task.
 
@@ -24,17 +24,17 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 ## Skills
 
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
-Pectra/Fusaka upgrades, honest tradeoffs, the AI agent angle.
+Pectra/Fusaka upgrades, current network stats, the AI agent angle.
 - Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
 - ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
 - Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
 - ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
 
 ### [Ship](https://ethskills.com/ship/SKILL.md) — Start here
-End-to-end guide from idea to deployed dApp. Routes you through all other skills.
+End-to-end guide from idea to deployed dApp. Points to other skills as each phase needs them.
 - Most dApps need 0-2 contracts, not 5-10. Three is the upper bound for an MVP.
 - Solidity is for ownership, transfers, and commitments. Not a database, not a backend.
-- Chain selection: mainnet is cheaper than you think (~$0.004/transfer, ~$0.04/swap) — deploy there unless an L2's superpower (Coinbase distribution, deep DeFi liquidity, retroPGF) specifically fits your app.
+- Pick one chain for a concrete product fit (distribution, liquidity, AA, ecosystem). Measure fees live; never pick an L2 because "Ethereum is expensive."
 
 ### [CROPS Review](https://ethskills.com/crops/SKILL.md)
 Deep CROPS architecture review against the EF Mandate values: Censorship Resistance, Open Source and Free (as in Freedom), Privacy, Security.
@@ -45,59 +45,58 @@ Deep CROPS architecture review against the EF Mandate values: Censorship Resista
 ### [Protocol](https://ethskills.com/protocol/SKILL.md)
 How Ethereum evolves — EIP lifecycle, fork process, tracking upcoming changes.
 - "Verkle is planned for the next fork" — probably wrong. Roadmap diagrams are aspirational, not commitments. Check [forkcast.org](https://forkcast.org) for actual CFI/SFI status.
-- Glamsterdam (mid-2026) headliners: ePBS (EIP-7732), Block Access Lists (EIP-7928). FOCIL was removed from scope. Verkle trees were deprioritized — Ethereum may shift to binary state tree (EIP-7864) for quantum resistance.
-- EIP status "Stagnant" = no activity for 6 months, probably dead. "Draft" = exists but not scheduled.
+- Report fork status as Live / SFI / CFI / DFI / not scheduled. Never give an unscheduled feature a ship date.
+- EIP status (Draft, Review, Final) is spec maturity, not fork inclusion.
 - Client teams decide what ships via ACD calls, not the Ethereum Foundation.
 
 ### [Gas & Costs](https://ethskills.com/gas/SKILL.md)
 What things actually cost on Ethereum today.
-- Mainnet ETH transfer: ~$0.004. Swap: ~$0.04. ERC-20 deploy: ~$0.24. (At 0.1 gwei — check `cast base-fee` for current.)
-- L2 swap: $0.002-0.003. L2 transfer: $0.0003.
+- Never quote a cost from memory. Use `cast gas-price` (prints wei, not gwei) and live ETH/USD.
+- OP-stack L2 cost adds the L1 data fee and any operator fee. Read them from GasPriceOracle; don't estimate.
 - "Ethereum is expensive" was true in 2021-2023. It's false in 2026.
 
 ### [Wallets](https://ethskills.com/wallets/SKILL.md)
 Creating wallets, key safety, multisig, account abstraction.
 - EIP-7702 is live — EOAs get smart contract superpowers without migration.
-- Safe (Gnosis Safe) secures $60B+ in assets ($1.4T+ total processed). Use it for production treasuries.
+- Unattended signers get a bounded float; principal sits behind a multisig threshold.
 - NEVER commit private keys or API keys to Git. Bots exploit leaked secrets in seconds.
 
 ### [Layer 2s](https://ethskills.com/l2s/SKILL.md)
 L2 landscape, bridging, deployment differences.
-- Base is the cheapest major L2. Arbitrum has the deepest DeFi liquidity.
+- Base left the OP Stack (Azul, May 2026). Don't couple it to OP Mainnet via Superchain interop.
 - Celo is NOT an L1 anymore — migrated to OP Stack L2 in March 2025.
-- Polygon zkEVM is being shut down. Do not build on it.
+- Polygon zkEVM is switched off (July 2026). Existing deployments are a fund-recovery problem.
 - Robinhood Chain launched July 2026 — Orbit L2 with 24/7 tokenized stocks (non-US only). Its tx filtering can censor even force-included transactions.
-- The dominant DEX on each L2 is NOT Uniswap (Aerodrome on Base, Velodrome on Optimism).
+- Pick the chain by the constraint that binds, not TVL. Measure pair liquidity per chain.
 
 ### [Standards](https://ethskills.com/standards/SKILL.md)
-ERC-20, ERC-721, ERC-8004, EIP-7702, x402.
+ERC-8004, x402, EIP-3009, EIP-7702.
 - ERC-8004: onchain agent identity registry, deployed January 2026 on 20+ chains.
 - x402: HTTP 402 payment protocol for machine-to-machine commerce. Production-ready.
 - EIP-3009: gasless token transfers — what makes x402 work. USDC implements it.
 
 ### [Tools](https://ethskills.com/tools/SKILL.md)
-Foundry, Scaffold-ETH 2, Blockscout MCP, x402 SDKs.
-- Foundry and Hardhat 3 are both legitimate choices in 2026. Foundry: faster, Solidity-native. Hardhat 3: TypeScript-first, mature plugin ecosystem.
+Scaffold-ETH 2 (create-eth), Blockscout MCP, x402 SDKs.
+- Treat package names and versions as live data. New SE-2 app: `npx create-eth@latest`; `create-eth-app` and `create-scaffold-eth` are dead.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
-- abi.ninja: paste any contract address, interact with all functions. Zero setup.
+- x402: use the scoped `@x402/*` packages; unscoped `x402` and `x402-fetch` are frozen at 1.2.0.
 
 ### [Building Blocks (DeFi)](https://ethskills.com/building-blocks/SKILL.md)
-Uniswap, Aave, flash loans, protocol composability.
-- Uniswap V4 hooks: custom logic attached to pools (dynamic fees, TWAMM, limit orders).
-- Flash loan arb on mainnet costs ~$0.05-0.50 in gas now (was $5-50).
-- The dominant DEX per L2 is NOT Uniswap — Aerodrome (Base), Velodrome (Optimism), Camelot (Arbitrum).
+Verifying DeFi integrations before you build on them.
+- Verify chain, pool, liquidity, incentives and fees from live sources; cite dated evidence.
+- Trace the full asset/fee/reward/approval flow and test it on a fork.
 
 ### [Orchestration](https://ethskills.com/orchestration/SKILL.md)
 Three-phase build system for Scaffold-ETH 2 dApps.
 - Phase 1: contracts + UI on localhost. Phase 2: live contracts + local UI. Phase 3: production.
-- Use Scaffold hooks, NOT raw wagmi. Raw wagmi resolves before tx confirmation.
+- Verify right after deploy. `yarn verify` works on a fresh checkout; no explorer key needed.
 - NEVER commit secrets to Git. AI agents are the #1 source of leaked credentials.
 
 ### [Contract Addresses](https://ethskills.com/addresses/SKILL.md)
-Verified addresses for major protocols across mainnet and L2s.
+How to confirm any address onchain before it touches funds.
 - Never hallucinate an address. Wrong address = lost funds.
-- Includes: Uniswap, Aave, Compound, Aerodrome, GMX, Pendle, Velodrome, Chainlink, Safe, ENS.
-- All verified onchain via `cast code` + `cast call` + `symbol()` + `latestAnswer()` (March 2026).
+- Check every address on the target chain: `cast code` + an identity call, then the protocol's own deployment list.
+- Same brand ≠ same address across chains. Watch for older deployments, the wrong contract, bridged vs native.
 
 ### [Concepts](https://ethskills.com/concepts/SKILL.md)
 Essential mental models for building onchain.
@@ -110,20 +109,20 @@ Solidity security patterns, common vulnerabilities, pre-deploy checklist.
 - USDC has 6 decimals, not 18. This is the #1 "where did my money go?" bug.
 - Always use SafeERC20 — USDT doesn't return bool on transfer().
 - Never use DEX spot prices as oracles — flash loans can manipulate them in one tx.
-- MEV: sandwich attacks steal value from swaps. Use Flashbots Protect or slippage limits.
-- Proxies: use UUPS, not Transparent. Never change storage layout.
+- Oracle reads: positive answer, per-feed staleness from its heartbeat, explicit decimals, sequencer downtime.
+- Proxies only when upgrades are required. Append storage only; upgrade authority behind a multisig or timelock.
 
 ### [Audit](https://ethskills.com/audit/SKILL.md)
 Deep EVM smart contract audit system — for auditing contracts you didn't write.
 - 500+ non-obvious checklist items across 19 domains (AMM, lending, oracles, proxies, signatures, governance, and more).
-- Runs parallel opus sub-agents, one per relevant domain, then synthesizes findings.
-- Automatically files GitHub issues for Medium severity and above.
+- One specialist per selected domain in parallel (normally 5–8), then dedupe and rank.
+- Never files issues or publishes findings unless the user asks.
 - Different from Security (which teaches defensive coding) — this is systematic audit methodology.
 
 ### [Noir (ZK Privacy)](https://ethskills.com/noir/SKILL.md)
 Building privacy apps with Noir zero-knowledge circuits.
 - Noir inputs are private by default. `pub` marks public. Getting this backwards leaks secrets.
-- `nargo prove`/`nargo verify` are gone. Use `bb` (Barretenberg CLI) directly.
+- `nargo prove`/`nargo verify` are gone; the CLI is `bb`. In the app, prove with NoirJS `UltraHonkBackend`.
 - In-circuit hashing: Poseidon (~600 gates), not SHA256 (~30,000 gates).
 - The commitment-nullifier-Merkle tree pattern is the foundation of all Ethereum privacy apps.
 
@@ -134,7 +133,7 @@ Foundry testing — unit, fuzz, fork, invariant.
 - Invariant testing catches bugs across thousands of random call sequences.
 
 ### [Indexing](https://ethskills.com/indexing/SKILL.md)
-Events, The Graph, Dune, reading onchain data.
+Events, The Graph, Ponder, Multicall3.
 - You can't query historical state via RPC cheaply. Use an indexer.
 - Events are THE primary way to read historical onchain activity. Design contracts event-first.
 - The Graph turns events into a queryable GraphQL API.
@@ -144,12 +143,12 @@ Events, The Graph, Dune, reading onchain data.
 Frontend UX patterns for Ethereum dApps.
 - Every onchain button needs its own loader + disabled state. No shared isLoading.
 - Three-button flow: Switch Network → Approve → Execute. One at a time.
-- Every address display uses `<Address/>`, every input uses `<AddressInput/>`.
+- Address inputs resolve ENS names; show the resolved address before submit.
 - Show USD values next to every token amount.
 
 ### [Frontend Playbook](https://ethskills.com/frontend-playbook/SKILL.md)
 Build-to-production pipeline.
-- Use `yarn fork --network base`, NOT `yarn chain`. Fork gives you real protocol state.
+- `yarn chain` for isolated logic; `yarn fork --network <chain>` when you need real chain state.
 - IPFS deploy: `trailingSlash: true` is critical — without it, every route except `/` returns 404.
 - Always clean build (`rm -rf .next out`) before deploying. Stale builds are the #1 IPFS footgun.
 
@@ -157,7 +156,7 @@ Build-to-production pipeline.
 Pre-ship audit checklist for a reviewer agent.
 - Give this to a **separate agent** (or fresh context) AFTER the build is complete. Reviewer reads code + clicks through flows.
 - Covers only bugs AI agents actually ship — validated by baseline testing against stock LLMs.
-- Report PASS/FAIL per item, don't fix.
+- Report each finding with severity, file, line and fix. Change code only if asked.
 
 ### [Feedback](https://ethskills.com/feedback/SKILL.md)
 Send feedback — issues OR praise — about ethskills content. Bias toward sending.

@@ -40,6 +40,9 @@ Also required, and usually already habit — confirm rather than rebuild:
 - Count the vote or release the funds only after `verify()` returns true, recording the nullifier hash so a replay reverts. Never leave a `MockVerifier` in a deploy path.
 - Public input order must match across the circuit's `pub` params, the script's `publicInputs`, and the array the contract hands to `verify()`. Read the generated verifier's ABI rather than assuming its signature.
 - Merkle path indices are `[bool; DEPTH]`.
+- Accept any recent root (`mapping(bytes32 => bool) knownRoots`), not only the current one — an insert landing between proving and submitting otherwise reverts an honest proof.
+- The onchain tree is `@zk-kit/lean-imt.sol` with a separately deployed `PoseidonT3`, the pair that matches the offchain `@zk-kit/lean-imt`. A hand-rolled onchain tree drifts from the mirror.
+- Next.js / Scaffold-ETH 2: set `config.experiments.asyncWebAssembly = true` in `next.config`, load the prover with `dynamic(..., { ssr: false })`, and copy the circuit JSON to `public/` and `fetch()` it — a cross-package JSON import fails.
 - The generated verifier needs `pragma solidity >=0.8.27` and `evm_version = 'cancun'`; if the project's floor is lower, set `solc_version = '0.8.27'` and `evm_version = 'cancun'` in `foundry.toml`. Build it optimized or it exceeds the 24KB limit.
 
 Install with `noirup -v <version>`, then `bbup -v <version>` — bare `bbup` resolves through a version map that lags nargo and 404s. Finish by compiling the circuit and building the contracts.
