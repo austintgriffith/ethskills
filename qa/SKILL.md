@@ -63,6 +63,10 @@ The scaffold's defaults are template scaffolding, not product decisions. Check a
 
 Every deployed contract is verified on the block explorer (`yarn verify --network <chain>`). Unverified bytecode reads as something to hide. `yarn deploy` succeeding is not the finish line.
 
+## CROPS
+
+The report includes a CROPS Review: the chosen default, accepted compromises, who can block users, what data leaks, who controls funds/upgrades/recovery, and the user's escape path. Missing, or a one-liner on an app holding funds or user data, is a finding. Use `crops/SKILL.md` for the full template.
+
 ## References
 
 - Docs: https://docs.scaffoldeth.io/ · Components: https://ui.scaffoldeth.io/

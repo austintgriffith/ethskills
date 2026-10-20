@@ -17,6 +17,8 @@ Anything datable about an L2 rots fast: fees, block times, finality windows, TVL
 
 **Polygon zkEVM is switched off.** The Mainnet Beta sequencer stopped around 2026-07-01: no new blocks, submitted transactions never confirm, AggLayer withdrawals no longer process — while reads keep answering a frozen final state, which is what a stuck dashboard looks like from outside. Nothing new gets planned there, and an existing deployment is a fund-recovery problem, not a migration: the sunset snapshot and claims interface cover wallet-held balances, so a balance inside a contract has no routine exit.
 
+**Robinhood Chain exists, and it can censor force-included transactions.** Mainnet since 2026-07-01: an Arbitrum Orbit L2 settling directly to Ethereum with blob DA (not an L3, not AnyTrust), chain id 4663, ETH gas, ~100ms blocks. It is built for tokenized stocks — ERC-20s that trade 24/7, legally debt securities issued by Robinhood Assets (Jersey), not shares, and not available to US persons. The catch: ArbOS 61 transaction filtering lets an authorized filterer reject any tx hash, **including transactions force-included from L1**, so forced inclusion is not an escape hatch here. L2Beat rates it Stage 0 with no exit window. Run `crops/SKILL.md` before building anything censorship-sensitive on it; token addresses are in `addresses/SKILL.md`.
+
 **Unichain orders by priority fee, not by arrival time.** Its TEE block builder (Rollup-Boost) enforces priority ordering deterministically, alongside a private mempool and revert protection. The fee still buys the position; what the TEE removes is the auction around it. Flashblocks confirm roughly every 200ms.
 
 ## Exiting to L1
@@ -44,6 +46,7 @@ Start from the constraint that actually binds, not a TVL ranking. Mainnet is sti
 | Gasless UX with no bundler stack to run | zkSync Era (native AA), or Celo where paying gas in a stablecoin is enough |
 | Mobile / real-world payments, users holding no gas token | Celo (CIP-64 fee currency) |
 | Consumer reach and a direct fiat on-ramp | Base |
+| Composing with tokenized stocks (non-US users) | Robinhood Chain — read its censorship caveat above first |
 | No multi-day exit to L1 | a ZK rollup (zkSync Era, Scroll, Linea) |
 | Deepest liquidity for a specific pair | measure it — quote that pair per chain; do not rank chains |
 

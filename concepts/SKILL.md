@@ -26,6 +26,8 @@ CROPS — censorship resistance, open source, privacy, security — is the Ether
 - **What does an observer learn?** Everything onchain is public forever, competitors included: which addresses use this, what they paid, what tier they are on, who they transacted with. State what this design publishes, separately from access control on your own endpoints — that is a different question, not this one.
 - **What does "audited" cover?** A point-in-time review of a fixed scope, not a standing guarantee about the code running now.
 
+For the full review with a template, fetch `crops/SKILL.md`.
+
 ## Randomness
 
 Every node re-executes the same code, so there is nothing random to read onchain. `block.timestamp`, `block.number` and `blockhash(block.number)` (always zero) are not sources. `blockhash(block.number - 1)` — the usual first attempt — is not one either: it is already known when the transaction runs, so a caller can simulate the outcome and only send the winning transaction, and the proposer who produced that block could have dropped it to re-roll. `block.prevrandao` is biasable the same way, which may be fine for a raffle and is not fine for money.

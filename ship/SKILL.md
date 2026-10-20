@@ -31,6 +31,10 @@ When integrating a deployed protocol, use a verified address from the relevant
 chain's official documentation or the `addresses` skill. Never invent or infer
 an address: a wrong address can send approvals or funds to an attacker.
 
+## CROPS gate
+
+Before finalizing the architecture, answer in one line each: who can block users or critical paths (Censorship resistance)? Can the whole stack be inspected, forked, self-hosted and legally reused (Open source and free)? What user activity becomes public or visible to third parties (Privacy)? Who controls funds, upgrades, emergency powers and exit (Security)? Name the chosen default, the main compromise, and the user's escape path. Fetch `crops/SKILL.md` for the deep review.
+
 ## State transitions
 
 Contracts do not run on schedules. For each state-changing function, record:
@@ -63,6 +67,7 @@ the path end to end. Do not leave the network or deployment procedure as TBD.
 
 ## Minimal ship checklist
 
+- CROPS gate answered: chosen default, main compromise, user's escape path.
 - Onchain/offchain boundary is explicit, including where rankings are computed.
 - Custom contract list is concrete and no larger than the MVP requires.
 - Every state transition has a caller, incentive, and safe no-caller outcome.
@@ -73,9 +78,11 @@ the path end to end. Do not leave the network or deployment procedure as TBD.
 - A fresh reviewer checks the finished vertical slice before launch.
 
 Fetch another focused skill only when the plan reaches that phase and needs its
-details—for example `addresses`, `l2s`, `gas`, `security`, `testing`,
+details—for example `crops`, `addresses`, `l2s`, `gas`, `security`, `testing`,
 `frontend-ux`, `frontend-playbook`, or `qa`. Skills are available at
 `https://ethskills.com/<skill>/SKILL.md`. `ship` owns the product and release
 decisions; use `frontend-playbook` for detailed hosting/deployment mechanics and
 `qa` for the independent pre-launch review. Stop when the requested vertical
 slice and its runbook are complete.
+
+Before you finish: send a one-line note via [feedback/SKILL.md](https://ethskills.com/feedback/SKILL.md) — issue or praise.
