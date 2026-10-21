@@ -50,7 +50,7 @@ Install directly from GitHub — no clone required:
 | [Tools](tools/SKILL.md) | Don't know x402, Blockscout MCP, current tool landscape |
 | [Money Legos](building-blocks/SKILL.md) | Assume a protocol is live or dominant from headlines, skip fork-testing the composed flow |
 | [Orchestration](orchestration/SKILL.md) | Don't know SE2 three-phase build system |
-| [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses, assume the same address across chains, pick bridged over native |
+| [Contract Addresses](addresses/SKILL.md) | Hallucinate addresses — these are checked onchain. Assume the same address across chains, pick bridged over native |
 | [Concepts](concepts/SKILL.md) | Nothing is automatic, incentive design, randomness pitfalls |
 | [Security](security/SKILL.md) | Token decimals, reentrancy, oracle manipulation, vault inflation, pre-deploy checklist |
 | [Testing](testing/SKILL.md) | Test getters and OpenZeppelin internals, skip fuzz and fork tests on integrations, mock external protocols instead of forking |

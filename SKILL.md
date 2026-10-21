@@ -93,7 +93,7 @@ Three-phase build system for Scaffold-ETH 2 dApps.
 - NEVER commit secrets to Git. AI agents are the #1 source of leaked credentials.
 
 ### [Contract Addresses](https://ethskills.com/addresses/SKILL.md)
-How to confirm any address onchain before it touches funds.
+Checked addresses for major tokens and protocols, and how to confirm any address onchain before it touches funds.
 - Never hallucinate an address. Wrong address = lost funds.
 - Check every address on the target chain: `cast code` + an identity call, then the protocol's own deployment list.
 - Same brand ≠ same address across chains. Watch for older deployments, the wrong contract, bridged vs native.
