@@ -33,7 +33,7 @@ Do not route by reflex and do not assert dominance. The deepest venue on an L2 i
 
 ## Address tables
 
-Checked onchain 2026-10-20: code present plus an identity call on each listed chain. A starting point, not a substitute for the check above.
+Checked onchain 2026-10-20/21: code present plus an identity call on each listed chain. A starting point, not a substitute for the check above.
 
 ### Tokens
 
