@@ -43,7 +43,6 @@ Read the code, then click through every flow — with no wallet, with a wallet o
 
 - No hardcoded dark wrapper (`bg-black`, `bg-[#0a0a0a]`, `bg-zinc-900`) on a page or layout root. It bypasses DaisyUI, gives light-mode users a black page, and breaks the header's `SwitchTheme`. Use `bg-base-200 text-base-content`. Forcing `data-theme="dark"` is acceptable only if `<SwitchTheme/>` is also removed.
 - DaisyUI's `loading` **class on a `btn`** replaces the whole button with a spinner and swallows the label. Use an inline `<span className="loading loading-spinner loading-sm" />` inside the button, next to visible text.
-- `--radius-field: 9999rem` in `globals.css` renders pill-shaped inputs and selects that clip content. Set it to `0.5rem` (or similar) at theme level in **both** `@plugin "daisyui/theme"` blocks, not with per-component `rounded-*`.
 
 ## Branding
 
@@ -51,7 +50,7 @@ The scaffold's defaults are template scaffolding, not product decisions. Check a
 
 ## Config
 
-- `pollingInterval: 30000` in `scaffold.config.ts` makes an L2 app feel broken. Tune to the responsive ~3s range, or replace it with event-driven and post-confirmation refresh.
+- `pollingInterval` in `scaffold.config.ts` is 3000 in current SE-2. A raised value (older templates used 30000) makes an L2 app feel broken; keep ~3s, or use event-driven and post-confirmation refresh.
 - Production RPC: shipping on SE-2's default Alchemy key, or on the bare `http()` fallback transport in `wagmiConfig`, means silently hitting rate-limited public endpoints. Route through `rpcOverrides` with a `NEXT_PUBLIC_*` key — and verify the variable is actually set on the host, not just referenced in code.
 
 ## Mobile

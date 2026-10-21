@@ -40,7 +40,7 @@ Checked onchain 2026-10-20: code present plus an identity call on each listed ch
 | Token | Mainnet | Arbitrum | Optimism | Base |
 | --- | --- | --- | --- | --- |
 | USDC (native) | `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` | `0xaf88d065e77c8cC2239327C5EDb3A432268e5831` | `0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85` | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
-| USDT (on Arbitrum: USD₮0) | `0xdAC17F958D2ee523a2206206994597C13D831ec7` | `0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9` | `0x94b008aA00579c1307B0EF2c499aD98a8ce58e58` | `0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2` |
+| USDT (bridged on Optimism and Base; USD₮0 on Arbitrum) | `0xdAC17F958D2ee523a2206206994597C13D831ec7` | `0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9` | `0x94b008aA00579c1307B0EF2c499aD98a8ce58e58` | `0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2` |
 | DAI | `0x6B175474E89094C44Da98b954EedeAC495271d0F` | `0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1` | `0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1` | `0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb` |
 | WETH | `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2` | `0x82aF49447D8a07e3bd95BD0d56f35241523fBab1` | `0x4200000000000000000000000000000000000006` | `0x4200000000000000000000000000000000000006` |
 | wstETH | `0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0` | `0x5979D7b546E38E414F7E9822514be443A4800529` | `0x1F32b1c2345538c0c6f582fCB022739c4A194Ebb` | `0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452` |
@@ -96,8 +96,10 @@ Confirm code on your target chain before relying on it.
 | --- | --- |
 | Safe Singleton 1.4.1 | `0x41675C099F32341bf84BFc5382aF534df5C7461a` |
 | Safe Singleton 1.3.0 | `0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552` |
+| Safe ProxyFactory 1.4.1 | `0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67` |
+| Safe MultiSend 1.4.1 | `0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526` |
 | Safe ProxyFactory 1.3.0 | `0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2` |
-| Safe MultiSend 1.3.0 | `0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526` |
+| Safe MultiSend 1.3.0 | `0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761` |
 | ERC-4337 EntryPoint v0.7 | `0x0000000071727De22E5E9d8BAf0edAc6f37da032` |
 | ERC-4337 EntryPoint v0.6 | `0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789` |
 | ERC-8004 IdentityRegistry | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
@@ -113,9 +115,9 @@ Confirm code on your target chain before relying on it.
 | --- | --- |
 | ENS Registry | `0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e` |
 | ENS Public Resolver | `0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63` |
-| ENS ETHRegistrarController | `0x253553366Da8546fC250F225fe3d25d0C782303b` |
+| ENS ETHRegistrarController | `0x59E16fcCd424Cc24e280Be16E11Bcd56fb0CE547` |
 | Lido WithdrawalQueue | `0x889edC2eDab5f40e902b864aD4d7AdE8E412F9B1` |
-| Curve AddressProvider | `0x0000000022D53366457F9d5E68Ec105046FC4383` |
+| Curve AddressProvider | `0x5ffe7FB82894076ECB99A30D6A32e969e6e35E98` |
 | Balancer V2 Vault | `0xBA12222222228d8Ba445958a75a0704d566BF2C8` |
 | EigenLayer StrategyManager | `0x858646372CC42E1A627fcE94aa7A7033e7CF075A` |
 | EigenLayer DelegationManager | `0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A` |
@@ -135,10 +137,12 @@ Aerodrome (Base) and Velodrome (Optimism) run two AMMs each; the router below re
 | Velodrome PoolFactory (Optimism) | `0xF1046053aa5682b4F9a81b5481394DA16BE5FF5a` |
 | VELO v2 (Optimism) | `0x9560e827aF36c94D2Ac33a39bCE1Fe78631088Db` |
 | Camelot Router, AMM V2 (Arbitrum) | `0xc873fEcbd354f5A56E00E710B90EF4201db2448d` |
-| GMX V2 ExchangeRouter (Arbitrum) | `0x1C3fa76e6E1088bCE750f23a5BFcffa1efEF6A41` |
+| GMX V2 ExchangeRouter (Arbitrum) | `0x7dE39FF2e232A2203196788d37e234cF8F1b83f1` |
 | GMX V2 DataStore (Arbitrum) | `0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8` |
 | Pendle Router (Arbitrum) | `0x888888888889758F76e7103c6CbF23ABbF58F946` |
 | SyncSwap Router V2 (zkSync Era) | `0x9B5def958d0f3b6955cBEa4D5B7809b2fb26b059` |
+
+GMX replaces its ExchangeRouter without moving DataStore, and its repo can lag. Before use, confirm the router holds `CONTROLLER` in the RoleStore (`roleStore()`, then `hasRole(router, keccak256(abi.encode("CONTROLLER")))`).
 
 ## Robinhood Chain (4663)
 
