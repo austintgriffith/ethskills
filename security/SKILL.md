@@ -12,6 +12,7 @@ Treat every external token, price, signature, callback, and privileged caller as
 - Keep units explicit. ERC-20 decimals and oracle decimals vary; normalize every quantity to one documented scale before comparing collateral, debt, fees, or shares. Multiply before dividing and use full-precision `mulDiv` where intermediate overflow or rounding matters.
 - For arbitrary ERC-20s, use `SafeERC20.safeTransfer` and `safeTransferFrom`. Credit deposits from the contract's balance delta, not the requested amount, or reject tokens whose received amount differs. Fee-on-transfer and rebasing tokens otherwise break custody accounting.
 - On OpenZeppelin Contracts v5, use `SafeERC20.forceApprove` when an allowance may already be nonzero. `safeApprove` was removed. Keep approvals exact or bounded and clear leftovers when practical.
+- Tokens can freeze, blocklist, or pause (USDC and USDT do). One blocked recipient makes a transfer revert, so a loop that pushes payments to many users bricks for all of them. Credit balances and let each user withdraw (pull payments).
 - Apply checks-effects-interactions and a reentrancy guard to value-moving entry points. Update shares, debt, and other accounting before external calls.
 
 For a vault or receipt-token design, start from OpenZeppelin `ERC4626`. A hand-rolled vault must defend its empty state against first-depositor donation/inflation attacks with virtual assets and shares or another explicit mitigation. Test direct donations and rounding at small deposits; never use an unprotected `assets * totalSupply / totalAssets` conversion with a special 1:1 empty-vault path.
@@ -28,6 +29,10 @@ Use a manipulation-resistant push feed for high-value decisions, or a meaningful
 - define behavior for sequencer downtime where relevant; and
 - bound liquidation incentives and any swap's minimum output.
 
+## Swaps
+
+Every swap a contract or a user makes needs a real minimum output, derived from an oracle or an offchain quote minus a stated slippage tolerance. `amountOutMinimum = 0` (or a minimum computed from the same pool's spot price) hands the trade to any sandwich bot. Pass a real `deadline`, not `block.timestamp`, so a held transaction can't execute later at a worse price. For large user swaps, offer private routing (e.g. Flashbots Protect) or a batch auction. On an L2 the sequencer orders transactions, which narrows but does not remove this risk; keep the minimum output either way.
+
 ## Signatures and replay protection
 
 Use EIP-712 and OpenZeppelin's implementation rather than assembling signature recovery from scratch. Bind the signed action to the intended contract and chain, consume a signer-scoped nonce, enforce a deadline, and update replay state before moving assets.
@@ -39,6 +44,7 @@ If a domain separator is cached, also cache the deployment chain id and re-deriv
 Use an upgradeable design only when post-deployment changes are required. With proxies:
 
 - initialize through an initializer and disable initializers on the implementation;
+- on UUPS, `_authorizeUpgrade` must carry access control (`onlyOwner` or a role). Left empty, anyone can upgrade the proxy to their own code and drain it;
 - use the upgradeable variants of inherited contracts;
 - preserve inheritance order and storage layout—append variables only; never insert, delete, reorder, or change an existing type;
 - run the framework's storage-layout compatibility check before every upgrade; and

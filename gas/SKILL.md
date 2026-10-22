@@ -26,7 +26,7 @@ Estimate the actual operation when possible. Otherwise state and justify the gas
 # Mainnet, and the execution half of any L2
 cost_usd = gas_used × gas_price_gwei × 1e-9 × eth_usd
 
-# On an OP-stack L2 the L1 data fee is a separate component and is not in
+# On an OP-stack L2 or Base the L1 data fee is a separate component and is not in
 # gas_price. Read l1Fee off a recent receipt, or GasPriceOracle.getL1Fee at
 # 0x420000000000000000000000000000000000000F — do not estimate it.
 # Since Isthmus a chain may also charge an operator fee. It is 0 on most

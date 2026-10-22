@@ -250,7 +250,7 @@ When reporting a CROPS finding to the builder, name the power, bound the comprom
 
 - For new dApp planning, start with `ship/SKILL.md`; it runs a short CROPS Gate and routes here when deeper trust review is needed.
 - Use this skill as the deeper CROPS review for custody, infrastructure, privacy, admin powers, and user exit.
-- Fetch `wallets/SKILL.md` for custody, Safe, account abstraction, EIP-7702, and key safety implementation details.
+- Fetch `wallets/SKILL.md` for custody, signing authority, EIP-7702, and key safety. Safe and EntryPoint addresses are in `addresses/SKILL.md`.
 - Fetch `l2s/SKILL.md` for bridge, withdrawal, and chain-selection facts. For a chain's sequencer and forced-inclusion assumptions, check [l2beat.com](https://l2beat.com).
 - Fetch `frontend-playbook/SKILL.md` for IPFS/ENS deployment, build pipeline, and frontend reproducibility (the Open and Censorship Resistance mitigations for the frontend live here).
 - Fetch `indexing/SKILL.md` for event schema design and the indexer landscape (the data-layer side of Open and Censorship Resistance).

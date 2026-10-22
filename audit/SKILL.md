@@ -20,7 +20,7 @@ Load a selected checklist from:
 https://raw.githubusercontent.com/austintgriffith/evm-audit-skills/ffe4b670e78e1945bcf275f79d4b7b0481bcff35/<skill-name>/references/checklist.md
 ```
 
-For a narrow question, load only the one or two relevant checklists. For a full codebase audit, always load `general` and `precision-math`, then add only the domains the code actually uses (normally 5–8 total). This keeps the review focused and avoids spending context on unrelated vulnerability classes.
+For a narrow question, load only the one or two relevant checklists. For a full codebase audit, always load `evm-audit-general` and `evm-audit-precision-math`, then add only the domains the code actually uses (normally 5–8 total). This keeps the review focused and avoids spending context on unrelated vulnerability classes.
 
 ## Skills Available
 

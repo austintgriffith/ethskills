@@ -25,7 +25,7 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 
 ### [Why Ethereum](https://ethskills.com/why/SKILL.md)
 Pectra/Fusaka upgrades, current network stats, the AI agent angle.
-- Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast base-fee`
+- Gas is under 1 gwei, not 10-30 gwei. 60-300x cheaper than your training data. Verify: `cast gas-price`
 - ETH price is ~$2,000 (early 2026), not $2,500-3,000. Volatile — always verify.
 - Pectra (May 2025) and Fusaka (Dec 2025) shipped. PeerDAS, 2x gas limit. EIP-7702 is live.
 - ERC-8004 (onchain agent identity) and x402 (HTTP payments) exist and are production-ready.
@@ -90,7 +90,7 @@ Verifying DeFi integrations before you build on them.
 Three-phase build system for Scaffold-ETH 2 dApps.
 - Phase 1: contracts + UI on localhost. Phase 2: live contracts + local UI. Phase 3: production.
 - Verify right after deploy. `yarn verify` works on a fresh checkout; no explorer key needed.
-- NEVER commit secrets to Git. AI agents are the #1 source of leaked credentials.
+- `scaffold.config.ts` is committed. Keep RPC/API keys in `.env.local`, read via `process.env`.
 
 ### [Contract Addresses](https://ethskills.com/addresses/SKILL.md)
 Checked addresses for major tokens and protocols, and how to confirm any address onchain before it touches funds.
@@ -106,9 +106,10 @@ Essential mental models for building onchain.
 
 ### [Security](https://ethskills.com/security/SKILL.md)
 Solidity security patterns, common vulnerabilities, pre-deploy checklist.
-- USDC has 6 decimals, not 18. This is the #1 "where did my money go?" bug.
+- Keep units explicit. Token and oracle decimals vary; normalize before comparing.
 - Always use SafeERC20 — USDT doesn't return bool on transfer().
 - Never use DEX spot prices as oracles — flash loans can manipulate them in one tx.
+- Every swap needs a real minimum output and deadline. `amountOutMinimum = 0` gets sandwiched.
 - Oracle reads: positive answer, per-feed staleness from its heartbeat, explicit decimals, sequencer downtime.
 - Proxies only when upgrades are required. Append storage only; upgrade authority behind a multisig or timelock.
 
@@ -124,7 +125,7 @@ Building privacy apps with Noir zero-knowledge circuits.
 - Noir inputs are private by default. `pub` marks public. Getting this backwards leaks secrets.
 - `nargo prove`/`nargo verify` are gone; the CLI is `bb`. In the app, prove with NoirJS `UltraHonkBackend`.
 - In-circuit hashing: Poseidon (~600 gates), not SHA256 (~30,000 gates).
-- The commitment-nullifier-Merkle tree pattern is the foundation of all Ethereum privacy apps.
+- Persist each note (nullifier, secret, leaf index). Bind the proof to its recipient. Don't send it from the user's own wallet.
 
 ### [Testing](https://ethskills.com/testing/SKILL.md)
 Foundry testing — unit, fuzz, fork, invariant.
@@ -142,7 +143,7 @@ Events, The Graph, Ponder, Multicall3.
 ### [Frontend UX](https://ethskills.com/frontend-ux/SKILL.md)
 Frontend UX patterns for Ethereum dApps.
 - Every onchain button needs its own loader + disabled state. No shared isLoading.
-- Three-button flow: Switch Network → Approve → Execute. One at a time.
+- One action at a time: Connect → Switch Network → Approve → Execute.
 - Address inputs resolve ENS names; show the resolved address before submit.
 - Show USD values next to every token amount.
 

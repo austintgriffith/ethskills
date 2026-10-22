@@ -13,8 +13,8 @@ major version.
 For a new Scaffold-ETH 2 app, the live scaffold package is `create-eth`:
 `npx create-eth@latest`. Check that it resolves before handing it over. Pinning
 the version `latest` currently resolves to is fine once you have verified it —
-what is not fine is `create-eth-app` or `create-scaffold-eth`, which are dead
-package names rather than older spellings of this one.
+what is not fine is `create-eth-app` or `create-scaffold-eth`, which still install
+but scaffold a stale project that is not SE-2.
 
 ## Give agents structured onchain data
 

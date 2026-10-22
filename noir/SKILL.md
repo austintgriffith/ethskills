@@ -37,6 +37,9 @@ Also required, and usually already habit — confirm rather than rebuild:
 - `nargo compile` builds the circuit and `nargo execute` produces the witness from `Prover.toml`; everything else is `bb` — `bb prove`, `bb verify`, `bb write_vk`, and `bb write_solidity_verifier` fed by that VK. `nargo prove` / `nargo verify` / `nargo codegen-verifier` were removed. Generate the VK feeding the Solidity verifier with `--verifier_target evm` and keep prove, verify and VK on the same target: it names the transcript hash and the ZK setting together, which is the pair that has to match. The older `--oracle_hash keccak` still works, but it names only the hash. Smoke-test a real prove-and-verify before wiring a frontend.
 - Public inputs use post-colon syntax: `root: pub Field`.
 - Scope the nullifier to the action in-circuit — hash the proposal or pool id into it, or one member's votes link across proposals.
+- Bind the proof to what it authorizes: make the recipient (and any amount or fee) a public input the contract checks. A proof that does not commit to the recipient can be copied from the mempool and redirected by a front-runner or a relayer.
+- Keep hash domains separate: commitment and nullifier hash must not be the same function over overlapping inputs (add a domain tag or use different arities), or one value can stand in for the other.
+- Every private input must be constrained by an `assert` or by feeding a checked hash. An input the circuit never constrains can be set to anything, and the proof still verifies.
 - Count the vote or release the funds only after `verify()` returns true, recording the nullifier hash so a replay reverts. Never leave a `MockVerifier` in a deploy path.
 - Public input order must match across the circuit's `pub` params, the script's `publicInputs`, and the array the contract hands to `verify()`. Read the generated verifier's ABI rather than assuming its signature.
 - Merkle path indices are `[bool; DEPTH]`.

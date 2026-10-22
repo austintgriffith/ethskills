@@ -23,4 +23,5 @@ That delegation persists. It stays in effect until it is replaced or explicitly 
 
 - **A key that arrived in a prompt, a chat, or a ticket is burned.** Say so, rotate it, replace the account — do not fund it on mainnet.
 - **`.gitignore` before the first push, not after.** A committed secret is compromised in seconds and stays compromised; deleting the commit does not undo it. Nothing the delivered code signs with may be baked into the repo — no hardcoded value, default, fallback, or filled-in example.
+- **Scripts read keys at run time, never from source.** Use `cast wallet import` and `--account <name>` (encrypted keystore), `--ledger`, or an env var loaded from an ignored `.env`. Never `--private-key 0x...` in a committed script, Makefile or CI file. RPC URLs with an embedded API key are secrets too.
 - **Anything that moves funds gets a gate.** Print the amount, the checksummed destination, and the gas cost, then stop until a human says yes. Estimate gas and price it live; never from a remembered ETH price.
