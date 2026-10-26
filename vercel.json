@@ -5,19 +5,52 @@
     { "source": "/evals",        "destination": "https://ethskills-evals.vercel.app/evals", "permanent": false },
     { "source": "/evals/:path*", "destination": "https://ethskills-evals.vercel.app/evals/:path*", "permanent": false }
   ],
+  "redirects": [
+    { "source": "/gpt", "destination": "https://chatgpt.com/plugins/plugins_6abf1a2052dc8191b533c58511911ca4", "permanent": false },
+    { "source": "/chatgpt", "destination": "https://chatgpt.com/plugins/plugins_6abf1a2052dc8191b533c58511911ca4", "permanent": false }
+  ],
   "rewrites": [
-    { "source": "/l2",      "destination": "/l2s/SKILL.md" },
-    { "source": "/layer2",  "destination": "/l2s/SKILL.md" },
-    { "source": "/defi",    "destination": "/building-blocks/SKILL.md" },
-    { "source": "/inbox",   "destination": "/inbox.html" },
-    { "source": "/:skill",  "destination": "/:skill/SKILL.md" }
+    {
+      "source": "/guide",
+      "destination": "/guide/index.html"
+    },
+    {
+      "source": "/guide/",
+      "destination": "/guide/index.html"
+    },
+    {
+      "source": "/l2",
+      "destination": "/l2s/SKILL.md"
+    },
+    {
+      "source": "/layer2",
+      "destination": "/l2s/SKILL.md"
+    },
+    {
+      "source": "/defi",
+      "destination": "/building-blocks/SKILL.md"
+    },
+    {
+      "source": "/inbox",
+      "destination": "/inbox.html"
+    },
+    {
+      "source": "/:skill",
+      "destination": "/:skill/SKILL.md"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)\\.md",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/markdown; charset=utf-8"
+        }
       ]
     }
   ]
