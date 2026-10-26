@@ -1,0 +1,12 @@
+{
+  "name": "ethskills",
+  "version": "3.0.0",
+  "description": "Ethereum protocol knowledge and engineering workflows for AI coding agents.",
+  "author": {
+    "name": "Austin Griffith"
+  },
+  "homepage": "https://ethskills.com",
+  "repository": "https://github.com/austintgriffith/ethskills",
+  "license": "MIT",
+  "skills": "./skills/"
+}

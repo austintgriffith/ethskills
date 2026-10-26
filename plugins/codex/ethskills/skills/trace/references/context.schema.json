@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Eth Trace task context snapshot",
+  "type": "object",
+  "required": ["task", "checkpoint", "capturedAt", "authorization", "gaps"],
+  "properties": {
+    "task": { "type": "string" },
+    "checkpoint": { "type": "string" },
+    "capturedAt": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "required": ["workspace", "revision", "dirty", "fingerprint"],
+      "properties": {
+        "workspace": { "type": "string" },
+        "revision": { "type": ["string", "null"] },
+        "dirty": { "type": ["boolean", "null"] },
+        "fingerprint": { "$ref": "#/$defs/fingerprint" },
+        "configuration": { "type": "array", "items": { "$ref": "#/$defs/fingerprint" } },
+        "lockfiles": { "type": "array", "items": { "$ref": "#/$defs/fingerprint" } },
+        "dependencies": { "type": "array", "items": { "$ref": "#/$defs/version" } },
+        "executables": { "type": "array", "items": { "$ref": "#/$defs/version" } },
+        "conflicts": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "requestedUrl": { "type": ["string", "null"], "description": "Sanitized URL or safe environment label only." },
+        "observedUrl": { "type": ["string", "null"] },
+        "discoveryEvidence": { "type": ["string", "null"] },
+        "observedAt": { "type": ["string", "null"], "format": "date-time" },
+        "hostedRevision": { "type": ["string", "null"] },
+        "deploymentEvidence": { "type": ["string", "null"] },
+        "chainId": { "type": ["string", "null"] },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["address", "evidence"],
+            "properties": {
+              "address": { "type": "string" },
+              "implementation": { "type": ["string", "null"] },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "fork": {
+          "type": "object",
+          "properties": {
+            "sourceCategory": { "type": ["string", "null"], "description": "For example public mainnet RPC or authorized local fixture; never credentials or private endpoint." },
+            "upstreamChainId": { "type": ["string", "null"] },
+            "blockNumber": { "type": ["string", "null"] },
+            "blockHash": { "type": ["string", "null"] },
+            "evidence": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "required": ["scope", "basis", "capabilities"],
+      "properties": {
+        "scope": { "type": "string" },
+        "basis": { "type": "string", "description": "Minimal task authorization summary or safe pointer, not a transcript." },
+        "capabilities": { "type": "array", "items": { "type": "string" }, "description": "Observed access and signer limits; no signing material." }
+      }
+    },
+    "gaps": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "fingerprint": {
+      "type": "object",
+      "required": ["paths", "method", "value", "exclusions"],
+      "properties": {
+        "paths": { "type": "array", "items": { "type": "string" } },
+        "method": { "type": ["string", "null"] },
+        "value": { "type": ["string", "null"] },
+        "exclusions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "version": {
+      "type": "object",
+      "required": ["name", "resolved", "evidence"],
+      "properties": {
+        "name": { "type": "string" },
+        "declared": { "type": ["string", "null"] },
+        "resolved": { "type": ["string", "null"] },
+        "evidence": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
