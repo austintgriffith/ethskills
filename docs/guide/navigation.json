@@ -1,0 +1,74 @@
+[
+  {
+    "id": "start",
+    "file": "README.md",
+    "title": "The Ethskills Pilot guide",
+    "description": "Start with a goal and let the skills handle the workflow."
+  },
+  {
+    "id": "setup",
+    "file": "01-setup.md",
+    "title": "Set up your first project",
+    "description": "Install the skills and let your existing stack lead."
+  },
+  {
+    "id": "pilot",
+    "file": "02-eth-pilot.md",
+    "title": "Give Pilot a goal",
+    "description": "Write a useful prompt and understand the route."
+  },
+  {
+    "id": "understand",
+    "file": "03-understand.md",
+    "title": "Understand before editing",
+    "description": "Follow the code, decisions and actual dependencies."
+  },
+  {
+    "id": "design",
+    "file": "04-design.md",
+    "title": "Design within the real system",
+    "description": "Compare interfaces and trust assumptions."
+  },
+  {
+    "id": "build",
+    "file": "05-build-debug.md",
+    "title": "Build and debug",
+    "description": "Reproduce, implement and preserve the project stack."
+  },
+  {
+    "id": "verify",
+    "file": "06-verification.md",
+    "title": "Verify with evidence",
+    "description": "Run contract checks and actual browser journeys."
+  },
+  {
+    "id": "ship",
+    "file": "07-review-ship.md",
+    "title": "Review and prepare a release",
+    "description": "Choose the review and deployment scope."
+  },
+  {
+    "id": "parallel",
+    "file": "08-parallel-work.md",
+    "title": "Work with multiple agents",
+    "description": "Separate ownership and mutable state."
+  },
+  {
+    "id": "improve",
+    "file": "09-improve.md",
+    "title": "Improve the next run",
+    "description": "Turn supported lessons into better checks."
+  },
+  {
+    "id": "recipes",
+    "file": "10-recipes.md",
+    "title": "Recipes and pitfalls",
+    "description": "Copy prompts and avoid common mistakes."
+  },
+  {
+    "id": "reference",
+    "file": "capabilities.md",
+    "title": "Skill reference",
+    "description": "Find a capability to use directly."
+  }
+]

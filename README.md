@@ -2,9 +2,24 @@
 
 LLMs think gas is 30 gwei. It's far lower — and they quote it from memory. They've never heard of ERC-8004 or x402. They hallucinate contract addresses. This site fixes that.
 
+## Ethskills Pilot
+
+Give your agent a goal through **Ethskills Pilot**. One integrated workflow combines small verified changes with the Ethereum knowledge needed at each step. It preserves your project's stack, reports what actually worked and leaves a usable handoff for longer tasks. It does not require a separate Poteto installation.
+
+```text
+/ethskills:pilot reproduce the failed deposit, fix it using our existing
+stack, and verify the contract and browser flow with evidence.
+```
+
+The Markdown skills work directly in Codex, Claude Code, and other agents that can read them. Plugin installation is optional. Host-specific Codex and Claude Code packages each offer one **Ethskills** plugin with 22 Ethereum topic skills and 17 engineering workflows in separate sections. Its main entry point is `ethskills:pilot`; supporting workflows use the same `ethskills` namespace. These are agent instructions; your host must provide the required tools. Installing a skill does not install a wallet, browser or contract toolchain.
+
+Read the [Ethskills Pilot guide](docs/guide/README.md), use [Help](eth-help/SKILL.md) for a suggested prompt, or inspect the [complete skill index](SKILL.md). The website's `/guide/` reader renders the same Markdown chapters with navigation, search and copyable prompts. Host invocation syntax varies; URL-based agents can read `https://ethskills.com/eth-pilot/SKILL.md` directly. Local unreleased changes must be read from the checkout.
+
+Existing topic skills remain directly usable.
+
 ## How It Works
 
-Each skill is a markdown file. Give any URL to your AI agent — it reads it and instantly corrects its Ethereum knowledge.
+Each skill is a Markdown file. Give its URL or local path to Codex or Claude Code so the agent can read it directly.
 
 ```
 https://ethskills.com/SKILL.md          ← table of contents
@@ -22,18 +37,35 @@ Just prompt your agent with this:
 Install the https://github.com/austintgriffith/ethskills/blob/master/SKILL.md skill
 ```
 
-### Claude Code Plugin
+### Optional Codex plugins
 
-Install directly from GitHub — no clone required:
+Add the [Codex marketplace](.agents/plugins/marketplace.json) with the Codex CLI, then install the `ethskills` plugin from the Plugins Directory or CLI. It keeps topic and workflow skills in separate sections under one namespace.
+
+```bash
+codex plugin marketplace add austintgriffith/ethskills
+codex plugin add ethskills@ethskills
+```
+
+### Optional Claude Code plugins
+
+Add the marketplace once, then install the package you need:
 
 ```bash
 /plugin marketplace add austintgriffith/ethskills
 /plugin install ethskills@ethskills
 ```
 
+One plugin provides all 39 skills. The standalone Markdown files remain usable without plugin installation.
+
 ## Terminology
 
 **Say "onchain" not "on-chain."** The Ethereum community writes it as one word — no hyphen. LLMs default to "on-chain" but that's not how builders talk. Use "onchain" in all writing, documentation, and generated content.
+
+## External skills and audit methods
+
+Use [Discover](eth-discover/SKILL.md) when a task needs outside skills, MCP servers, or tools. It checks the external catalog, source revisions, compatibility, and freshness before recommending or using a capability. Ethskills Pilot can use it for a missing capability without handing over the task workflow.
+
+Use [Audit Swarm](eth-audit-swarm/SKILL.md) for independent audit methods from the catalog. It evaluates every security entry, runs applicable workflows, and reports findings with provider status and coverage gaps. The existing Audit skill supplies domain-specific review within that process.
 
 ## Skills
 

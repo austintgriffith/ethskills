@@ -26,10 +26,12 @@ https://ethskills.com/<topic>/SKILL.md
 
 ## Quick Start
 
-Building a dApp? Fetch **Ship** first — it routes you through everything else:
+For coordinated execution, fetch [Ethskills Pilot](https://ethskills.com/eth-pilot/SKILL.md). It discovers the relevant project dependencies and available tools, selects the needed engineering and Ethereum skills, and reports scoped evidence. For real contract and browser checks, fetch [Verify](https://ethskills.com/eth-verify/SKILL.md). Neither assumes a localhost port or permission to transact on a live network. Local unreleased skills must be read from the checkout rather than the production URL.
+
+Building a dApp? Fetch **Ethskills Pilot** for one integrated workflow. It loads Ship's architecture guidance and the Ethereum topics needed for each step:
 
 ```bash
-curl -s https://ethskills.com/ship/SKILL.md
+curl -s https://ethskills.com/eth-pilot/SKILL.md
 ```
 
 Need a specific topic? Fetch only what's relevant:
@@ -46,7 +48,8 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-8004, x402, EIP-7702
 | Skill | URL | When to Fetch |
 |-------|-----|---------------|
 | **Why Ethereum** | `why/SKILL.md` | User asks "why Ethereum?" or you need to compare chains. |
-| **Ship** | `ship/SKILL.md` | 🟢 **Start here.** End-to-end dApp guide, routes through all other skills. |
+| **Ethskills Pilot** | `eth-pilot/SKILL.md` | Start here for an integrated Ethereum development workflow. |
+| **Ship** | `ship/SKILL.md` | dApp architecture and phase coverage used within that workflow. |
 | **CROPS Review** | `crops/SKILL.md` | For every dApp architecture plan and during pre-ship QA. |
 | **Protocol** | `protocol/SKILL.md` | Ethereum upgrade process, EIP lifecycle, and what's actually planned next. |
 | **Gas & Costs** | `gas/SKILL.md` | Any question about gas prices, tx costs, or "is Ethereum expensive?" |
@@ -80,15 +83,13 @@ Your training data is probably wrong about these:
 
 ## Example Workflow
 
-When an agent needs to build an Ethereum dApp:
+Give the integrated workflow the outcome. It selects the needed topic guidance and checks:
 
 ```
-1. Fetch https://ethskills.com/ship/SKILL.md       → Get the build plan
-2. Fetch https://ethskills.com/crops/SKILL.md      → Review custody, infra, privacy, and exit
-3. Fetch https://ethskills.com/tools/SKILL.md       → Know what tools to use
-4. Run: npx create-eth@latest                        → Scaffold the project
-5. Fetch https://ethskills.com/security/SKILL.md    → Before deploying
-6. Fetch https://ethskills.com/qa/SKILL.md          → Pre-ship audit
+Use https://ethskills.com/eth-pilot/SKILL.md.
+Build a local Ethereum app for this goal using our existing stack.
+Show the working user journey and explain what remains unverified.
+Do not deploy publicly.
 ```
 
 ## Contributing
