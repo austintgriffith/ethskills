@@ -1,0 +1,20 @@
+{
+  "name": "ethskills",
+  "interface": {
+    "displayName": "Ethskills"
+  },
+  "plugins": [
+    {
+      "name": "ethskills",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex/ethskills"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

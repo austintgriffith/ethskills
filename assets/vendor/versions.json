@@ -1,0 +1,24 @@
+[
+  {
+    "package": "marked",
+    "version": "18.1.1",
+    "source": {
+      "url": "git+https://github.com/markedjs/marked.git",
+      "type": "git"
+    },
+    "file": "marked.umd.js",
+    "license_file": "marked.LICENSE",
+    "sha256": "b82b9334406d8bdd16b6236c08de1cb65b2a859873ca9503d9cc0b292ca3c12a"
+  },
+  {
+    "package": "dompurify",
+    "version": "3.4.17",
+    "source": {
+      "url": "git://github.com/cure53/DOMPurify.git",
+      "type": "git"
+    },
+    "file": "purify.min.js",
+    "license_file": "dompurify.LICENSE",
+    "sha256": "cd37898f9782adf54820c413191b5691803f0f137c799d6edcfd38523b4c2c31"
+  }
+]

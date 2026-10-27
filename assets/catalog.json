@@ -1,0 +1,236 @@
+[
+  {
+    "id": "eth-discover",
+    "title": "Discover",
+    "description": "Find relevant external skills and tools with source, freshness, and compatibility checks.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-audit-swarm",
+    "title": "Audit Swarm",
+    "description": "Run applicable independent audit methods and report provider coverage and validated findings.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-pilot",
+    "title": "Pilot",
+    "description": "Execute one integrated workflow with relevant Ethereum knowledge and verified units.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-help",
+    "title": "Help",
+    "description": "Find the right capability and get a useful prompt without starting the work.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-how",
+    "title": "How",
+    "description": "Follow the actual source, dependencies and execution flow.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-why",
+    "title": "Project Why",
+    "description": "Investigate design decisions, history and regression causes with evidence.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-teach",
+    "title": "Teach",
+    "description": "Learn the system through grounded explanations and worked examples.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-architect",
+    "title": "Architect",
+    "description": "Settle interfaces, responsibilities and trust assumptions before building.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-arena",
+    "title": "Arena",
+    "description": "Compare approaches to the same task under matched conditions.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-swarm",
+    "title": "Swarm",
+    "description": "Partition independent work with clear ownership and isolated state.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-review",
+    "title": "Review",
+    "description": "Assess designs and changes for substantiated engineering risks.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-tdd",
+    "title": "Tdd",
+    "description": "Reproduce the behavior in a failing test, make the fix and rerun it.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-verify",
+    "title": "Verify",
+    "description": "Run project tests and actual browser journeys with scoped evidence.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-blast-radius",
+    "title": "Blast Radius",
+    "description": "Trace affected contracts, storage, bindings, events and consumers.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-reflect",
+    "title": "Reflect",
+    "description": "Propose supported lessons from a completed task.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-correct",
+    "title": "Correct",
+    "description": "Turn a recurring mistake into an appropriate enforceable check.",
+    "group": "engineering"
+  },
+  {
+    "id": "eth-trace",
+    "title": "Trace",
+    "description": "Keep a proportionate task trail and a checked handoff for later sessions.",
+    "group": "engineering"
+  },
+  {
+    "id": "why",
+    "title": "Why Ethereum",
+    "description": "Understand Ethereum’s suitability, constraints and tradeoffs.",
+    "group": "ethereum"
+  },
+  {
+    "id": "ship",
+    "title": "Ship a dApp",
+    "description": "Plan and follow the dApp lifecycle, scoped to the project’s actual stack.",
+    "group": "ethereum"
+  },
+  {
+    "id": "crops",
+    "title": "CROPS",
+    "description": "Review censorship resistance, open source and freedom, privacy and security.",
+    "group": "ethereum"
+  },
+  {
+    "id": "protocol",
+    "title": "Protocol",
+    "description": "Research EIPs, fork processes and changes that affect a project.",
+    "group": "ethereum"
+  },
+  {
+    "id": "gas",
+    "title": "Gas & costs",
+    "description": "Measure and explain transaction costs with current, scoped evidence.",
+    "group": "ethereum"
+  },
+  {
+    "id": "wallets",
+    "title": "Wallets",
+    "description": "Work with signers, custody, smart accounts and permissions.",
+    "group": "ethereum"
+  },
+  {
+    "id": "l2s",
+    "title": "Layer 2s",
+    "description": "Understand chain differences, bridging and deployment assumptions.",
+    "group": "ethereum"
+  },
+  {
+    "id": "standards",
+    "title": "Standards",
+    "description": "Apply token, account, identity and payment interfaces correctly.",
+    "group": "ethereum"
+  },
+  {
+    "id": "building-blocks",
+    "title": "DeFi building blocks",
+    "description": "Integrate protocols and compose existing contracts.",
+    "group": "ethereum"
+  },
+  {
+    "id": "addresses",
+    "title": "Contract addresses",
+    "description": "Identify the intended deployment on the correct chain.",
+    "group": "ethereum"
+  },
+  {
+    "id": "security",
+    "title": "Security",
+    "description": "Apply defensive Solidity patterns and implementation checks.",
+    "group": "ethereum"
+  },
+  {
+    "id": "testing",
+    "title": "Testing",
+    "description": "Choose meaningful unit, fuzz, fork and invariant techniques.",
+    "group": "ethereum"
+  },
+  {
+    "id": "indexing",
+    "title": "Indexing",
+    "description": "Read events, current state and indexed application data.",
+    "group": "ethereum"
+  },
+  {
+    "id": "frontend-ux",
+    "title": "Frontend UX",
+    "description": "Handle wallet, network, pending, error and refresh states.",
+    "group": "ethereum"
+  },
+  {
+    "id": "orchestration",
+    "title": "Scaffold-ETH orchestration",
+    "description": "Use the Scaffold-ETH adapter when the project actually uses it.",
+    "group": "ethereum"
+  },
+  {
+    "id": "frontend-playbook",
+    "title": "Frontend deployment",
+    "description": "Prepare and verify the configured frontend build and host.",
+    "group": "ethereum"
+  },
+  {
+    "id": "qa",
+    "title": "dApp QA",
+    "description": "Independently assess applicable finished-app behavior.",
+    "group": "ethereum"
+  },
+  {
+    "id": "audit",
+    "title": "Contract audit",
+    "description": "Investigate relevant EVM vulnerability domains and substantiate findings.",
+    "group": "ethereum"
+  },
+  {
+    "id": "noir",
+    "title": "Noir & privacy",
+    "description": "Connect circuits, proving tools, verifiers and browser proof generation.",
+    "group": "ethereum"
+  },
+  {
+    "id": "feedback",
+    "title": "Feedback",
+    "description": "Share authorized, redacted issues or praise about ethskills.",
+    "group": "ethereum"
+  },
+  {
+    "id": "tools",
+    "title": "Tools",
+    "description": "Discover the project’s installed tools and relevant version adapters.",
+    "group": "ethereum"
+  },
+  {
+    "id": "concepts",
+    "title": "Concepts",
+    "description": "Reason about state transitions, callers, incentives and liveness.",
+    "group": "ethereum"
+  }
+]
