@@ -22,3 +22,5 @@ graph deploy <slug>        # -> Subgraph Studio: testing only
 ```
 
 Publish the subgraph from Studio to the network to get the production endpoint, and query it with a Studio API key. Production queries are metered: about 100K free per month, then about $2 per 100K (checked 2026-08-18 — re-read the live pricing page before quoting a budget). Self-hosting a Graph Node or a Ponder process is a fine alternative, but then the host, the persistent store and the process supervision are yours to name.
+
+Staking data lives on the consensus layer, not in execution-layer events. Validator balances and rewards, attestations, deposits, withdrawals, exits, consolidations and the entry and exit queues are beacon chain data that subgraphs, Etherscan and `eth_getLogs` do not have. For those, use the beaconcha.in API and load its skill file at https://docs.beaconcha.in/skill.md; it needs an API key.
