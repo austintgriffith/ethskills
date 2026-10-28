@@ -45,12 +45,9 @@ DISTRIBUTIONS = (
     Distribution("codex", "ethskills", ("ethereum", "engineering"), Path("plugins/codex/ethskills"), Path("skills"), "codex"),
 )
 CATALOG_GROUPS = {group for distribution in DISTRIBUTIONS for group in distribution.catalog_groups}
-OBSOLETE_PACKAGE_ROOTS = (Path("plugins/eth-pilot"), Path("plugins/codex/eth-pilot"))
-PACKAGE_EXCLUDED_FILES = {Path("eth-pilot/index.html")}
-PACKAGE_DESCRIPTIONS = {
-    "ethereum": "Ethereum protocol knowledge and engineering workflows for AI coding agents.",
-    "engineering": "Ethereum protocol knowledge and engineering workflows for AI coding agents.",
-}
+DESCRIPTION = "Ethereum development skills and engineering workflows — corrects LLM blind spots on gas costs, L2s, CROPS trust review (Censorship Resistance, Open Source and Free, Privacy, Security), DeFi protocols, security, and the current tool landscape."
+AUTHOR = {"name": "Austin Griffith", "url": "https://github.com/austintgriffith"}
+KEYWORDS = ["ethereum", "solidity", "defi", "web3", "blockchain", "scaffold-eth"]
 PACKAGE_SUPPORT_ROOTS = {
     "engineering": ("tools/references",),
     "ethereum": (),
@@ -154,7 +151,6 @@ def package_files(root, distribution, catalog, catalog_by_id):
             path
             for path in skill_root.rglob("*")
             if path.is_file()
-            and path.relative_to(root) not in PACKAGE_EXCLUDED_FILES
             and "evals" not in path.relative_to(skill_root).parts
             and not (skill_id == "tools" and path.is_relative_to(root / "tools/references"))
         )
@@ -171,12 +167,7 @@ def package_files(root, distribution, catalog, catalog_by_id):
             continue
         visited.add(path)
         for _, _, _, relative, destination in local_link_targets(path, root):
-            owner = skill_owner(relative, catalog_by_id)
-            if owner is not None:
-                if catalog_by_id[owner]["group"] not in groups:
-                    continue
-                continue
-            if relative == Path("SKILL.md"):
+            if skill_owner(relative, catalog_by_id) is not None or relative == Path("SKILL.md"):
                 continue
             if destination.is_dir():
                 linked = {child for child in destination.rglob("*") if child.is_file()}
@@ -199,19 +190,17 @@ def package_files(root, distribution, catalog, catalog_by_id):
     manifest = {
         "name": distribution.name,
         "version": VERSION,
-        "description": PACKAGE_DESCRIPTIONS["ethereum"],
-        "author": {"name": "Austin Griffith"},
+        "description": DESCRIPTION,
+        "author": AUTHOR,
         "homepage": "https://ethskills.com",
         "repository": "https://github.com/austintgriffith/ethskills",
         "license": "MIT",
+        "keywords": KEYWORDS,
         "skills": [f"./{PACKAGE_SKILL_NAMES.get(skill_id, skill_id)}" for skill_id in skill_ids] if distribution.manifest_kind == "claude" else "./skills/",
     }
     manifest_path = Path(f".{distribution.manifest_kind}-plugin/plugin.json")
     output[manifest_path] = (
-        json.dumps(
-            manifest,
-            indent=2,
-        )
+        json.dumps(manifest, indent=2, ensure_ascii=False)
         + "\n"
     ).encode()
     return output
@@ -227,9 +216,6 @@ def generate(root):
 
 def check_outputs(root, generated):
     errors = []
-    for obsolete in OBSOLETE_PACKAGE_ROOTS:
-        if (root / obsolete).exists():
-            errors.append(f"obsolete generated package is still present: {obsolete}")
     for package_path, expected in generated.items():
         package_root = root / package_path
         actual = {
@@ -248,10 +234,6 @@ def check_outputs(root, generated):
 
 
 def write_outputs(root, generated):
-    for obsolete in OBSOLETE_PACKAGE_ROOTS:
-        obsolete_path = root / obsolete
-        if obsolete_path.exists():
-            shutil.rmtree(obsolete_path)
     for package_path, files in generated.items():
         package_root = root / package_path
         if package_root.exists():

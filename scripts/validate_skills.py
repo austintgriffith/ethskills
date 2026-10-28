@@ -8,10 +8,9 @@ from urllib.parse import unquote, urlsplit
 
 import yaml
 
-from generate_plugin_packages import PACKAGE_SKILL_NAMES, DISTRIBUTIONS, check_outputs, generate
+from generate_plugin_packages import PACKAGE_SKILL_NAMES, DISTRIBUTIONS, VERSION, check_outputs, generate
 
 PACKAGE_COUNTS = {"ethereum": 22, "engineering": 17}
-VERSION = "3.0.0"
 CANONICAL_SKILL_NAMES = {"why": "why-ethereum"}
 
 

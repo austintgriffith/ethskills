@@ -5,7 +5,7 @@
   },
   "metadata": {
     "version": "3.0.0",
-    "description": "Ethereum knowledge and engineering workflows."
+    "description": "Ethereum development skills and engineering workflows — corrects LLM blind spots on gas costs, L2s, CROPS trust review (Censorship Resistance, Open Source and Free, Privacy, Security), DeFi protocols, security, and the current tool landscape."
   },
   "plugins": [
     {
@@ -16,7 +16,7 @@
         "path": "plugins/ethskills"
       },
       "version": "3.0.0",
-      "description": "Ethereum protocol knowledge and engineering workflows for AI coding agents.",
+      "description": "Ethereum development skills and engineering workflows — corrects LLM blind spots on gas costs, L2s, CROPS trust review (Censorship Resistance, Open Source and Free, Privacy, Security), DeFi protocols, security, and the current tool landscape.",
       "author": {
         "name": "Austin Griffith"
       }

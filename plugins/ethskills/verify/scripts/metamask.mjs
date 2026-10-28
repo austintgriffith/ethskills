@@ -6,7 +6,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { execFileSync, spawn } from "node:child_process";
 import { existsSync, realpathSync, rmSync } from "node:fs";
-import { mkdir, readFile, rm, writeFile, mkdtemp } from "node:fs/promises";
+import { mkdir, rm, writeFile, mkdtemp } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
@@ -215,7 +215,16 @@ async function freePort() {
   return port;
 }
 
+const SELFTEST_COMMANDS = { anvil: "install Foundry", unzip: "install unzip" };
+
 async function selftest() {
+  for (const [command, fix] of Object.entries(SELFTEST_COMMANDS)) {
+    try {
+      execFileSync("sh", ["-c", `command -v ${command}`], { stdio: "ignore" });
+    } catch {
+      throw new Error(`${command} is not on PATH; ${fix}, then rerun selftest`);
+    }
+  }
   const chromium = await loadPlaywright();
   const work = await mkdtemp(path.join(tmpdir(), "eth-verify-metamask-"));
   const rpcPort = await freePort();
