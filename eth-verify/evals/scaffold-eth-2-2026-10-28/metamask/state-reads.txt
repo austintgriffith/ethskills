@@ -1,0 +1,12 @@
+head=5 txBlock=5
+tx 0x0f8a6ff7b427b980c2e197ce4d1fc9a578c05389f83d1768396f14c8aa93245a from 0x56d2a0db6be745e49c53e28bfb0737d81d445555 to 0x700b6a60ce7eaaea56f065753d8dcb9653dbad35 value 0 chainId 31337
+receipt status 0x1 block 5 logs 1 topic0 0x94cbd7e04dca26a7667654f6448b2ca0a40fec602118dc5fd8c82b9cf3c645ad setter 0x00000000000000000000000056d2a0db6be745e49c53e28bfb0737d81d445555
+calldata: "Hello from MetaMask 1793189403332"
+event data: "Hello from MetaMask 1793189403332" false 0 
+pre (block 4): greeting="Hello from burner 1793189247866" total=1 userCounter=0
+post (block 5): greeting="Hello from MetaMask 1793189403332" total=2 userCounter=1
+rejected attempt: nonce of 0x56d2a0db6be745e49c53e28bfb0737d81d445555 before approve-tx = 0 expected; current nonce=1; txs from 0x56d2a0db6be745e49c53e28bfb0737d81d445555 across blocks:
+ block 2 ['0x40ad62c1db33d62e2e955b1e455c611cd22c7b99f001a4ea1a385dd541ca5879']
+ block 3 ['0xba259a1d24e5bd2984e90d684227f42f700f69b757f47c256abd411438cb1059']
+ block 4 ['0x85768938db2458ff90913b4507959481cdcec370a8994c45d2f5603ce67e7477']
+ block 5 ['0x0f8a6ff7b427b980c2e197ce4d1fc9a578c05389f83d1768396f14c8aa93245a']
