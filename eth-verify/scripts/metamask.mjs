@@ -5,7 +5,7 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import { execFileSync, spawn } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { mkdir, readFile, rm, writeFile, mkdtemp } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
@@ -225,11 +225,24 @@ async function selftest() {
   await new Promise(resolve => server.once("listening", resolve));
   const appUrl = `http://127.0.0.1:${server.address().port}`;
   let context;
+  let cleaned;
+  const cleanup = () => cleaned ??= (async () => {
+    await context?.close().catch(() => {});
+    server.close();
+    anvil.kill();
+    await rm(work, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+  })();
+  for (const signal of ["SIGINT", "SIGTERM"]) process.once(signal, () => cleanup().then(() => process.exit(130)));
   try {
     for (let attempt = 0; attempt < 50 && !await rpc(rpcUrl, "eth_chainId").catch(() => null); attempt++) await new Promise(resolve => setTimeout(resolve, 200));
     const extensionDir = await installMetaMask(path.join(work, "extension"));
     const launched = await launchWallet(chromium, { profileDir: path.join(work, "profile"), extensionDir });
     context = launched.context;
+    // Playwright's own SIGINT handler exits the process before async cleanup finishes.
+    process.once("exit", () => {
+      anvil.kill();
+      rmSync(work, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+    });
     const { extensionId, wallet } = launched;
     await onboardWallet(wallet);
     console.log(`PASS onboarding MetaMask ${METAMASK.version}`);
@@ -265,10 +278,7 @@ async function selftest() {
     if (receipt?.status !== "0x1" || after - before !== 10n ** 16n) throw new Error(`transaction ${hash} did not transfer 0.01 ETH`);
     console.log(`PASS transaction ${hash} mined with status 1`);
   } finally {
-    await context?.close().catch(() => {});
-    server.close();
-    anvil.kill();
-    await rm(work, { recursive: true, force: true });
+    await cleanup();
   }
 }
 
