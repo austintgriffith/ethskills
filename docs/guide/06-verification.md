@@ -26,15 +26,21 @@ For the browser, the agent uses available native tools, computer use or a suppor
 
 Wallet journeys run only against a disposable account on a local chain that the run owns. The agent never imports an existing wallet, key or recovery phrase.
 
-1. **App development wallet first.** If the app ships its own development wallet, such as the Scaffold-ETH 2 burner, the agent uses it before it installs an extension. A development wallet proves the app's local transaction path. It does not prove extension prompts, network-switch prompts or extension signing.
-2. **Otherwise, a real extension.** If the app has no development wallet, or extension behavior is in scope, the agent uses the requested wallet. If no wallet was requested, it uses MetaMask. It creates a fresh wallet in a temporary Playwright browser profile.
+1. **MetaMask always.** Every wallet journey runs with a real extension wallet. The agent uses the requested wallet, or MetaMask if none was requested, because that is closest to how users reach the app. It creates a fresh wallet in a temporary Playwright browser profile.
+2. **App development wallet as an extra.** If the app also ships its own development wallet, such as the Scaffold-ETH 2 burner, the agent can run the journey with it first. This is a fast check of the app's local transaction path. It does not prove extension prompts, network-switch prompts or extension signing, so it never replaces the MetaMask run. If MetaMask setup fails, the development-wallet result still counts, and the MetaMask checks are reported as BLOCKED with the reason.
 3. **Selftest before the app.** The bundled [MetaMask helper](../../eth-verify/scripts/metamask.mjs) pins a MetaMask release by version and sha256. Before it drives the app, the agent runs the helper's selftest. The selftest starts its own Anvil node and proves onboarding, connection, adding a chain, an EIP-712 signature and a mined transaction. If a line fails, the agent fixes the setup before it trusts any app result.
 
-To run the selftest yourself, install Playwright with Chromium and Foundry, then run this command:
+To run the selftest yourself, install Node.js, Foundry and `unzip`. The helper loads Playwright from the directory where you run it, so run it in a directory that has Playwright installed:
 
 ```text
-node eth-verify/scripts/metamask.mjs selftest
+mkdir metamask-selftest && cd metamask-selftest
+npm install playwright
+npx playwright install chromium
+curl -fsSLO https://ethskills.com/eth-verify/scripts/metamask.mjs
+node metamask.mjs selftest
 ```
+
+Each passing check prints a `PASS` line. A `FAIL` line names the step that failed.
 
 Before it approves a prompt, the agent compares the origin, chain, account, target and amount with the planned action. It stops if they differ.
 

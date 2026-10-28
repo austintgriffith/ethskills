@@ -32,14 +32,15 @@ You do not need to install every tool named by ethskills. Missing tools limit th
 
 ## Choose real wallet testing for local dApps
 
-Pilot runs Verify during a build; you do not need to invoke it separately. Local wallet journeys include a disposable wallet and real extension prompts when the host supports them. Simulated approvals do not establish MetaMask integration.
+Pilot runs Verify during a build; you do not need to invoke it separately. Verify always tests wallet journeys with a disposable MetaMask wallet in a separate browser, because that is closest to how users reach the app. If the app also ships its own development wallet, such as the Scaffold-ETH 2 burner, Verify can run it first as a quick extra check. Simulated approvals do not establish MetaMask integration.
 
-Some hosts, including T3 versions with a shared-preview-first policy, require an explicit user request before the agent can use a separate browser. To choose that browser once, add this preference to your project `AGENTS.md` or your agent's global instruction file:
+Some hosts require an explicit user request before the agent can use a separate browser. To choose that browser once, add this preference to your project `AGENTS.md` or your agent's global instruction file:
 
 ```text
 When building or verifying a local Ethereum dApp, I explicitly request a
-separate disposable Chrome/Chromium session with MetaMask for real wallet
-testing. Install official MetaMask in a temporary profile, create a disposable
+separate disposable Chrome/Chromium session with MetaMask for every wallet
+journey. If the app also ships its own development wallet, such as the
+Scaffold-ETH 2 burner, you may run it first as an extra check. Install official MetaMask in a temporary profile, create a disposable
 wallet, and fund and sign only the intended test transactions on an owned
 isolated local development node. Run this automatically through Ethskills
 Pilot's verification step. Never use my personal browser profile, wallet,
