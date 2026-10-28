@@ -6,6 +6,8 @@ Use the canonical [workspace discovery procedure](../../tools/references/project
 
 Read nearest project instructions, any existing verification driver and feature map, workspace manifests, package scripts, lockfiles, CI and current configuration. Enumerate contract and frontend workspaces with their working directories; do not assume a framework or `packages/nextjs`. Record source HEAD and dirty-file fingerprint, including relevant untracked changes without storing secret contents. A git diff alone omits untracked work.
 
+If a project-local verification skill covers the requested journey, read and use it before selecting a generic browser surface. Follow its launch, wallet, evidence and cleanup procedure. A generic preview observation is supplemental when the local skill requires real extension behavior; it does not satisfy that assertion. Check a host restriction against the selected driver: a CUA-only restriction does not apply to Playwright unless its wording includes Playwright.
+
 Record declared ranges and resolved installed versions separately: package manager/Node, contract runner, Solidity compiler, client library, wallet connector, browser harness and relevant plugins. A lockfile is not proof that an executable is installed. Prefer workspace scripts and local executables. Do not run `npx`, `dlx` or an equivalent fallback that may download a tool; resolve the existing executable and use local help. Config filenames do not prove capabilities. Inspect config imports, test imports and script bodies for active plugins, runner, profile, remappings, networks and custom tasks. Reconcile stale documentation with actual installed/configured behavior; report ambiguity that affects execution.
 
 ## Choose and identify the target

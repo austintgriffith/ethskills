@@ -13,7 +13,9 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 
 ## Start Here
 
-**Building or changing a dApp?** Start with [Ethskills Pilot](eth-pilot/SKILL.md). It executes the goal through one engineering loop and loads Ethereum knowledge only when the task needs it.
+**Building a dApp?** Fetch [ship/SKILL.md](https://ethskills.com/ship/SKILL.md) first. It plans the smallest shippable slice and points to other skills as each phase needs them.
+
+**Want an agent to execute an engineering goal?** Use [Ethskills Pilot](eth-pilot/SKILL.md). It works through one engineering loop and loads Ethereum knowledge only when the task needs it.
 
 **Need a specific topic?** Each skill below is standalone. Fetch only the ones relevant to your task.
 

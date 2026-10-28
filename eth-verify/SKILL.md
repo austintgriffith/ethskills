@@ -11,13 +11,15 @@ This skill supplies an execution procedure, not a universal dApp driver. Discove
 
 ## Discover and doctor
 
+Before choosing a generic browser path, read the nearest `AGENTS.md` and any project-local verification skill or driver that covers the requested journey. When one exists, use that project's prescribed entrypoint and evidence contract; generic preview inspection can supplement it, but cannot replace a requested real wallet journey.
+
 Read the canonical [project discovery](../tools/references/project-discovery.md) and [runtime rules](../tools/references/runtime.md), then [verification discovery](references/discovery.md). Use the shared [tool adapter contract](../tools/references/tool-adapters.md). Read only relevant adapters:
 
 - [Foundry](references/foundry.md): installed forge, effective profiles and pinned forks.
 - [Hardhat](references/hardhat.md): separate v2/v3, runner, plugins and client versions.
 - [Browser and wallet](references/browser-wallet.md): observed URL, semantic interactions and signing boundaries.
 
-For a local Scaffold-ETH 2 wallet journey, try its built-in burner wallet on the owned local chain before installing an extension. The burner can prove the app's local transaction path, but it cannot prove extension prompts or wallet-provider behavior. Prepare an extension-capable Chrome/Chromium session with a disposable wallet when those behaviors are in scope and host rules permit. A walletless preview is a capability discovery result, not the end of the attempt. Follow the reference's setup and fallback procedure without waiting for the user to repeat the request.
+For a local Scaffold-ETH 2 wallet journey, try its built-in burner wallet on the owned local chain before installing an extension. The burner can prove the app's local transaction path, but it cannot prove extension prompts or wallet-provider behavior. When those behaviors are in scope, use the reference's single-profile Playwright procedure and its bundled MetaMask helper, and run the helper's selftest before driving the app. Check restrictions against that driver directly; a computer-use restriction does not apply to Playwright unless its wording covers Playwright. A walletless preview is a capability discovery result, not the end of the attempt. Follow the reference's setup and fallback procedure without waiting for the user to repeat the request.
 
 Reuse the task's evidence root when one exists, with a distinct verification run beneath it. Otherwise use `.audit/eth-verify/<run-id>/` in the target project. Do not overwrite a prior run. Record source, dependencies, target identity and permitted writes before testing. Review project commands before execution: a script named `test` may deploy or use shared state.
 
