@@ -151,7 +151,7 @@ def package_files(root, distribution, catalog, catalog_by_id):
             path
             for path in skill_root.rglob("*")
             if path.is_file()
-            and "evals" not in path.relative_to(skill_root).parts
+            and not {"evals", "__pycache__"} & set(path.relative_to(skill_root).parts)
             and not (skill_id == "tools" and path.is_relative_to(root / "tools/references"))
         )
     for support_root in (path for group in groups for path in PACKAGE_SUPPORT_ROOTS[group]):
