@@ -81,6 +81,12 @@ Scaffold-ETH 2 (create-eth), Blockscout MCP, x402 SDKs.
 - Blockscout MCP server gives agents structured blockchain data via MCP.
 - x402: use the scoped `@x402/*` packages; unscoped `x402` and `x402-fetch` are frozen at 1.2.0.
 
+### [Batch Payments](https://ethskills.com/batch-payments/SKILL.md)
+Multi-recipient token distributions — batch contracts, gas optimization, x402-gated batch APIs.
+- Don't loop `transfer()`. Batch contracts save 60%+ gas for multi-recipient sends.
+- Production batch infrastructure exists on Base, Ethereum, Arbitrum. You don't need to write your own.
+- x402-gated batch APIs let agents pay a service fee to trigger distributions without managing contracts.
+
 ### [Building Blocks (DeFi)](https://ethskills.com/building-blocks/SKILL.md)
 Verifying DeFi integrations before you build on them.
 - Verify chain, pool, liquidity, incentives and fees from live sources; cite dated evidence.
