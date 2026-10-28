@@ -30,6 +30,7 @@
     "./frontend-ux",
     "./frontend-playbook",
     "./qa",
-    "./audit"
+    "./audit",
+    "./wns"
   ]
 }
