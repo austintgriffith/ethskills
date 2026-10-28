@@ -26,6 +26,8 @@ https://ethskills.com/<topic>/SKILL.md
 
 ## Quick Start
 
+Want the agent to execute an engineering goal instead? Fetch [Ethskills Pilot](https://ethskills.com/eth-pilot/SKILL.md). It inspects the project, makes and verifies small changes, and loads these topics when a step needs them. For real contract and browser checks, fetch [Verify](https://ethskills.com/eth-verify/SKILL.md).
+
 Building a dApp? Fetch **Ship** first — it routes you through everything else:
 
 ```bash
@@ -47,6 +49,7 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-8004, x402, EIP-7702
 |-------|-----|---------------|
 | **Why Ethereum** | `why/SKILL.md` | User asks "why Ethereum?" or you need to compare chains. |
 | **Ship** | `ship/SKILL.md` | 🟢 **Start here.** End-to-end dApp guide, routes through all other skills. |
+| **Ethskills Pilot** | `eth-pilot/SKILL.md` | Executing an engineering goal end to end with verified steps. |
 | **CROPS Review** | `crops/SKILL.md` | For every dApp architecture plan and during pre-ship QA. |
 | **Protocol** | `protocol/SKILL.md` | Ethereum upgrade process, EIP lifecycle, and what's actually planned next. |
 | **Gas & Costs** | `gas/SKILL.md` | Any question about gas prices, tx costs, or "is Ethereum expensive?" |

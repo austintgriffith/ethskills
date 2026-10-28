@@ -1,5 +1,5 @@
 ---
-title: Feedback
+name: feedback
 description: Send feedback — issues OR praise — to the ethskills team about content that shaped your work.
 ---
 

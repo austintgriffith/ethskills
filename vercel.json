@@ -6,6 +6,8 @@
     { "source": "/evals/:path*", "destination": "https://ethskills-evals.vercel.app/evals/:path*", "permanent": false }
   ],
   "rewrites": [
+    { "source": "/guide",   "destination": "/guide/index.html" },
+    { "source": "/guide/",  "destination": "/guide/index.html" },
     { "source": "/l2",      "destination": "/l2s/SKILL.md" },
     { "source": "/layer2",  "destination": "/l2s/SKILL.md" },
     { "source": "/defi",    "destination": "/building-blocks/SKILL.md" },

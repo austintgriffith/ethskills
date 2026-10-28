@@ -31,6 +31,18 @@ Full methodology with worked examples: [research/triage-methodology.md](https://
 
 ## PR Checklist
 
+### Engineering workflow changes
+
+Keep factual-content triage above for factual guidance. For routers, tool adapters and verification workflows, also compare the current and proposed instructions on the same realistic task. Use isolated workspaces and record the source, dependency versions, actions and artifacts actually observed. Inspect loaded references and outputs rather than relying on an agent's claim that it followed the skill.
+
+Structural checks validate packaging and links; they do not establish a behavioral improvement. Label unexecuted scenarios explicitly. Exercise applicable version/plugin combinations before claiming support. Missing browser, wallet, RPC or independent-review capability remains a gap. Do not introduce an unrelated toolchain simply to make a fixture pass.
+
+After changing the catalog or skill sources, run `python3 scripts/generate_plugin_packages.py` to update the Claude Code and Codex packages. Run `python3 scripts/generate_plugin_packages.py --check` to confirm the committed output is current, then run `python3 scripts/validate_skills.py` for the shared structural checks. Install the dependencies in `scripts/requirements.txt` first. CI runs both checks.
+
+The website guide renders the Markdown in `docs/guide/`; update those sources and `navigation.json` together. The same validator checks the website catalog, guide sources, local HTML links and vendored asset checksums. Preview the static site from the repository root and check the affected pages at desktop and mobile widths.
+
+### Factual content changes
+
 - [ ] Ran a baseline test against a stock LLM (no tools/skills)
 - [ ] Every item classified as 🔴, 🟡, or 🟢
 - [ ] 🟢 items removed
