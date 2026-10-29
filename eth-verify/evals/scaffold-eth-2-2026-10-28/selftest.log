@@ -1,0 +1,7 @@
+PASS onboarding MetaMask 13.54.0
+PASS connect 0x6e395f237e470a1d35d21366cd8f77ecac55d304
+PASS add and switch to local chain 31337
+PASS EIP-712 signature
+PASS transaction 0xd9cc40f7f0cf439dab7890f12a21ced2324f4145ceaee7a57ea0dc81f1e21fc4 mined with status 1
+node metamask.mjs selftest  10.37s user 3.50s system 85% cpu 16.176 total
+exit=0

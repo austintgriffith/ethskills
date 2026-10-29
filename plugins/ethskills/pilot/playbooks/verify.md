@@ -1,0 +1,11 @@
+# Verify
+
+Use [Verify](../../verify/SKILL.md) to execute relevant checks and retain evidence. This playbook prepares a precise handoff rather than duplicating its driver procedures.
+
+1. Identify the claim: local logic, fork integration, wallet interaction, deployment correctness or hosted behavior. Provide source revision/dirty state, affected workspace, acceptance cases, known failures and the discovered native commands.
+2. Supply the target from user context, deployment metadata or configuration; for a started server use its actual output. Record requested and observed URL. Never assume a localhost address or port. Include chain ID, addresses/implementation and block/fork provenance where relevant.
+3. Use host-native browser routing and the user's chosen browser where required. For local wallet journeys, pass responsibility for browser and disposable wallet setup to Verify, including a permitted isolated Chrome/Chromium fallback when the native preview cannot run MetaMask. Do not stop at a walletless preview or wait for a second installation request. Reuse project tests for their assertion scope. Distinguish a real extension wallet in an isolated browser from the user's personal wallet, a mocked wallet or intercepted RPC; label what each establishes.
+4. Run the smallest checks that prove each claim. Save decisive output, screenshots and transaction/state evidence as applicable without exposing secrets or authenticated URLs. Contract-only changes can omit UI checks with a reason. A screenshot proves a visible state, not successful settlement.
+5. Report PASS, FAIL, BLOCKED or NOT_APPLICABLE per material claim, with evidence and scope. Keep local tests, explorer source verification, transaction confirmation and hosted-app verification separate. Missing browser or RPC blocks the corresponding required check; it does not block unrelated work.
+
+A local verification request covers Verify's disposable browser/wallet preparation and test funding/signing on an owned isolated node, subject to host rules and session constraints. It does not authorize personal-wallet access or public-network writes. For unknown tool/plugin versions consult installed help/types and matching official docs before selecting commands.

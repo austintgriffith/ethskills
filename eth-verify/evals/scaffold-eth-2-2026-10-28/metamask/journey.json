@@ -1,0 +1,97 @@
+[
+  {
+    "t": "2026-10-28T12:09:48.661Z",
+    "step": "launched",
+    "metamask": "13.54.0",
+    "extensionId": "gakakpflblmakpoohigneodgdcleddeh",
+    "profile": "/tmp/se2-mm-work/profile (persistent, temporary)",
+    "chromium": "156.0.8078.4"
+  },
+  {
+    "t": "2026-10-28T12:09:52.323Z",
+    "step": "onboarded"
+  },
+  {
+    "t": "2026-10-28T12:09:54.668Z",
+    "step": "open",
+    "final": "http://localhost:3000/debug",
+    "header": "Scaffold-ETH Ethereum dev stack Home Debug Contracts 0.0000 ETH Foundry 0x5650...0943"
+  },
+  {
+    "t": "2026-10-28T12:09:55.049Z",
+    "step": "burner-disconnected",
+    "header": "Scaffold-ETH Ethereum dev stack Home Debug Contracts Connect Wallet"
+  },
+  {
+    "t": "2026-10-28T12:09:56.845Z",
+    "step": "connected",
+    "promptRoute": "/connect/qSeyBVzBEEkfnVexaveAS",
+    "account": "0x56d2a0db6be745e49c53e28bfb0737d81d445555",
+    "providerChainId": "0x1",
+    "header": "Scaffold-ETH Ethereum dev stack Home Debug Contracts Wrong network"
+  },
+  {
+    "t": "2026-10-28T12:09:56.917Z",
+    "step": "funded",
+    "fundHash": "0x85768938db2458ff90913b4507959481cdcec370a8994c45d2f5603ce67e7477",
+    "balanceWei": "10000000000000000000"
+  },
+  {
+    "t": "2026-10-28T12:09:57.799Z",
+    "step": "network-prompt",
+    "route": "/confirm-transaction/yo66luGhI671TIP3NL3IF",
+    "text": "Add Foundry A site is suggesting additional network details. Request from localhost:3000 Network F Foundry RPC 127.0.0.1:8545 Beware of network scams and security risks. Cancel Confirm"
+  },
+  {
+    "t": "2026-10-28T12:09:59.710Z",
+    "step": "switched-and-reloaded",
+    "providerChainId": "0x7a69",
+    "header": "Scaffold-ETH Ethereum dev stack Home Debug Contracts 10.0000 ETH Foundry 0x56D2...5555"
+  },
+  {
+    "t": "2026-10-28T12:10:03.286Z",
+    "step": "rejected",
+    "route": "/confirm-transaction/7f7285e0-d2c8-11f1-8e02-b1d651062ee5",
+    "blockBefore": "0x4",
+    "blockAfter": "0x4",
+    "greetingOnchainUnchanged": null,
+    "toast": "Caused by: UserRejectedRequestErrorUser rejected the request. Details: MetaMask Tx Signature: User denied transaction signature. Version: viem@2.53.1Call Stack 2Show 2 ignore-listed frame(s)",
+    "sendEnabled": true
+  },
+  {
+    "t": "2026-10-28T12:10:04.871Z",
+    "step": "tx-prompt",
+    "route": "/confirm-transaction/81945470-d2c8-11f1-8e02-b1d651062ee5",
+    "text": "Account 1 Transaction request Estimated changes Network F Foundry Request from HTTP localhost:3000 Interacting with 0x700b6...bAD35 Network fee $0.40 E ETH Speed Cancel Confirm"
+  },
+  {
+    "t": "2026-10-28T12:10:06.166Z",
+    "step": "pending",
+    "approvedRoute": "/confirm-transaction/81945470-d2c8-11f1-8e02-b1d651062ee5",
+    "mempool": [
+      "0x0f8a6ff7b427b980c2e197ce4d1fc9a578c05389f83d1768396f14c8aa93245a"
+    ],
+    "sendDisabled": false,
+    "sendHtml": "Send 💸"
+  },
+  {
+    "t": "2026-10-28T12:10:09.990Z",
+    "step": "mined-ui-updated",
+    "greeting": "Hello from MetaMask 1793189403332"
+  },
+  {
+    "t": "2026-10-28T12:10:11.634Z",
+    "step": "after-reload",
+    "greetingShown": true,
+    "header": "Scaffold-ETH Ethereum dev stack Home Debug Contracts 9.9998 ETH Foundry 0x56D2...5555"
+  },
+  {
+    "t": "2026-10-28T12:10:11.673Z",
+    "step": "console-errors",
+    "count": 2,
+    "errors": [
+      "⚡️ ~ file: useTransactor.ts ~ error ContractFunctionExecutionError: User rejected the request.\n\nRequest Arguments:\n  from:   0x56D2a0db6bE745E49c53e28BFB0737d81D445555\n  to:     0x700b6a60ce7eaaea56f065753d8dcb9653dbad35\n  value:  0 ETH\n  data:   0xa41368620000000000000000000000000000000000000000000",
+      "⚡️ ~ file: WriteOnlyFunctionForm.tsx:handleWrite ~ error ContractFunctionExecutionError: User rejected the request.\n\nRequest Arguments:\n  from:   0x56D2a0db6bE745E49c53e28BFB0737d81D445555\n  to:     0x700b6a60ce7eaaea56f065753d8dcb9653dbad35\n  value:  0 ETH\n  data:   0xa41368620000000000000000000000"
+    ]
+  }
+]

@@ -1,1 +1,3 @@
 .vercel
+.audit/
+__pycache__/

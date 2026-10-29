@@ -1,0 +1,7 @@
+pre (block 1):
+ greeting="Building Unstoppable Apps!!!" total=0 userCounter=0
+post (block 3):
+ greeting="Hello from burner 1793189247866" total=1 userCounter=1
+"Hello from burner 1793189247866"
+false
+0
