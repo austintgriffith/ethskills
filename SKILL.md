@@ -15,7 +15,33 @@ You are probably wrong about Ethereum. Gas prices, token decimals, L2 costs, wha
 
 **Building a dApp?** Fetch [ship/SKILL.md](https://ethskills.com/ship/SKILL.md) first. It plans the smallest shippable slice and points to other skills as each phase needs them.
 
+**Want an agent to execute an engineering goal?** Use [Ethskills Pilot](eth-pilot/SKILL.md). It works through one engineering loop and loads Ethereum knowledge only when the task needs it.
+
 **Need a specific topic?** Each skill below is standalone. Fetch only the ones relevant to your task.
+
+## Engineering workflows
+
+Use these skills for engineering work across Ethereum projects.
+
+| Skill | Use it for |
+|---|---|
+| [Pilot](eth-pilot/SKILL.md) | Execute an engineering goal. |
+| [Help](eth-help/SKILL.md) | Find the right Ethskills workflow. |
+| [How](eth-how/SKILL.md) | Explain project source and integrations. |
+| [Project Why](eth-why/SKILL.md) | Trace project decisions and causes. |
+| [Teach](eth-teach/SKILL.md) | Explain a project or Ethereum concept. |
+| [Architect](eth-architect/SKILL.md) | Compare designs and trust assumptions. |
+| [Arena](eth-arena/SKILL.md) | Compare implementation approaches. |
+| [Swarm](eth-swarm/SKILL.md) | Partition independent engineering work. |
+| [Review](eth-review/SKILL.md) | Review changes with evidence. |
+| [TDD](eth-tdd/SKILL.md) | Reproduce a defect before fixing it. |
+| [Verify](eth-verify/SKILL.md) | Verify contracts and browser flows. |
+| [Blast Radius](eth-blast-radius/SKILL.md) | Trace the impact of a proposed change. |
+| [Reflect](eth-reflect/SKILL.md) | Propose lessons from completed work. |
+| [Correct](eth-correct/SKILL.md) | Turn repeated mistakes into checks. |
+| [Trace](eth-trace/SKILL.md) | Preserve a decision and evidence trail. |
+| [Discover](eth-discover/SKILL.md) | Find external skills and tools. |
+| [Audit Swarm](eth-audit-swarm/SKILL.md) | Coordinate independent audit methods. |
 
 **Base URL:** `https://ethskills.com/<skill>/SKILL.md`
 

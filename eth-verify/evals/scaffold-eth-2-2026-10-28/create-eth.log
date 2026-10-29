@@ -1,0 +1,66 @@
+
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | Create Scaffold-ETH 2 app |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+
+❯ 📁 Create project directory /private/tmp/se2-verify
+✔ 📁 Create project directory /private/tmp/se2-verify
+❯ 🚀 Creating a new Scaffold-ETH 2 app in se2-verify
+✔ 🚀 Creating a new Scaffold-ETH 2 app in se2-verify
+❯ 📦 Installing dependencies with yarn, this could take a while
+› ➤ YN0000: · Yarn 4.13.0
+
+› ➤ YN0000: ┌ Resolution step
+
+› ➤ YN0085: │ + @heroicons/react@npm:2.2.0, @rainbow-me/rainbowkit@npm:2.2.11, @react-native-async-storage/async-storage@npm:2.2.0, @scaffold-ui/components@npm:0.1.12, and 1618 more.
+
+› ➤ YN0000: └ Completed in 2s 968ms
+
+› ➤ YN0000: ┌ Post-resolution validation
+
+› ➤ YN0086: │ Some peer dependencies are incorrectly met by dependencies; run yarn explain peer-requirements for details.
+
+› ➤ YN0000: └ Completed
+
+› ➤ YN0000: ┌ Fetch step
+
+› ➤ YN0000: └ Completed in 0s 292ms
+
+› ➤ YN0000: ┌ Link step
+
+› starting link step, this might take a little time...
+› ➤ YN0007: │ se-2@workspace:. must be built because it never has been before or the last one failed
+
+› ➤ YN0007: │ protobufjs@npm:7.6.6 must be built because it never has been before or the last one failed
+
+› ➤ YN0000: └ Completed in 24s 495ms
+
+› ➤ YN0000: · Done with warnings in 27s 867ms
+
+✔ 📦 Installing dependencies with yarn, this could take a while
+❯ 🪄 Formatting files
+✔ 🪄 Formatting files
+❯ 📡 Initializing Git repository and submodules
+✔ 📡 Initializing Git repository and submodules
+
+  
+
+  Congratulations! Your project has been scaffolded! 🎉
+
+  Next steps:
+  
+  cd se2-verify
+  
+    	Start the local development node
+    	yarn chain
+    
+    	In a new terminal window, deploy your contracts
+    	yarn deploy
+   
+  	In a new terminal window, start the frontend
+  	yarn start
+  
+  Thanks for using Scaffold-ETH 2 🙏, Happy Building!
+  

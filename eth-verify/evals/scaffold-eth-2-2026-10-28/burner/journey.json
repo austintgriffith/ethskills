@@ -1,0 +1,50 @@
+[
+  {
+    "t": "2026-10-28T12:07:25.397Z",
+    "step": "open",
+    "requested": "http://localhost:3000/debug",
+    "final": "http://localhost:3000/debug",
+    "title": "Debug Contracts | Scaffold-ETH 2"
+  },
+  {
+    "t": "2026-10-28T12:07:25.430Z",
+    "step": "connected",
+    "account": "0xEA36564355A109d3Db05Ce79CF473A3de0A60d90",
+    "networkLabelFoundry": true,
+    "connectButtonVisible": false
+  },
+  {
+    "t": "2026-10-28T12:07:27.865Z",
+    "step": "funded",
+    "headerBalance": "1.0000\nETH"
+  },
+  {
+    "t": "2026-10-28T12:07:27.930Z",
+    "step": "clicked-setGreeting",
+    "greeting": "Hello from burner 1793189247866",
+    "disabledAfterClick": false
+  },
+  {
+    "t": "2026-10-28T12:07:57.938Z",
+    "step": "toast",
+    "toastText": "Transaction completed successfully!",
+    "txLink": null
+  },
+  {
+    "t": "2026-10-28T12:07:57.948Z",
+    "step": "ui-updated-without-reload",
+    "greetingShown": true
+  },
+  {
+    "t": "2026-10-28T12:08:00.259Z",
+    "step": "after-reload",
+    "greetingShown": true,
+    "totalCounterNear": ""
+  },
+  {
+    "t": "2026-10-28T12:08:00.304Z",
+    "step": "console-errors",
+    "count": 0,
+    "errors": []
+  }
+]
