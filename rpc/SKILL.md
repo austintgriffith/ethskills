@@ -1,6 +1,6 @@
 ---
 name: rpc
-description: "Use when deciding how an app should reach Ethereum nodes, choosing or changing an RPC provider, assessing what an RPC outage would take down, budgeting RPC, or interpreting a send response on L1 or a specific L2. Not for picking a chain (`l2s`), indexer design (`indexing`) or a whole-app trust review (`crops`)."
+description: "Use when deciding how an app should reach EVM nodes, choosing or changing an RPC provider, assessing what an RPC outage would take down, budgeting RPC, or interpreting a send response on L1 or a specific L2. Not for picking a chain (`l2s`), indexer design (`indexing`) or a whole-app trust review (`crops`)."
 ---
 
 # RPC
