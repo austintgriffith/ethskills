@@ -55,6 +55,7 @@ Install directly from GitHub — no clone required:
 | [Security](security/SKILL.md) | Token decimals, reentrancy, oracle manipulation, vault inflation, pre-deploy checklist |
 | [Testing](testing/SKILL.md) | Test getters and OpenZeppelin internals, skip fuzz and fork tests on integrations, mock external protocols instead of forking |
 | [Indexing](indexing/SKILL.md) | Loop over blocks to read history, try to query historical state via raw RPC, ignore events as the primary read API |
+| [RPC](rpc/SKILL.md) | Count URLs instead of operators, assume providers keep the same history and meter alike, read every send response like L1 mempool acceptance |
 | [Frontend UX](frontend-ux/SKILL.md) | Onchain button rules, one-action-at-a-time approval flow, Address components, USD values |
 | [Frontend Playbook](frontend-playbook/SKILL.md) | Fork mode, fork demos, IPFS static export, ENS content hash |
 | [QA](qa/SKILL.md) | Treat "deploys without errors" as shipping, leave SE2 default branding, miss approve-button double-fire, mobile deep links |

@@ -140,6 +140,12 @@ Events, The Graph, Ponder, Multicall3.
 - The Graph turns events into a queryable GraphQL API.
 - Multicall3 (`0xcA11bde05977b3631167028862bE2a173976CA11`) — batch reads in one RPC call.
 
+### [RPC](https://ethskills.com/rpc/SKILL.md)
+Choosing and running RPC: setups, where providers differ, and what a send response means.
+- RPC is a workload decision, not a URL. Count operators, clouds and sequencers, not URLs.
+- A node serving current state may have dropped pre-Merge history. Check before a backfill relies on it.
+- A send response means different things on L1, OP Stack, Base and Arbitrum One. `already known` is not acceptance.
+
 ### [Frontend UX](https://ethskills.com/frontend-ux/SKILL.md)
 Frontend UX patterns for Ethereum dApps.
 - Every onchain button needs its own loader + disabled state. No shared isLoading.
@@ -181,6 +187,7 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 | Auditing a smart contract | `audit/`, `crops/` |
 | Building a privacy/ZK app | `noir/`, `security/`, `testing/` |
 | Monitoring / analytics | `indexing/` |
+| Choosing or running RPC | `rpc/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |
 | Choosing a chain | `l2s/`, `gas/` |
 

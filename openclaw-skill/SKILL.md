@@ -61,6 +61,7 @@ curl -s https://ethskills.com/standards/SKILL.md   # ERC-8004, x402, EIP-7702
 | **Security** | `security/SKILL.md` | Asset accounting, oracles, swaps, signatures, upgrades, pre-deploy checklist. |
 | **Testing** | `testing/SKILL.md` | Foundry testing — unit, fuzz, fork, invariant. What LLMs get wrong. |
 | **Indexing** | `indexing/SKILL.md` | Reading onchain data — events, The Graph, Ponder, Multicall3. |
+| **RPC** | `rpc/SKILL.md` | Choosing or running RPC: providers, routing, history, what a send response means. |
 | **Frontend UX** | `frontend-ux/SKILL.md` | dApp frontend rules — button loaders, approval flow, ENS inputs, decimals. |
 | **Frontend Playbook** | `frontend-playbook/SKILL.md` | Build-to-production pipeline — fork mode, IPFS. |
 | **QA** | `qa/SKILL.md` | Pre-ship audit checklist. Give to a separate reviewer agent. |
