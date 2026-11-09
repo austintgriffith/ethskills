@@ -1,6 +1,6 @@
 ---
 name: rpc
-description: "Use when deciding how an app should reach EVM nodes, choosing or changing an RPC provider, assessing what an RPC outage would take down, budgeting RPC, or interpreting a send response on various L1/rollup architecures.
+description: "Use when deciding how an app should reach EVM nodes, choosing or changing an RPC provider, assessing what an RPC outage would take down, budgeting RPC, or interpreting a send response on various L1 and rollup architectures. Not for picking a chain (`l2s`), indexer design (`indexing`) or a whole-app trust review (`crops`)."
 ---
 
 # RPC
