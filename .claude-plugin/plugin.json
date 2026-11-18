@@ -16,6 +16,7 @@
     "./crops",
     "./protocol",
     "./gas",
+    "./glamsterdam",
     "./wallets",
     "./l2s",
     "./standards",

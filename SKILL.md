@@ -55,6 +55,13 @@ What things actually cost on Ethereum today.
 - OP-stack and Base cost adds the L1 data fee and any operator fee. Read them from GasPriceOracle; don't estimate.
 - "Ethereum is expensive" was true in 2021-2023. It's false in 2026.
 
+### [Glamsterdam Gas Readiness](https://ethskills.com/glamsterdam/SKILL.md)
+Code that EIP-8037/8038 breaks: fixed gas limits, failure branches, `gasleft()` metering, 7702 delegates.
+- A new storage slot costs 110,020, not 22,100. ETH to an empty address adds 183,600 of state gas. Fixed limits sized for today fail.
+- Above 2^24 tx gas, a state-gas reservoir ignores `call{gas:}`, so a starved call's failure branch can still write storage and record the failure for good.
+- `gasleft()` can rise mid-call. Don't bill by `gasleft()` differences. Use transient storage for locks.
+- Not live on mainnet; numbers can still change. Follow the EF's [glamsterdam-gas-invariants](https://github.com/ethereum/glamsterdam-gas-invariants) `AGENTS.md`.
+
 ### [Wallets](https://ethskills.com/wallets/SKILL.md)
 Creating wallets, key safety, multisig, account abstraction.
 - EIP-7702 is live — EOAs get smart contract superpowers without migration.
@@ -176,9 +183,10 @@ Send feedback — issues OR praise — about ethskills content. Bias toward send
 | Writing Solidity | `standards/`, `building-blocks/`, `addresses/`, `security/` |
 | Testing contracts | `testing/` |
 | Building a frontend | `orchestration/`, `frontend-ux/`, `tools/` |
-| Deploying to production | `wallets/`, `frontend-playbook/`, `gas/` |
+| Deploying to production | `wallets/`, `frontend-playbook/`, `gas/`, `glamsterdam/` |
 | Reviewing a finished dApp before shipping | `qa/`, `crops/` |
-| Auditing a smart contract | `audit/`, `crops/` |
+| Auditing a smart contract | `audit/`, `crops/`, `glamsterdam/` |
+| Checking L1 code for the Glamsterdam fork | `glamsterdam/`, `protocol/`, `testing/` |
 | Building a privacy/ZK app | `noir/`, `security/`, `testing/` |
 | Monitoring / analytics | `indexing/` |
 | Building AI agent infra | `standards/`, `wallets/`, `tools/` |

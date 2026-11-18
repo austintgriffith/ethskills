@@ -44,6 +44,7 @@ Install directly from GitHub — no clone required:
 | [CROPS Review](crops/SKILL.md) | Miss custody, privacy, exit paths, censorship resistance, and centralization risks in otherwise working apps/contracts |
 | [Protocol](protocol/SKILL.md) | Answer fork status from memory, read EIP status as fork inclusion, give unscheduled features ship dates |
 | [Gas & Costs](gas/SKILL.md) | Quote gas costs from memory, mix up wei and gwei, forget the L1 data fee on L2s |
+| [Glamsterdam](glamsterdam/SKILL.md) | Price new slots and new accounts at today's cost, think `call{gas:}` bounds all gas, bill by `gasleft()` deltas, treat a mined 7702 tx as an applied delegation |
 | [Wallets](wallets/SKILL.md) | EIP-7702 is live, signer authority limits, burned keys |
 | [Layer 2s](l2s/SKILL.md) | Think Base is still OP Stack, Polygon zkEVM still runs, Superchain interop is live |
 | [Standards](standards/SKILL.md) | Don't know ERC-8004, EIP-7702 status, EIP-3009 for x402 |
